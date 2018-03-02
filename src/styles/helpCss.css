@@ -1,0 +1,28 @@
+.layui-breadcrumb a, .jd3-section p {
+  line-height: 2em;
+  color: black !important
+}
+
+.layui-breadcrumb a:hover, .jd3-section p {
+  color: #333 !important
+}
+
+.jd3-inputs {
+  margin-top: 60px
+}
+
+img {
+  height: 65px
+}
+
+@media screen and (max-width:768px) {
+  .layui-field-box {
+    padding: 0
+  }
+  .layui-elem-field {
+    width: auto
+  }
+  img {
+    height: 50px
+  }
+}
