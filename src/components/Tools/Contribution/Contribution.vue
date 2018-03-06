@@ -72,7 +72,9 @@ export default {
 			var AddNum = 0;
 			var ModifyNum = 0;
 			var DelNum = 0;
-			var NoneNum = 0;
+			var ErrorNum = 0;
+			var NoNum = 0;
+			var ErrorAttr = 0;
 			//设置文本、编码、属性
 			//1 遍历旧词库
 			for (let y in thisOldData.word){
@@ -92,6 +94,7 @@ export default {
 						AddNum ++;
 					} else {
 						this.AkeyTermsData += out +'\t'+ '（已存在编码或编码错误，未添加）' +'\t'+ '---来自（+）' +'\n';
+						ErrorNum ++;
 					}
 				//modify
 				} else if (thisNewData.modify[x]) {
@@ -108,6 +111,7 @@ export default {
 						ModifyNum ++;
 					} else {
 						this.AkeyTermsData += out +'\t'+ '（未找到）' +'\t'+ '---来自（m）' +'\n';
+						NoNum ++;
 					}
 				//delete
 				} else if (thisNewData.delete[x]) {
@@ -119,15 +123,18 @@ export default {
 						DelNum ++;
 					} else {
 						this.AkeyTermsData += out +'\t'+ '（未找到）' +'\t'+ '---来自（-）' +'\n';
+						NoNum ++;
 					}
 				//未知
 				} else {
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					this.AkeyTermsData += out + '\t' +'---未知属性' + '\n';
-					NoneNum ++;
+					ErrorAttr ++;
 				}
 			}
-			this.AkeyTermsData += `共添加${AddNum}个，修改${ModifyNum}个，删除${DelNum}个，未知${NoneNum}个`;
+			this.AkeyTermsData += `成功： 添加 ${AddNum} 个, 修改 ${ModifyNum} 个, 删除 ${DelNum} 个。\n`;
+			this.AkeyTermsData += `失败： 错误 ${ErrorNum} 个, 没找到 ${NoNum} 个, 没操作符 ${ErrorAttr} 个。\n`;
+			this.AkeyTermsData += `说明：错误来自添加编码重复，没找到来自修改删除，没操作符+/-/m。\n`;
 			//扫描去除空行
 			this.newTermsData = this.newTermsData.replace(/\n\s/g, '\n')
 			//填充内容
