@@ -21,7 +21,7 @@
 	<button :class="btnClass" @click="handleTerms">{{btnInfo}}</button>
 	<button class="btn" @click="createDemo">测试内容</button>
 	<button class="btn btn-danger" @dblclick="clearContent" @click="clearInfo = '双击生效清空'">{{clearInfo}}</button>
-	<p class="bg-light text-left rounded pl-1">说明：处理速度据处理内容数量而定，若处理时间较长请耐心等待。</p>
+	<p class="bg-light text-left rounded pl-1">说明：处理速度据处理内容数量而定，若处理时间较长请耐心等待。若需搜索内容可使用<kbd>Ctrl</kbd>+<kbd>F</kbd>搜索页面</p>
 	<p class="alert alert-secondary">申请表词库处理工具 Beta v1.1版本</p>
 </div>
 </template>
@@ -80,9 +80,9 @@ export default {
 				//add
 				if(thisNewData.add[x]) {
 					//判断词组是否已存在
-					reg = '/[\u4e00-\u9fa5]+\t\b' + thisNewData.code[x] + '\b/g';
+					reg = new RegExp('[\\u4e00-\\u9fa5]+\\t\\b' + thisNewData.code[x] + '\\b', 'g')
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
-					if (this.newTermsData.search(eval(reg)) == -1){
+					if (this.newTermsData.search(reg) == -1){
 						this.newTermsData += out + '\n';
 						this.AkeyTermsData += out +'\t'+ '（添加成功）' +'\t'+ '---来自（+）' +'\n';
 					} else {
