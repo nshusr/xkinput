@@ -2,20 +2,20 @@
 <div class="container text-center">
 	<div class="row">
 		<div class="col-6 p-0">
-			<textarea v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" class="form-control position-relative w-100" cols="30" rows="8" placeholder="词条 [tab] 编码" v-html="oldAttr"></textarea>
-			<span class="position-absolute w-100 font-weight-light textarea-title">原词库数据</span>
+			<textarea v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" class="form-control position-relative" cols="30" rows="8" placeholder="词条 [tab] 编码" v-html="oldAttr"></textarea>
+			<span class="position-absolute font-weight-light textarea-title">原词库数据</span>
 		</div>
 		<div class="col-6 p-0">
-			<textarea v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" class="form-control position-relative w-100" cols="30" rows="8" placeholder="词条 [tab] 编码 [tab] +/-/m" v-html="newAttr"></textarea>
-			<span class="position-absolute w-100 font-weight-light textarea-title">更正表数据</span>
+			<textarea v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" class="form-control position-relative" cols="30" rows="8" placeholder="词条 [tab] 编码 [tab] +/-/m" v-html="newAttr"></textarea>
+			<span class="position-absolute font-weight-light textarea-title">更正表数据</span>
 		</div>
 		<div class="col-6 p-0">
-			<textarea readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" class="form-control position-relative w-100" cols="30" rows="8" placeholder="输出转换后内容"></textarea>
-			<span class="position-absolute w-100 font-weight-light textarea-title">输出转换后内容</span>
+			<textarea readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" class="form-control position-relative" cols="30" rows="8" placeholder="输出转换后内容"></textarea>
+			<span class="position-absolute font-weight-light textarea-title">输出转换后内容</span>
 		</div>
 		<div class="col-6 p-0">
-			<textarea readonly v-model="AkeyTerms" @keydown.tab.prevent="AkeyTermsInput" class="form-control position-relative w-100" cols="30" rows="8" placeholder="输出信息"></textarea>
-			<span class="position-absolute w-100 font-weight-light textarea-title">输出提示信息</span>
+			<textarea readonly v-model="AkeyTerms" @keydown.tab.prevent="AkeyTermsInput" class="form-control position-relative" cols="30" rows="8" placeholder="输出信息"></textarea>
+			<span class="position-absolute font-weight-light textarea-title">输出提示信息</span>
 		</div>
 	</div>
 	<button :class="btnClass" @click="handleTerms">{{btnInfo}}</button>
@@ -207,19 +207,8 @@ export default {
 	right: 15px;
 	bottom: 5px;
 	opacity: 0.8;
-	transition: all 0.3s;
-}
-.textarea-title:hover {
-	opacity: 0.5;
-	transition: all 0.3s;
 }
 textarea:focus + .textarea-title {
-	color: rgb(0,128,128);
-	transition: all 0.3s;
-	opacity: 0.3;
-}
-textarea:focus + .textarea-title:hover {
-	opacity: 0.5;
-	transition: all 0.3s;
+	display:none;
 }
 </style>
