@@ -21,7 +21,8 @@
 	<button :class="btnClass" @click="handleTerms">{{btnInfo}}</button>
 	<button class="btn" @click="createDemo">测试内容</button>
 	<button class="btn btn-danger" @dblclick="clearContent" @click="clearInfo = '双击生效清空'">{{clearInfo}}</button>
-	<p class="alert alert-secondary">申请表词库处理工具 Beta v1.1版本<br>说明：处理速度据处理内容数量而定<br>若处理时间较长请耐心等待。</p>
+	<p class="bg-light text-left rounded pl-1">说明：处理速度据处理内容数量而定，若处理时间较长请耐心等待。</p>
+	<p class="alert alert-secondary">申请表词库处理工具 Beta v1.1版本</p>
 </div>
 </template>
 
@@ -94,7 +95,7 @@ export default {
 						this.newTermsData = this.newTermsData.replace(eval(reg), out);
 						this.AkeyTermsData += out +'\t'+ '（修改成功，按词条）' +'\t'+ '---来自（m）' +'\n';
 					} else if (this.newTermsData.indexOf(thisNewData.code[x]) != -1) {
-						reg = '/\b[\u4e00-\u9fa5]+\b\t\b' + thisNewData.code[x] + '\b/g';
+						reg = '/[\u4e00-\u9fa5]+\t' + thisNewData.code[x] + '/g';
 						this.newTermsData = this.newTermsData.replace(eval(reg), out);
 						this.AkeyTermsData += out +'\t'+ '（修改成功，按编码）' +'\t'+ '---来自（m）' +'\n';
 					} else {
