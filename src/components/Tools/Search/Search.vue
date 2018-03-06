@@ -35,23 +35,18 @@
           <td>水/氵<br>a</td>
           <td>人/亻<br>i</td>
           <td>口<br>o</td>
-          <td>月<br>u</td>
           <td>木<br>v</td>
         </tr>
         <tr>
-          <td>纟<br>aa</td>
           <td>草/艹<br>ii</td>
           <td>贝<br>ao</td>
-          <td>土<br>vo</td>
+          <td>土/士<br>vo</td>
           <td>金/钅<br>io</td>
         </tr>
         <tr>
           <td>日<br>oi</td>
           <td>十<br>uo</td>
-          <td>虫<br>ia</td>
-          <td>犭<br>ua</td>
           <td>手<br>iu</td>
-          <td>女<br>au</td>
         </tr>
       </tbody>
     </table>
