@@ -9,20 +9,26 @@
 			<textarea v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" class="form-control position-relative" cols="30" rows="8" placeholder="词条 [tab] 编码 [tab] +/-/m" v-html="newAttr"></textarea>
 			<span class="position-absolute font-weight-light textarea-title">更正表数据</span>
 		</div>
-		<div class="col-6 p-0">
+		<div class="col-4 p-0">
 			<textarea readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" class="form-control position-relative" cols="30" rows="8" placeholder="输出转换后内容"></textarea>
 			<span class="position-absolute font-weight-light textarea-title">输出转换后内容</span>
 		</div>
-		<div class="col-6 p-0">
-			<textarea readonly v-model="AkeyTerms" @keydown.tab.prevent="AkeyTermsInput" class="form-control position-relative" cols="30" rows="8" placeholder="输出信息"></textarea>
-			<span class="position-absolute font-weight-light textarea-title">输出提示信息</span>
+		<div class="col-4 p-0">
+			<textarea readonly v-model="successInfo" class="form-control position-relative" cols="30" rows="8" placeholder="输出成功信息"></textarea>
+			<span class="position-absolute font-weight-light textarea-title">输出成功信息</span>
+		</div>
+		<div class="col-4 p-0">
+			<textarea readonly v-model="errorInfo" class="form-control position-relative" cols="30" rows="8" placeholder="输出错误信息"></textarea>
+			<span class="position-absolute font-weight-light textarea-title">输出错误信息</span>
 		</div>
 	</div>
 	<button :class="btnClass" @click="handleTerms">{{btnInfo}}</button>
 	<button class="btn" @click="createDemo">测试内容</button>
+	<button class="btn" @click="clearSpace">去除空行</button>
 	<button class="btn btn-danger" @dblclick="clearContent" @click="clearInfo = '双击生效清空'">{{clearInfo}}</button>
-	<p class="bg-light text-left rounded pl-1">说明：处理速度据处理内容数量而定，若处理时间较长请耐心等待。若需搜索内容可使用<kbd>Ctrl</kbd>+<kbd>F</kbd>搜索页面</p>
-	<p class="alert alert-secondary">申请表词库处理工具 Beta v1.1版本</p>
+	<a class="btn btn-light" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">键道6加词</a>
+	<p class="alert alert-secondary">申请表词库处理工具v1.0</p>
+	<p class="bg-light">转换后词组，顺序会错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/Extended" target="_black">工具1sortTerms.sh</a></p>
 </div>
 </template>
 
@@ -39,11 +45,13 @@ export default {
 			btnClass: 'btn my-2',
 			btnInfo: '开始处理',
 			outTerms: '',
-			AkeyTerms: '',
+			successInfo: '',
+			errorInfo: '',
 			oldTermsData: {},
 			newsTermsData: {},
-			AkeyTermsData: '',
 			newTermsData: '',
+			successInfoData: '',
+			errorInfoData: '',
 			clearInfo: '清空内容',
 			demoOldData: `剥壳	blkeav
 静力学	jlxhv
@@ -90,27 +98,22 @@ export default {
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.search(reg) == -1){
 						this.newTermsData += out + '\n';
-						this.AkeyTermsData += out +'\t'+ '（添加成功）' +'\t'+ '---来自（+）' +'\n';
+						this.successInfoData += out + '\t' + '（添加成功）'+'\n';
 						AddNum ++;
 					} else {
-						this.AkeyTermsData += out +'\t'+ '（已存在编码或编码错误，未添加）' +'\t'+ '---来自（+）' +'\n';
+						this.errorInfoData += out + '\t' + '（添加时，存在编码或编码错误）'+'\n';
 						ErrorNum ++;
 					}
 				//modify
 				} else if (thisNewData.modify[x]) {
-					reg = '/' + thisNewData.word[x] + '\t[a-z]+/g';
+					reg = new RegExp('[\\u4e00-\\u9fa5]+\\t\\b' + thisNewData.code[x] + '\\b', 'g')
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
-					if (this.newTermsData.indexOf(thisNewData.word[x]) != -1){
-						this.newTermsData = this.newTermsData.replace(eval(reg), out);
-						this.AkeyTermsData += out +'\t'+ '（修改成功，按词条）' +'\t'+ '---来自（m）' +'\n';
-						ModifyNum ++;
-					} else if (this.newTermsData.indexOf(thisNewData.code[x]) != -1) {
-						reg = '/[\u4e00-\u9fa5]+\t\b' + thisNewData.code[x] + '\b/g';
-						this.newTermsData = this.newTermsData.replace(eval(reg), out);
-						this.AkeyTermsData += out +'\t'+ '（修改成功，按编码）' +'\t'+ '---来自（m）' +'\n';
+					if (this.newTermsData.search(reg) != -1) {
+						this.newTermsData = this.newTermsData.replace(reg, out);
+						this.successInfoData += out + '\t' + '（修改成功）'+'\n';
 						ModifyNum ++;
 					} else {
-						this.AkeyTermsData += out +'\t'+ '（未找到）' +'\t'+ '---来自（m）' +'\n';
+						this.errorInfoData += out + '\t' + '（修改时，未找到）'+'\n';
 						NoNum ++;
 					}
 				//delete
@@ -119,27 +122,27 @@ export default {
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.indexOf(thisNewData.word[x]) != -1){
 						this.newTermsData = this.newTermsData.replace(eval(reg), '');
-						this.AkeyTermsData += out +'\t'+ '（删除成功）' +'\t'+ '---来自（-）' +'\n';
+						this.successInfoData += out + '\t' + '（删除成功）'+'\n';
 						DelNum ++;
 					} else {
-						this.AkeyTermsData += out +'\t'+ '（未找到）' +'\t'+ '---来自（-）' +'\n';
+						this.errorInfoData += out + '\t' + '（删除时，未找到）'+'\n';
 						NoNum ++;
 					}
 				//未知
 				} else {
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
-					this.AkeyTermsData += out + '\t' +'---未知属性' + '\n';
+					this.errorInfoData += out + '\t' +'（未知操作属性非+-m）' + '\n';
 					ErrorAttr ++;
 				}
 			}
-			this.AkeyTermsData += `成功： 添加 ${AddNum} 个, 修改 ${ModifyNum} 个, 删除 ${DelNum} 个。\n`;
-			this.AkeyTermsData += `失败： 错误 ${ErrorNum} 个, 没找到 ${NoNum} 个, 没操作符 ${ErrorAttr} 个。\n`;
-			this.AkeyTermsData += `说明：错误来自添加编码重复，没找到来自修改删除，没操作符+/-/m。\n`;
+			this.successInfoData += `成功： 添加 ${AddNum} 个, 修改 ${ModifyNum} 个, 删除 ${DelNum} 个。\n`;
+			this.errorInfoData += `失败： 错误 ${ErrorNum} 个, 没找到 ${NoNum} 个, 没操作符 ${ErrorAttr} 个。\n`;
 			//扫描去除空行
-			this.newTermsData = this.newTermsData.replace(/\n\s/g, '\n')
+			this.clearSpace();
 			//填充内容
+			this.successInfo = this.successInfoData;
+			this.errorInfo = this.errorInfoData;
 			this.outTerms = this.newTermsData;
-			this.AkeyTerms = this.AkeyTermsData;
 			this.btnInfo = '处理完成';
 			this.btnClass = 'btn btn-success my-2';
 			setTimeout(function (){
@@ -147,7 +150,7 @@ export default {
 				__this.btnClass = 'btn my-2';
 			}, 2000);
 			//清理数据
-			this.AkeyTermsData = this.newTermsData = '';
+			this.successInfoData = this.errorInfoData = this.newTermsData = '';
 		},
 		TermsHandle: function (formName){
 			if (formName == "newsTermsData") {
@@ -200,6 +203,9 @@ export default {
 			this.newsTerms = '';
 			this.outTerms = '';
 			this.AkeyTerms = '';
+		},
+		clearSpace: function(){
+			this.newTermsData = this.newTermsData.replace(/[\r\n]\s/g, '\r')
 		},
 		oldTermsInput: function() {
 			this.oldTerms = this.oldTerms += '\t';
