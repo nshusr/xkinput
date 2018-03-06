@@ -117,7 +117,7 @@ export default {
 				}
 			}
 			//扫描去除空行
-			this.newTermsData = this.newTermsData.replace(/\s+[\r\n]/g, "")
+			this.newTermsData = this.newTermsData.replace(/\n\s/g, '\n')
 			//填充内容
 			this.outTerms = this.newTermsData;
 			this.AkeyTerms = this.AkeyTermsData;
