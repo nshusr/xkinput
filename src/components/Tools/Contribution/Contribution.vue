@@ -2,42 +2,39 @@
 <div class="container text-center">
 	<div class="row">
 		<div class="col-6 p-0">
-			<textarea v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" class="form-control position-relative w-100" cols="30" rows="8" placeholder="请输入旧词库数据 格式： 词条[tab]编码[tab]  说明：建议复制表格中数据，格式务必正确！"></textarea>
-			<span class="position-absolute font-weight-light" v-if="oldTerms" style="right: 30px; bottom: 15px;">旧词库数据</span>
+			<textarea v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" class="form-control position-relative w-100" cols="30" rows="8" placeholder="词条 [tab] 编码" v-html="oldAttr"></textarea>
+			<span class="position-absolute w-100 font-weight-light textarea-title">原词库数据</span>
 		</div>
 		<div class="col-6 p-0">
-			<textarea v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" class="form-control position-relative w-100" cols="30" rows="8" placeholder="请输入新加词库 格式： 词条[tab]编码[tab][+|m|-]  说明：建议复制表格中数据，格式务必正确！"></textarea>
-			<span class="position-absolute font-weight-light" v-if="newsTerms" style="right: 30px; bottom: 15px;">加词词库条目</span>
+			<textarea v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" class="form-control position-relative w-100" cols="30" rows="8" placeholder="词条 [tab] 编码 [tab] +/-/m" v-html="newAttr"></textarea>
+			<span class="position-absolute w-100 font-weight-light textarea-title">更正表数据</span>
 		</div>
 		<div class="col-6 p-0">
-			<textarea v-model="outTerms" @keydown.tab.prevent="outTermsInput" class="form-control position-relative w-100" cols="30" rows="8" placeholder="输出转换后内容"></textarea>
-			<span class="position-absolute font-weight-light" v-if="outTerms" style="right: 30px; bottom: 15px;">输出转换后内容</span>
+			<textarea readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" class="form-control position-relative w-100" cols="30" rows="8" placeholder="输出转换后内容"></textarea>
+			<span class="position-absolute w-100 font-weight-light textarea-title">输出转换后内容</span>
 		</div>
 		<div class="col-6 p-0">
-			<textarea v-model="AkeyTerms" @keydown.tab.prevent="AkeyTermsInput" class="form-control position-relative w-100" cols="30" rows="8" placeholder="输出信息"></textarea>
-			<span class="position-absolute font-weight-light" v-if="AkeyTerms" style="right: 30px; bottom: 15px;">输出信息，重复内容请忽略</span>
+			<textarea readonly v-model="AkeyTerms" @keydown.tab.prevent="AkeyTermsInput" class="form-control position-relative w-100" cols="30" rows="8" placeholder="输出信息"></textarea>
+			<span class="position-absolute w-100 font-weight-light textarea-title">输出提示信息</span>
 		</div>
 	</div>
 	<button :class="btnClass" @click="handleTerms">{{btnInfo}}</button>
-	<button class="btn" @click="clearAkey">清除输出</button>
-	<p class="alert alert-secondary">Beta v1.0版本<br>说明：处理速度据处理内容数量而定<br>添加比较快，修改与删除比较费时，请耐心等待。</p>
+	<button class="btn" @click="createDemo">测试内容</button>
+	<button class="btn btn-danger" @dblclick="clearContent" @click="clearInfo = '双击生效清空'">{{clearInfo}}</button>
+	<p class="alert alert-secondary">申请表词库处理工具 Beta v1.1版本<br>说明：处理速度据处理内容数量而定<br>若处理时间较长请耐心等待。</p>
 </div>
 </template>
 
 <script>
+import $ from 'jquery';
 export default {
 	name: 'Contribution',
 	data() {
 		return {
-			oldTerms: `枣园	zzyt
-自作自受	zzze
-枣在	zzzh
-早早	zzzz`,
-			newsTerms: `枣园	zzyt	+
-自作自受	zuozuozuozuzo	m
-早在	zzzh	m
-早早	zzzz	-
-枣子	zzzk`,
+			oldTerms: '',
+			newsTerms: '',
+			oldAttr: '请输入原词库\n格式： 词条 [tab] 编码',
+			newAttr: '请输入新加词库\n格式： 词条 [tab] 编码 [tab] +/m/-',
 			btnClass: 'btn my-2',
 			btnInfo: '开始处理',
 			outTerms: '',
@@ -45,7 +42,18 @@ export default {
 			oldTermsData: {},
 			newsTermsData: {},
 			AkeyTermsData: '',
-			newTermsData: ''
+			newTermsData: '',
+			clearInfo: '清空内容',
+			demoOldData: `剥壳	blkeav
+静力学	jlxhv
+动力学	aaaaa
+万夫	wfmk
+折子戏	fzxki`,
+			demoNewData: `剥壳	blkeav	+
+静力学	jlxhv	-
+动力学	dlxhva	m
+万夫莫开	wfmk	m
+折子	fzxki	+`
 		}
 	},
 	methods: {
@@ -76,15 +84,11 @@ export default {
 						this.newTermsData += out + '\n';
 						this.AkeyTermsData += out +'\t'+ '（添加成功）' +'\t'+ '---来自（+）' +'\n';
 					} else {
-						if (this.AkeyTermsData.indexOf('添加成功') != -1){
-							this.AkeyTermsData += '';
-						} else {
-							this.AkeyTermsData += out +'\t'+ '（已存在编码）' +'\t'+ '---来自（+）' +'\n';
-						}
+						this.AkeyTermsData += out +'\t'+ '（已存在编码或编码错误，未添加）' +'\t'+ '---来自（+）' +'\n';
 					}
 				//modify
 				} else if (thisNewData.modify[x]) {
-					reg = '/' + thisNewData.word[x] + '\t[a-z]+/';
+					reg = '/' + thisNewData.word[x] + '\t[a-z]+/g';
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.indexOf(thisNewData.word[x]) != -1){
 						this.newTermsData = this.newTermsData.replace(eval(reg), out);
@@ -98,17 +102,13 @@ export default {
 					}
 				//delete
 				} else if (thisNewData.delete[x]) {
-					reg = '/' + thisNewData.word[x] + '\t[a-z]+\R/';
+					reg = '/' + thisNewData.word[x] + '\t[a-z]+/g';
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.indexOf(thisNewData.word[x]) != -1){
 						this.newTermsData = this.newTermsData.replace(eval(reg), '');
 						this.AkeyTermsData += out +'\t'+ '（删除成功）' +'\t'+ '---来自（-）' +'\n';
 					} else {
-						if (this.AkeyTermsData.indexOf('删除成功') != -1){
-							this.AkeyTermsData += '';
-						} else {
-							this.AkeyTermsData += out +'\t'+ '（未找到）' +'\t'+ '---来自（-）' +'\n';
-						}
+						this.AkeyTermsData += out +'\t'+ '（未找到）' +'\t'+ '---来自（-）' +'\n';
 					}
 				//未知
 				} else {
@@ -116,6 +116,8 @@ export default {
 					this.AkeyTermsData += out + '\t' +'---未知属性' + '\n';
 				}
 			}
+			//扫描去除空行
+			this.newTermsData = this.newTermsData.replace(/\s+[\r\n]/g, "")
 			//填充内容
 			this.outTerms = this.newTermsData;
 			this.AkeyTerms = this.AkeyTermsData;
@@ -124,7 +126,7 @@ export default {
 			setTimeout(function (){
 				__this.btnInfo = '开始处理';
 				__this.btnClass = 'btn my-2';
-			}, 3000);
+			}, 2000);
 			//清理数据
 			this.AkeyTermsData = this.newTermsData = '';
 		},
@@ -170,7 +172,14 @@ export default {
 				}
 			}
 		},
-		clearAkey: function() {
+		createDemo: function(){
+			this.oldTerms = this.demoOldData;
+			this.newsTerms = this.demoNewData;
+		},
+		clearContent: function(){
+			this.oldTerms = '';
+			this.newsTerms = '';
+			this.outTerms = '';
 			this.AkeyTerms = '';
 		},
 		oldTermsInput: function() {
@@ -185,11 +194,30 @@ export default {
 		AkeyTermsInput: function() {
 			this.AkeyTerms = this.AkeyTerms += '\t';
 		}
-
 	}
 }
 </script>
 
 <style>
-
+.textarea-title {
+	display: block;
+	color: black;
+	right: 15px;
+	bottom: 5px;
+	opacity: 0.8;
+	transition: all 0.3s;
+}
+.textarea-title:hover {
+	opacity: 0.5;
+	transition: all 0.3s;
+}
+textarea:focus + .textarea-title {
+	color: rgb(0,128,128);
+	transition: all 0.3s;
+	opacity: 0.3;
+}
+textarea:focus + .textarea-title:hover {
+	opacity: 0.5;
+	transition: all 0.3s;
+}
 </style>

@@ -6,7 +6,7 @@
     <form>
       <div class="form-group">
         <label for="">词条：</label>
-        <input class="form-control" v-model="keyword" type="text" @keydown.space.enter.prevent="search" @keyup.delete="clear" placeholder="输入你要查询的字" />
+        <input class="form-control" v-model="keyword" type="text" @keydown.space.enter="search" @keyup.delete="clear" placeholder="输入你要查询的字" />
       </div>
       <div class="form-group">
         <label for="">方案：</label>

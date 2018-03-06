@@ -18,22 +18,24 @@ export default new Router({
       component: Home
     },
     {
-      path: '/Doc',
+      path: '/rime_jd_web/Doc',
       name: 'Doc',
       component: Doc
     },
     {
-      path: '/Download',
+      path: '/rime_jd_web/Download',
+
       name: 'Download',
       component: Download
     },
     {
-      path: '/Tools/Search',
+      path: '/rime_jd_web/Tools/Search',
+
       name: 'Search',
       component: Search
     },
     {
-      path: '/Tools/Contribution',
+      path: '/rime_jd_web/Tools/Contribution',
       name: 'Contribution',
       component: Contribution
     }
