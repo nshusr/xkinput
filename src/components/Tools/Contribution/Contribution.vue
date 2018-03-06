@@ -80,8 +80,9 @@ export default {
 				//add
 				if(thisNewData.add[x]) {
 					//判断词组是否已存在
+					reg = '/[\u4e00-\u9fa5]+\t\b' + thisNewData.code[x] + '\b/g';
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
-					if (this.newTermsData.search(thisNewData.code[x]) == -1){
+					if (this.newTermsData.search(eval(reg)) == -1){
 						this.newTermsData += out + '\n';
 						this.AkeyTermsData += out +'\t'+ '（添加成功）' +'\t'+ '---来自（+）' +'\n';
 					} else {
@@ -95,7 +96,7 @@ export default {
 						this.newTermsData = this.newTermsData.replace(eval(reg), out);
 						this.AkeyTermsData += out +'\t'+ '（修改成功，按词条）' +'\t'+ '---来自（m）' +'\n';
 					} else if (this.newTermsData.indexOf(thisNewData.code[x]) != -1) {
-						reg = '/[\u4e00-\u9fa5]+\t' + thisNewData.code[x] + '/g';
+						reg = '/[\u4e00-\u9fa5]+\t\b' + thisNewData.code[x] + '\b/g';
 						this.newTermsData = this.newTermsData.replace(eval(reg), out);
 						this.AkeyTermsData += out +'\t'+ '（修改成功，按编码）' +'\t'+ '---来自（m）' +'\n';
 					} else {
