@@ -69,6 +69,10 @@ export default {
 			var thisNewData = this.newsTermsData.obj;
 			var thisOldData = this.oldTermsData.obj;
 			var reg, out;
+			var AddNum = 0;
+			var ModifyNum = 0;
+			var DelNum = 0;
+			var NoneNum = 0;
 			//设置文本、编码、属性
 			//1 遍历旧词库
 			for (let y in thisOldData.word){
@@ -85,6 +89,7 @@ export default {
 					if (this.newTermsData.search(reg) == -1){
 						this.newTermsData += out + '\n';
 						this.AkeyTermsData += out +'\t'+ '（添加成功）' +'\t'+ '---来自（+）' +'\n';
+						AddNum ++;
 					} else {
 						this.AkeyTermsData += out +'\t'+ '（已存在编码或编码错误，未添加）' +'\t'+ '---来自（+）' +'\n';
 					}
@@ -95,10 +100,12 @@ export default {
 					if (this.newTermsData.indexOf(thisNewData.word[x]) != -1){
 						this.newTermsData = this.newTermsData.replace(eval(reg), out);
 						this.AkeyTermsData += out +'\t'+ '（修改成功，按词条）' +'\t'+ '---来自（m）' +'\n';
+						ModifyNum ++;
 					} else if (this.newTermsData.indexOf(thisNewData.code[x]) != -1) {
 						reg = '/[\u4e00-\u9fa5]+\t\b' + thisNewData.code[x] + '\b/g';
 						this.newTermsData = this.newTermsData.replace(eval(reg), out);
 						this.AkeyTermsData += out +'\t'+ '（修改成功，按编码）' +'\t'+ '---来自（m）' +'\n';
+						ModifyNum ++;
 					} else {
 						this.AkeyTermsData += out +'\t'+ '（未找到）' +'\t'+ '---来自（m）' +'\n';
 					}
@@ -109,6 +116,7 @@ export default {
 					if (this.newTermsData.indexOf(thisNewData.word[x]) != -1){
 						this.newTermsData = this.newTermsData.replace(eval(reg), '');
 						this.AkeyTermsData += out +'\t'+ '（删除成功）' +'\t'+ '---来自（-）' +'\n';
+						DelNum ++;
 					} else {
 						this.AkeyTermsData += out +'\t'+ '（未找到）' +'\t'+ '---来自（-）' +'\n';
 					}
@@ -116,8 +124,10 @@ export default {
 				} else {
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					this.AkeyTermsData += out + '\t' +'---未知属性' + '\n';
+					NoneNum ++;
 				}
 			}
+			this.AkeyTermsData += `共添加${AddNum}个，修改${ModifyNum}个，删除${DelNum}个，未知${NoneNum}个`;
 			//扫描去除空行
 			this.newTermsData = this.newTermsData.replace(/\n\s/g, '\n')
 			//填充内容
