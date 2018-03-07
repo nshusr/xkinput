@@ -17,7 +17,8 @@
     "3": "<span class='badge badge-secondary'>eng</span>",
     "4": "<span class='badge badge-secondary'>uan</span>",
     "5": "<span class='badge badge-secondary'>ong</span> <span class='badge badge-secondary'>iong</span>",
-    "6": "<span class='badge badge-dark'>月 十o<span>",
+    "6": "<span class='badge badge-dark'>月</span> <span class='badge badge-dark'>十o</span>",
+
     "7": "<span class='badge badge-dark'>人</span> <span class='badge badge-dark'>手u</span> <br> <span class='badge badge-dark'>草i</span> <span class='badge badge-dark'>金o</span>",
     "8": "<span class='badge badge-dark'>口</span> <span class='badge badge-dark'>日i</span>",
     "9": "<span class='badge badge-secondary'>ang</span>"
@@ -58,7 +59,7 @@
     "0": "<span class='badge badge-secondary'>ao</span>",
     "1": "<span class='badge badge-secondary'>iang</span> <span class='badge badge-secondary'>uang</span>",
     "2": "<span class='badge badge-secondary'>iao</span>",
-    "3": "<span class='badge badge-dark'>木<span> <span class='badge badge-dark>土o</span>",
+    "3": "<span class='badge badge-dark'>木</span> <span class='badge badge-dark'>土o</span>",
     "4": "<span class='badge badge-secondary'>in</span> <span class='badge badge-secondary'>ui</span>",
     "5": "<span class='badge badge-secondary'>en</span>",
     "6": "<span class='badge badge-secondary'>ian</span>",

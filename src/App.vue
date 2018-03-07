@@ -1,11 +1,11 @@
 <template>
 	<div :style="bg">
 		<div :style="bgcolor" class="container-fluid">
-		<v-nav></v-nav>
-		<router-view></router-view>
-		<v-footer></v-footer>
-		<v-utiltes></v-utiltes>
-	</div>
+			<v-nav></v-nav>
+			<router-view></router-view>
+			<v-footer></v-footer>
+			<v-utiltes></v-utiltes>
+		</div>
 	</div>
 </template>
 
