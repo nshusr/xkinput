@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="util fixed-bottom fixed-right" style="left: auto; right: 30px; top: auto; bottom: 100px;">
-            <router-link class="btn text-dark bg-light d-block mb-1 search" to="../Tools/Search"><i class="fa fa-search"></i></router-link>
-            <router-link class="btn text-dark bg-light d-block mb-1 download" to="../Download"><i class="fa fa-download"></i></router-link>
+            <router-link class="btn text-dark bg-light d-block mb-1 search" to="/rime_jd_web/Tools/Search"><i class="fa fa-search"></i></router-link>
+            <router-link class="btn text-dark bg-light d-block mb-1 download" to="/rime_jd_web/Download"><i class="fa fa-download"></i></router-link>
             <button class="btn d-block goTop" @click="goTop"><i class="fa fa-arrow-up"></i></button>
         </div>
     </div>
