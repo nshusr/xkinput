@@ -118,7 +118,7 @@ export default {
 					}
 				//delete
 				} else if (thisNewData.delete[x]) {
-					reg = '/' + thisNewData.word[x] + '\t[a-z]+/g';
+					reg = new RegExp('[\\u4e00-\\u9fa5]+\\t\\b' + thisNewData.code[x] + '\\b', 'g')
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.indexOf(thisNewData.word[x]) != -1){
 						this.newTermsData = this.newTermsData.replace(eval(reg), '');
