@@ -93,7 +93,7 @@ export default {
 			for(var x in thisNewData.word){
 				//add
 				if(thisNewData.add[x]) {
-					//判断词组是否已存在
+					//判断编码是否已存在
 					reg = new RegExp('[\\u4e00-\\u9fa5]+\\t\\b' + thisNewData.code[x] + '\\b', 'g')
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.search(reg) == -1){
@@ -167,7 +167,7 @@ export default {
 			this[formName].obj.delete = [];
 			for (var x in this[formName].test) {
 				var isChinese = /[\u4e00-\u9fa5]/g.test(this[formName].test[x]);
-				var isCode = /[a-z]{2,}/g.test(this[formName].test[x]);
+				var isCode = /[a-z]+/g.test(this[formName].test[x]);
 				if (isChinese){
 					this[formName].obj.word.push(this[formName].test[x]);
 				} else if (isCode){
