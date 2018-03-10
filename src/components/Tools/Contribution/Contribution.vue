@@ -60,8 +60,8 @@ export default {
 折子戏	fzxki`,
 			demoNewData: `剥壳	blkeav	+
 静力学	jlxhv	-
-动力学	dlxhva	m
-万夫莫开	wfmk	m
+动力学	dlxhva	!m
+万夫莫开	wfmk	!m
 折子	fzxki	+`
 		}
 	},
@@ -154,9 +154,9 @@ export default {
 		},
 		TermsHandle: function (formName){
 			if (formName == "newsTermsData") {
-				this[formName].test = this.newsTerms.split(/[\t\R\n]/g);
+				this[formName].test = this.newsTerms.split(/[\t\r\n]/g);
 			} else {
-				this[formName].test = this.oldTerms.split(/[\t\R\n]/g);
+				this[formName].test = this.oldTerms.split(/[\t\r\n]/g);
 			}
 			this[formName].add = [];
 			this[formName].obj = {};
@@ -166,20 +166,21 @@ export default {
 			this[formName].obj.modify = [];
 			this[formName].obj.delete = [];
 			for (var x in this[formName].test) {
-				var isChinese = /[\u4e00-\u9fa5]/g.test(this[formName].test[x]);
-				var isCode = /[a-z]+/g.test(this[formName].test[x]);
+				var isChinese = /[\u4e00-\u9fa5]+/.test(this[formName].test[x]);
+				var isCode = /[^!][a-z]+/.test(this[formName].test[x]);
+				var isOpreation = /\+|-|\!m/.test(this[formName].test[x]);
 				if (isChinese){
 					this[formName].obj.word.push(this[formName].test[x]);
 				} else if (isCode){
 					this[formName].obj.code.push(this[formName].test[x]);
-				} else {
+				} else if (isOpreation) {
 					switch (this[formName].test[x]) {
 						case '+':
 							this[formName].obj.add.push(true);
 							this[formName].obj.modify.push(false);
 							this[formName].obj.delete.push(false);
 							break;
-						case 'm':
+						case '!m':
 							this[formName].obj.add.push(false);
 							this[formName].obj.modify.push(true);
 							this[formName].obj.delete.push(false);
@@ -188,6 +189,7 @@ export default {
 							this[formName].obj.add.push(false);
 							this[formName].obj.modify.push(false);
 							this[formName].obj.delete.push(true);
+							break;
 						default:
 							break;
 					}
