@@ -28,7 +28,7 @@
 	<button class="btn btn-danger" @dblclick="clearContent" @click="clearInfo = '双击生效清空'">{{clearInfo}}</button>
 	<a class="btn btn-light" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">键道6加词</a>
 	<p class="alert alert-secondary mb-1">申请表词库处理工具v1.0</p>
-	<p class="bg-light pb-2">转换后词组，顺序会错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/Extended" target="_black">工具1sortTerms.sh</a><br><mark>本工具不支持添加重码！会将重码信息输出在错误栏。</mark></p>
+	<p class="bg-light pb-2">转换后词组，顺序会错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/Extended" target="_black">工具1sortTerms.sh</a><br><mark>请注意！本工具不支持单字、重码操作！！！修改后编码会出现混乱！</mark></p>
 </div>
 </template>
 
@@ -77,6 +77,8 @@ export default {
 			var thisNewData = this.newsTermsData.obj;
 			var thisOldData = this.oldTermsData.obj;
 			var reg, out;
+			var SuccessAll = 0;
+			var ErrorAll = 0;
 			var AddNum = 0;
 			var ModifyNum = 0;
 			var DelNum = 0;
@@ -87,7 +89,7 @@ export default {
 			//1 遍历旧词库
 			for (let y in thisOldData.word){
 				//1.1输出到输出框
-				this.newTermsData += thisOldData.word[y] + '\t' + thisOldData.code[y] + '\n';
+				this.newTermsData += thisOldData.word[y] + '\t' + thisOldData.code[y] + '\r';
 			}
 			//2 遍历新词条
 			for(var x in thisNewData.word){
@@ -99,9 +101,11 @@ export default {
 					if (this.newTermsData.search(reg) == -1){
 						this.newTermsData += out + '\n';
 						this.successInfoData += out + '\t' + '（添加成功）'+'\n';
+						SuccessAll ++;
 						AddNum ++;
 					} else {
 						this.errorInfoData += out + '\t' + '（添加时，存在编码或编码错误）'+'\n';
+						ErrorAll ++;
 						ErrorNum ++;
 					}
 				//modify
@@ -111,9 +115,11 @@ export default {
 					if (this.newTermsData.search(reg) != -1) {
 						this.newTermsData = this.newTermsData.replace(reg, out);
 						this.successInfoData += out + '\t' + '（修改成功）'+'\n';
+						SuccessAll ++;
 						ModifyNum ++;
 					} else {
 						this.errorInfoData += out + '\t' + '（修改时，未找到）'+'\n';
+						ErrorAll ++;
 						NoNum ++;
 					}
 				//delete
@@ -123,20 +129,23 @@ export default {
 					if (this.newTermsData.indexOf(thisNewData.word[x]) != -1){
 						this.newTermsData = this.newTermsData.replace(eval(reg), '');
 						this.successInfoData += out + '\t' + '（删除成功）'+'\n';
+						SuccessAll ++;
 						DelNum ++;
 					} else {
 						this.errorInfoData += out + '\t' + '（删除时，未找到）'+'\n';
+						ErrorAll ++;
 						NoNum ++;
 					}
 				//未知
 				} else {
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					this.errorInfoData += out + '\t' +'（未知操作属性非+-m）' + '\n';
+					ErrorAll ++;
 					ErrorAttr ++;
 				}
 			}
-			this.successInfoData += `成功： 添加 ${AddNum} 个, 修改 ${ModifyNum} 个, 删除 ${DelNum} 个。\n`;
-			this.errorInfoData += `失败： 错误 ${ErrorNum} 个, 没找到 ${NoNum} 个, 没操作符 ${ErrorAttr} 个。\n`;
+			this.successInfoData += `成功统计：\n共 ${SuccessAll}个, 添加 ${AddNum} 个,\n修改 ${ModifyNum} 个, 删除 ${DelNum} 个。\n`;
+			this.errorInfoData += `失败统计：\n共 ${ErrorAll}个, 错误 ${ErrorNum} 个,\n没找到 ${NoNum} 个, 没操作符 ${ErrorAttr} 个。\n`;
 			//扫描去除空行
 			this.clearSpace();
 			//填充内容
@@ -167,12 +176,10 @@ export default {
 			this[formName].obj.delete = [];
 			for (var x in this[formName].test) {
 				var isChinese = /[\u4e00-\u9fa5]+/.test(this[formName].test[x]);
-				var isCode = /[^!][a-z]+/.test(this[formName].test[x]);
 				var isOpreation = /\+|-|\!m/.test(this[formName].test[x]);
+				var isCode = /[a-z]+/.test(this[formName].test[x]) && /^[^\!]+/.test(this[formName].test[x]);
 				if (isChinese){
 					this[formName].obj.word.push(this[formName].test[x]);
-				} else if (isCode){
-					this[formName].obj.code.push(this[formName].test[x]);
 				} else if (isOpreation) {
 					switch (this[formName].test[x]) {
 						case '+':
@@ -193,6 +200,8 @@ export default {
 						default:
 							break;
 					}
+				} else if (isCode){
+					this[formName].obj.code.push(this[formName].test[x]);
 				}
 			}
 		},
