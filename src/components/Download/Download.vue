@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div class="card mb-1 col col-sm-3 text-center">
-                <img style="height: 100px; widht: 100px; margin-left: 25%" class="rounded w-50 mt-1" src="https://im.logcg.com/wp-content/uploads/2017/09/iTunesArtwork-270x250.png" alt="Rime">
+                <img style="height: 100px; widht: 100px; margin-left: 25%" class="rounded w-50 mt-1" src="https://im.logcg.com/wp-content/uploads/2017/09/iTunesArtwork-270x250.png" alt="落格">
                 <h4 class="card-title">落格平台</h4>
                 <p>可用于以下操作系统：</p>
                 <div class="card-block text-left">
@@ -63,4 +63,3 @@ export default {
 <style>
 
 </style>
-

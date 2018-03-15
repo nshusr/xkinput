@@ -150,17 +150,6 @@ h1 {
 .title-hr {
 	border-top: 1px solid skyblue;
 }
-@media (max-width: 576px) {
-	.parpaganda-width{
-		width: 100%;
-	}
-}
-@media (max-width: 992px) {
-	.gitee_widget_fix {
-		z-index: 0 !important;
-		opacity: 0.2;
-	}
-}
 .content-alpha {
 	background: rgba(255, 255, 255, 0.4);
 }

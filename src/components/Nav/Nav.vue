@@ -12,6 +12,7 @@
                 <a class="dropdown-item" href="https://739497722.docs.qq.com/ipGva4mn5bo?type=2&_wv=1&domainId=4368&listver=2" target="_black">在线加词</a>
                 <router-link class="dropdown-item" to="/rime_jd_web/Tools/Search">查码工具</router-link>
                 <router-link class="dropdown-item" to="/rime_jd_web/Tools/Contribution">加词处理</router-link>
+                <router-link class="dropdown-item" to="/rime_jd_web/Tools/Contribution">跟打器</router-link>
             </div>
         </div>
     </div>
