@@ -1,8 +1,5 @@
 <template>
 	<div :style="bg">
-		<a class="gitee" href="http://gitee.com/nmlixa/Rime_JD_WEB" style="fill: #C71D24;">
-			<img alt="Widget_1" src="//gitee.com/nmlixa/Rime_JD_WEB/widgets/widget_1.svg?color=C71D24">
-		</a>
 		<div :style="bgcolor" class="container-fluid">
 			<v-nav></v-nav>
 			<router-view></router-view>
@@ -44,14 +41,4 @@ export default {
 </script>
 
 <style>
-.gitee {
-	position: fixed;
-	right: 0;
-}
-@media (max-width: 992px) {
-	.gitee {
-		z-index: 0 !important;
-		opacity: 0.2;
-	}
-}
 </style>
