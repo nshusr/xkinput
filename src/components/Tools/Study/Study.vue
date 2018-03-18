@@ -9,7 +9,7 @@ export default {
   name: 'study',
   data () {
     return {
-
+      
     }
   }
 }
