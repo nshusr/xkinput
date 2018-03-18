@@ -1,6 +1,6 @@
 <template>
-  <div class="section">
-    123
+  <div class="container">
+    <p class="mx-auto alert alert-info text-center">开发中</p>
   </div>
 </template>
 
@@ -9,7 +9,7 @@ export default {
   name: 'study',
   data () {
     return {
-      
+
     }
   }
 }
