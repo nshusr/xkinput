@@ -12,7 +12,7 @@
 				<router-link class="btn btn-light text-secondary mt-3" to="/rime_jd_web/Download">立即获取</router-link>
 			</div>
 			<div class="text-center m-5">
-				<img class="parpaganda-width" :src="propaganda" :alt="propagandaLogo">
+				<img class="parpaganda-width img-fluid" :src="propaganda" :alt="propagandaLogo">
 			</div>
 		</div>
 		<div id="propaganda" class="carousel mt-4 p-4 slide bt row content-alpha content-carousel-shadow text-white text-center" data-ride="carousel">
