@@ -19,6 +19,7 @@
                 <div class="card-block text-left">
                     <span class="badge badge-primary">Windows</span>
                     <span class="badge badge-success">Android</span>
+                    <span class="badge badge-dark">Linux</span>
                 </div>
                 <div class="card-block">
                     <a class="btn" href="https://thxnder.gitee.io/xxjd" target="_black">访问项目</a>
