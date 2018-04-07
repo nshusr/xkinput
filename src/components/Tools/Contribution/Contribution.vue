@@ -28,7 +28,7 @@
 	<button class="btn btn-danger" @dblclick="clearContent" @click="clearInfo = '双击生效清空'">{{clearInfo}}</button>
 	<a class="btn btn-light" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">键道6加词</a>
 	<p class="alert alert-secondary mb-1">申请表词库处理工具v1.0</p>
-	<p class="bg-light pb-2">转换后词组，顺序会错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/Extended" target="_black">工具1sortTerms.sh</a><br><mark>请注意！本工具不支持单字、英文（含英文）、重码、操作！！！修改后编码会出现混乱！</mark></p>
+	<p class="bg-light pb-2">转换后词组，顺序会错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/TermsTools" target="_black">工具1sortTerms.sh</a><br><mark>请注意！本工具不支持单字、英文（含英文）、重码、操作！！！修改后编码会出现混乱！</mark></p>
 </div>
 </template>
 
@@ -124,7 +124,7 @@ export default {
 					}
 				//delete
 				} else if (thisNewData.delete[x]) {
-					reg = new RegExp('[\\u4e00-\\u9fa5]+\\t\\b' + thisNewData.code[x] + '\\b', 'g')
+					reg = new RegExp('[\\u4e00-\\u9fa5]+\\t\\b' + thisNewData.code[x] + '\\b\\r', 'g')
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.indexOf(thisNewData.word[x]) != -1){
 						this.newTermsData = this.newTermsData.replace(eval(reg), '');
