@@ -162,6 +162,8 @@ export default {
 			this.successInfoData = this.errorInfoData = this.newTermsData = '';
 		},
 		TermsHandle: function (formName){
+			//转换半角符号
+			this.allToHalf();
 			if (formName == "newsTermsData") {
 				this[formName].test = this.newsTerms.split(/[\t\r\n]/g);
 			} else {
@@ -182,17 +184,17 @@ export default {
 					this[formName].obj.word.push(this[formName].test[x]);
 				} else if (isOpreation) {
 					switch (this[formName].test[x]) {
-						case '+':
+						case '+' || '＋':
 							this[formName].obj.add.push(true);
 							this[formName].obj.modify.push(false);
 							this[formName].obj.delete.push(false);
 							break;
-						case '!m':
+						case '!m' || '！m' || '!M' || '！M':
 							this[formName].obj.add.push(false);
 							this[formName].obj.modify.push(true);
 							this[formName].obj.delete.push(false);
 							break;
-						case '-':
+						case '-' || '－':
 							this[formName].obj.add.push(false);
 							this[formName].obj.modify.push(false);
 							this[formName].obj.delete.push(true);
@@ -214,6 +216,13 @@ export default {
 			this.newsTerms = '';
 			this.outTerms = '';
 			this.AkeyTerms = '';
+		},
+		allToHalf: function(){
+			this.newsTerms = this.newsTerms.replace('＋', '+');
+			this.newsTerms = this.newsTerms.replace('－', '-');
+			this.newsTerms = this.newsTerms.replace('！m', '!m');
+			this.newsTerms = this.newsTerms.replace('！M', '!m');
+			this.newsTerms = this.newsTerms.replace('!M', '!m');
 		},
 		clearSpace: function(){
 			this.newTermsData = this.newTermsData.replace(/[\r\n]\s/g, '\r')
