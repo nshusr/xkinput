@@ -27,8 +27,15 @@
 	<button class="btn" @click="clearSpace">去除空行</button>
 	<button class="btn btn-danger" @dblclick="clearContent" @click="clearInfo = '双击生效清空'">{{clearInfo}}</button>
 	<a class="btn btn-light" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">键道6加词</a>
-	<p class="alert alert-secondary mb-1">申请表词库处理工具v1.0</p>
-	<p class="bg-light pb-2">转换后词组，顺序会错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/TermsTools" target="_black">工具1sortTerms.sh</a><br><mark>请注意！本工具不支持单字、英文（含英文）、重码、操作！！！修改后编码会出现混乱！</mark></p>
+	<p class="alert alert-secondary mb-1">申请表词库处理工具v1.1</p>
+	<p class="bg-light p-1 rounded mb-1">转换后词组，顺序会错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/TermsTools" target="_black">工具1sortTerms.sh</a><br><mark>请注意！本工具不支持单字、英文（含英文）、重码、操作！！！修改后编码会出现混乱！</mark></p>
+	<div class="text-left bg-light p-1 mb-1 rounded fzx">
+		<button class="btn" @click="updates = !updates"><span v-if="!updates">显示</span>更新历史</button>
+		<div v-if="updates" class="mt-1">
+			<p>更新1.1：自动解决，全角半角问题。</p>
+			<p>更新1.0：正常使用，发布版本。</p>
+		</div>
+	</div>
 </div>
 </template>
 
@@ -62,7 +69,8 @@ export default {
 静力学	jlxhv	-
 动力学	dlxhva	!m
 万夫莫开	wfmk	!m
-折子	fzxki	+`
+折子	fzxki	+`,
+			updates: false,
 		}
 	},
 	methods: {
@@ -253,5 +261,8 @@ export default {
 }
 textarea:focus + .textarea-title {
 	display:none;
+}
+.fzx {
+	font-size: 12px;
 }
 </style>
