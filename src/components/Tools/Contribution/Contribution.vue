@@ -32,7 +32,8 @@
 	<div class="text-left bg-light p-1 mb-1 rounded fzx">
 		<button class="btn" @click="updates = !updates">更新历史</button>
 		<div v-if="updates" class="mt-1">
-			<p>更新{{vertion}}：新增*操作符，等同于!m，自动解决，全角半角问题。</p>
+			<p>更新{{vertion}}：使用*操作符作用主修改操作符，兼容!m修改符。</p>
+			<p>更新1.2：新增*操作符，等同于!m，自动解决，全角半角问题。</p>
 			<p>更新1.1：自动解决，全角半角问题。</p>
 			<p>更新1.0：正常使用，发布版本。</p>
 		</div>
@@ -46,7 +47,7 @@ export default {
 	name: 'Contribution',
 	data() {
 		return {
-			vertion: 1.2,
+			vertion: 1.3,
 			oldTerms: '',
 			newsTerms: '',
 			oldAttr: '请输入原词库\n格式： 词条 [tab] 编码',
@@ -69,7 +70,7 @@ export default {
 折子戏	fzxki`,
 			demoNewData: `剥壳	blkeav	+
 静力学	jlxhv	-
-动力学	dlxhva	!m
+动力学	dlxhva	*
 万夫莫开	wfmk	!m
 折子	fzxki	+`,
 			updates: false
@@ -188,23 +189,23 @@ export default {
 			this[formName].obj.delete = [];
 			for (var x in this[formName].test) {
 				var isChinese = /[\u4e00-\u9fa5]+/.test(this[formName].test[x]);
-				var isOpreation = /\+|-|\!m|\*/.test(this[formName].test[x]);
+				var isOpreation = /\+|-|\*/.test(this[formName].test[x]);
 				var isCode = /[a-z]+/.test(this[formName].test[x]) && /^[^\!]+/.test(this[formName].test[x]);
 				if (isChinese){
 					this[formName].obj.word.push(this[formName].test[x]);
 				} else if (isOpreation) {
 					switch (this[formName].test[x]) {
-						case '+' || '＋':
+						case '+':
 							this[formName].obj.add.push(true);
 							this[formName].obj.modify.push(false);
 							this[formName].obj.delete.push(false);
 							break;
-						case '!m' || '！m' || '!M' || '！M':
+						case '*':
 							this[formName].obj.add.push(false);
 							this[formName].obj.modify.push(true);
 							this[formName].obj.delete.push(false);
 							break;
-						case '-' || '－':
+						case '-':
 							this[formName].obj.add.push(false);
 							this[formName].obj.modify.push(false);
 							this[formName].obj.delete.push(true);
@@ -230,11 +231,11 @@ export default {
 		allToHalf: function(){
 			this.newsTerms = this.newsTerms.replace('＋', '+');
 			this.newsTerms = this.newsTerms.replace('－', '-');
-			this.newsTerms = this.newsTerms.replace('！m', '!m');
-			this.newsTerms = this.newsTerms.replace('！M', '!m');
-			this.newsTerms = this.newsTerms.replace('!M', '!m');
-			this.newsTerms = this.newsTerms.replace('＊', '!m');
-			this.newsTerms = this.newsTerms.replace('*', '!m');
+			this.newsTerms = this.newsTerms.replace('!m', '*');
+			this.newsTerms = this.newsTerms.replace('！m', '*');
+			this.newsTerms = this.newsTerms.replace('！M', '*');
+			this.newsTerms = this.newsTerms.replace('!M', '*');
+			this.newsTerms = this.newsTerms.replace('＊', '*');
 		},
 		clearSpace: function(){
 			this.newTermsData = this.newTermsData.replace(/[\r\n]\s/g, '\r')
