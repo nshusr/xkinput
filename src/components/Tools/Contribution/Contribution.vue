@@ -32,7 +32,8 @@
 	<div class="text-left bg-light p-1 mb-1 rounded fzx">
 		<button class="btn" @click="updates = !updates">更新历史</button>
 		<div v-if="updates" class="mt-1">
-			<p>更新{{vertion}}：使用*操作符作用主修改操作符，兼容!m修改符。</p>
+			<p>更新{{vertion}}：修复主动修改!m为*的步骤错误问题。</p>
+			<p>更新1.3：使用*操作符作用主修改操作符，兼容!m修改符。</p>
 			<p>更新1.2：新增*操作符，等同于!m，自动解决，全角半角问题。</p>
 			<p>更新1.1：自动解决，全角半角问题。</p>
 			<p>更新1.0：正常使用，发布版本。</p>
@@ -47,7 +48,7 @@ export default {
 	name: 'Contribution',
 	data() {
 		return {
-			vertion: 1.3,
+			vertion: 1.4,
 			oldTerms: '',
 			newsTerms: '',
 			oldAttr: '请输入原词库\n格式： 词条 [tab] 编码',
@@ -173,7 +174,7 @@ export default {
 			this.successInfoData = this.errorInfoData = this.newTermsData = '';
 		},
 		TermsHandle: function (formName){
-			//转换半角符号
+			//转换符号
 			this.allToHalf();
 			if (formName == "newsTermsData") {
 				this[formName].test = this.newsTerms.split(/[\t\r\n]/g);
@@ -189,7 +190,7 @@ export default {
 			this[formName].obj.delete = [];
 			for (var x in this[formName].test) {
 				var isChinese = /[\u4e00-\u9fa5]+/.test(this[formName].test[x]);
-				var isOpreation = /\+|-|\*/.test(this[formName].test[x]);
+				var isOpreation = /\+|\-|\*/.test(this[formName].test[x]);
 				var isCode = /[a-z]+/.test(this[formName].test[x]) && /^[^\!]+/.test(this[formName].test[x]);
 				if (isChinese){
 					this[formName].obj.word.push(this[formName].test[x]);
@@ -229,13 +230,16 @@ export default {
 			this.AkeyTerms = '';
 		},
 		allToHalf: function(){
-			this.newsTerms = this.newsTerms.replace('＋', '+');
-			this.newsTerms = this.newsTerms.replace('－', '-');
-			this.newsTerms = this.newsTerms.replace('!m', '*');
-			this.newsTerms = this.newsTerms.replace('！m', '*');
-			this.newsTerms = this.newsTerms.replace('！M', '*');
-			this.newsTerms = this.newsTerms.replace('!M', '*');
-			this.newsTerms = this.newsTerms.replace('＊', '*');
+			var regPlus = /\＋/g;
+			var regMinus = /\-/g;
+			var regModify = /\!m|\！m|\！M|\!M|\＊/g;
+			this.newsTerms = this.newsTerms.replace(regPlus, '+');
+			this.newsTerms = this.newsTerms.replace(regMinus, '-');
+			this.newsTerms = this.newsTerms.replace(regModify, '*');
+			this.newsTerms = this.newsTerms.replace(regModify, '*');
+			this.newsTerms = this.newsTerms.replace(regModify, '*');
+			this.newsTerms = this.newsTerms.replace(regModify, '*');
+			this.newsTerms = this.newsTerms.replace(regModify, '*');
 		},
 		clearSpace: function(){
 			this.newTermsData = this.newTermsData.replace(/[\r\n]\s/g, '\r')
