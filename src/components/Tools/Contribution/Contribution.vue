@@ -53,7 +53,7 @@ export default {
 			oldTerms: '',
 			newsTerms: '',
 			oldAttr: '请输入原词库\n格式： 词条 [tab] 编码',
-			newAttr: '请输入新加词库\n格式： 词条 [tab] 编码 [tab] +/m/-',
+			newAttr: '请输入新加词库\n格式： 编码 [tab] +/-/* [tab] 词条',
 			btnClass: 'btn my-2',
 			btnInfo: '开始处理',
 			outTerms: '',
