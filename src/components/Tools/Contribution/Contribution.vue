@@ -22,17 +22,25 @@
 			<span class="position-absolute font-weight-light textarea-title">输出错误信息</span>
 		</div>
 	</div>
-	<button :class="btnClass" @click="handleTerms">{{btnInfo}}</button>
+	<button :class="btnClass" @click="handleTerms" @mousedown="clickPlay">{{btnInfo}}</button>
 	<button class="btn" @click="createDemo">测试内容</button>
 	<button class="btn" @click="clearSpace">去除空行</button>
 	<button class="btn btn-danger" @dblclick="clearContent" @click="clearInfo = '双击生效清空'">{{clearInfo}}</button>
 	<a class="btn btn-light" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">键道6加词</a>
 	<p class="alert alert-secondary mb-1">申请表词库处理工具v{{vertion}}</p>
-	<p class="bg-light p-1 rounded mb-1">转换后词组，顺序会错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/TermsTools" target="_black">工具1sortTerms.sh</a><br><mark>请注意！本工具不支持单字、英文（含英文）、重码、操作！！！修改后编码会出现混乱！</mark></p>
-	<div class="text-left bg-light p-1 mb-1 rounded fzx">
-		<button class="btn" @click="updates = !updates">更新历史</button>
+	<p class="bg-light p-1 rounded mb-1">
+		<transition name="translate">
+			<div v-show="showInfoMessage">
+				<span class="d-block">转换后词组，顺序会错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/Tools/TermsTools" target="_black">工具1sortTerms.sh</a></span>
+				<span>请注意！本工具不支持单字、英文（含英文）、重码、操作！！！修改后编码会出现混乱！</span>
+			</div>
+		</transition>
+	</p>
+	<div class="text-left bg-light p-1 mb-1 rounded fzx history-card">
+		<p><button class="btn" @click="clickHistory">更新历史</button><i class="fa fa-arrow-right btn fzb float-right history-arrow" :class="{'history-active':isHover}"></i></p>
 		<div v-if="updates" class="mt-1">
-			<p>更新{{vertion}}：升级删除时确定编码词条才删除，改善提示内容。</p>
+			<p>更新{{vertion}}：升级添加细节优化处理。</p>
+			<p>更新1.5：升级删除时确定编码词条才删除，改善提示内容。</p>
 			<p>更新1.4：修复主动修改!m为*的步骤错误问题。</p>
 			<p>更新1.3：使用*操作符作用主修改操作符，兼容!m修改符。</p>
 			<p>更新1.2：新增*操作符，等同于!m，自动解决，全角半角问题。</p>
@@ -40,6 +48,9 @@
 			<p>更新1.0：正常使用，发布版本。</p>
 		</div>
 	</div>
+	<transition name="translateRotate">
+		<div class="container alert alert-success fixed-top mt-5" v-if="successMessage">处理完成</div>
+	</transition>
 </div>
 </template>
 
@@ -49,7 +60,7 @@ export default {
 	name: 'Contribution',
 	data() {
 		return {
-			vertion: 1.5,
+			vertion: 1.6,
 			oldTerms: '',
 			newsTerms: '',
 			oldAttr: '请输入原词库\n格式： 词条 [tab] 编码',
@@ -75,13 +86,20 @@ jlxhv	-	静力学
 dlxhva	*	动力学
 wfmk	!m	万夫莫开
 fzxki	+	折子`,
-			updates: false
+			updates: false,
+			successMessage: false,
+			showInfoMessage: false,
+			historyArrow: '>',
+			isHover: false
 		}
+	},
+	mounted () {
+		setTimeout(()=>{
+			this.showInfoMessage = true;
+		}, 100)
 	},
 	methods: {
 		handleTerms: function() {
-			this.btnInfo = '正在处理...';
-			this.btnClass = 'btn btn-primary my-2';
 			//重置数据
 			this.TermsHandle('oldTermsData');
 			this.TermsHandle('newsTermsData');
@@ -89,15 +107,8 @@ fzxki	+	折子`,
 			var __this = this;
 			var thisNewData = this.newsTermsData.obj;
 			var thisOldData = this.oldTermsData.obj;
-			var reg, out;
-			var SuccessAll = 0;
-			var ErrorAll = 0;
-			var AddNum = 0;
-			var ModifyNum = 0;
-			var DelNum = 0;
-			var ErrorNum = 0;
-			var NoNum = 0;
-			var ErrorAttr = 0;
+			var reg, out, SuccessAll, ErrorAll, AddNum, ModifyNum, DelNum, ErrorNum, NoNum, ErrorAttr;
+			var SuccessAll = ErrorAll = AddNum = ModifyNum = DelNum = ErrorNum = NoNum = ErrorAttr = 0;
 			//设置文本、编码、属性
 			//1 遍历旧词库
 			for (let y in thisOldData.word){
@@ -171,12 +182,14 @@ fzxki	+	折子`,
 			this.successInfo = this.successInfoData;
 			this.errorInfo = this.errorInfoData;
 			this.outTerms = this.newTermsData;
-			this.btnInfo = '处理完成';
-			this.btnClass = 'btn btn-success my-2';
-			setTimeout(function (){
+			this.successMessage = true;
+			setTimeout(()=>{
 				__this.btnInfo = '开始处理';
 				__this.btnClass = 'btn my-2';
-			}, 2000);
+			}, 500)
+			setTimeout(()=>{
+				__this.successMessage = false;
+			}, 2500);
 			//清理数据
 			this.successInfoData = this.errorInfoData = this.newTermsData = '';
 		},
@@ -231,10 +244,7 @@ fzxki	+	折子`,
 			this.newsTerms = this.demoNewData;
 		},
 		clearContent: function(){
-			this.oldTerms = '';
-			this.newsTerms = '';
-			this.outTerms = '';
-			this.AkeyTerms = '';
+			this.oldTerms = this.newsTerms = this.outTerms = this.AkeyTerms = '';
 		},
 		allToHalf: function(){
 			var regPlus = /\＋/g;
@@ -243,13 +253,17 @@ fzxki	+	折子`,
 			this.newsTerms = this.newsTerms.replace(regPlus, '+');
 			this.newsTerms = this.newsTerms.replace(regMinus, '-');
 			this.newsTerms = this.newsTerms.replace(regModify, '*');
-			this.newsTerms = this.newsTerms.replace(regModify, '*');
-			this.newsTerms = this.newsTerms.replace(regModify, '*');
-			this.newsTerms = this.newsTerms.replace(regModify, '*');
-			this.newsTerms = this.newsTerms.replace(regModify, '*');
+		},
+		clickPlay: function (){
+			this.btnInfo = '处理中……';
+			this.btnClass = 'btn btn-primary my-2';
 		},
 		clearSpace: function(){
 			this.newTermsData = this.newTermsData.replace(/[\r\n]\s/g, '\r')
+		},
+		clickHistory: function(){
+			this.updates = !this.updates;
+			this.isHover = !this.isHover;
 		},
 		oldTermsInput: function() {
 			this.oldTerms = this.oldTerms += '\t';
@@ -268,6 +282,20 @@ fzxki	+	折子`,
 </script>
 
 <style>
+.translateRotate-enter-active, .translateRotate-leave-active {
+	transition: all 0.5s;
+}
+.translateRotate-enter, .translateRotate-leave-to {
+	transform: translate3d(0, -10px, 10px) rotate3d(-2, 0, 0, -30deg);
+	opacity: 0;
+}
+.translate-enter-active, .translate-leave-active {
+	transition: all 0.5s;
+}
+.translate-enter, .translate-leave-to {
+	transform: translate3d(0, -10px, 10px);
+	opacity: 0;
+}
 .textarea-title {
 	display: block;
 	color: black;
@@ -281,16 +309,18 @@ textarea:focus + .textarea-title {
 .fzx {
 	font-size: 12px;
 }
-.add-exists {
-	color: #932;
+.fzb {
+	font-size: 16px;
 }
-.modify-null {
-	color: #746;
+.history-arrow {
+	transition: all 0.5s;
 }
-.delete-null {
-	color: #654;
+.history-active {
+	transition: all 0.5s;
+	transform: rotate(90deg)
 }
-.null-symbol {
-	color: #456;
+.history-card:hover .history-arrow {
+	transition: all 0.5s;
+	transform: rotate(90deg)
 }
 </style>
