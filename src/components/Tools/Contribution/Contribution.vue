@@ -32,7 +32,8 @@
 	<div class="text-left bg-light p-1 mb-1 rounded fzx">
 		<button class="btn" @click="updates = !updates">更新历史</button>
 		<div v-if="updates" class="mt-1">
-			<p>更新{{vertion}}：修复主动修改!m为*的步骤错误问题。</p>
+			<p>更新{{vertion}}：升级删除时确定编码词条才删除，改善提示内容。</p>
+			<p>更新1.4：修复主动修改!m为*的步骤错误问题。</p>
 			<p>更新1.3：使用*操作符作用主修改操作符，兼容!m修改符。</p>
 			<p>更新1.2：新增*操作符，等同于!m，自动解决，全角半角问题。</p>
 			<p>更新1.1：自动解决，全角半角问题。</p>
@@ -48,7 +49,7 @@ export default {
 	name: 'Contribution',
 	data() {
 		return {
-			vertion: 1.4,
+			vertion: 1.5,
 			oldTerms: '',
 			newsTerms: '',
 			oldAttr: '请输入原词库\n格式： 词条 [tab] 编码',
@@ -69,11 +70,11 @@ export default {
 动力学	aaaaa
 万夫	wfmk
 折子戏	fzxki`,
-			demoNewData: `剥壳	blkeav	+
-静力学	jlxhv	-
-动力学	dlxhva	*
-万夫莫开	wfmk	!m
-折子	fzxki	+`,
+			demoNewData: `blkeav	+	剥壳
+jlxhv	-	静力学
+dlxhva	*	动力学
+wfmk	!m	万夫莫开
+fzxki	+	折子`,
 			updates: false
 		}
 	},
@@ -108,50 +109,56 @@ export default {
 				//add
 				if(thisNewData.add[x]) {
 					//判断编码是否已存在
-					reg = new RegExp('[\\u4e00-\\u9fa5]+\\t\\b' + thisNewData.code[x] + '\\b', 'g')
+					reg = new RegExp(`[\\b\\u4e00-\\u9fa5\\b]+\\t\\b${thisNewData.code[x]}\\b`, 'g')
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.search(reg) == -1){
 						this.newTermsData += out + '\n';
-						this.successInfoData += out + '\t' + '（添加成功）'+'\n';
+						this.successInfoData += `${out}\t成功\t[+]\n`;
 						SuccessAll ++;
 						AddNum ++;
 					} else {
-						this.errorInfoData += out + '\t' + '（添加时，存在编码或编码错误）'+'\n';
+						this.errorInfoData += `${out}\t已有编码\t[+]\n`;
 						ErrorAll ++;
 						ErrorNum ++;
 					}
 				//modify
 				} else if (thisNewData.modify[x]) {
-					reg = new RegExp('[\\u4e00-\\u9fa5]+\\t\\b' + thisNewData.code[x] + '\\b', 'g')
+					reg = new RegExp(`[\\b\\u4e00-\\u9fa5\\b]+\\t\\b${thisNewData.code[x]}\\b`, 'g');
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.search(reg) != -1) {
 						this.newTermsData = this.newTermsData.replace(reg, out);
-						this.successInfoData += out + '\t' + '（修改成功）'+'\n';
+						this.successInfoData += `${out}\t成功\t[*]\n`;
 						SuccessAll ++;
 						ModifyNum ++;
 					} else {
-						this.errorInfoData += out + '\t' + '（修改时，未找到）'+'\n';
+						this.errorInfoData += `${out}\t未找到\t[*]\n`;
 						ErrorAll ++;
 						NoNum ++;
 					}
 				//delete
 				} else if (thisNewData.delete[x]) {
-					reg = new RegExp('[\\u4e00-\\u9fa5]+\\t\\b' + thisNewData.code[x] + '\\b\\r', 'g')
+					reg = new RegExp(`[\\b\\u4e00-\\u9fa5\\b]+\\t\\b${thisNewData.code[x]}\\b`, 'g')
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
-					if (this.newTermsData.indexOf(thisNewData.word[x]) != -1){
-						this.newTermsData = this.newTermsData.replace(eval(reg), '');
-						this.successInfoData += out + '\t' + '（删除成功）'+'\n';
-						SuccessAll ++;
-						DelNum ++;
+					if (this.newTermsData.indexOf(thisNewData.code[x]) != -1){
+						if (this.newTermsData.indexOf(thisNewData.word[x]) != -1) {
+							this.newTermsData = this.newTermsData.replace(eval(reg), '');
+							this.successInfoData += `${out}\t成功\t[-]\n`;
+							SuccessAll ++;
+							DelNum ++;
+						} else {
+							this.errorInfoData += `${out}\t词组编码不同，已放弃删除\t[-]\n`;
+							ErrorAll ++;
+							NoNum ++;
+						}
 					} else {
-						this.errorInfoData += out + '\t' + '（删除时，未找到）'+'\n';
+						this.errorInfoData += `${out}\t未找到\t[-]\n`;
 						ErrorAll ++;
 						NoNum ++;
 					}
 				//未知
 				} else {
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
-					this.errorInfoData += out + '\t' +'（未知操作属性非+-m）' + '\n';
+					this.errorInfoData += `${out}\t未知操作符号\t[?]\n`;
 					ErrorAll ++;
 					ErrorAttr ++;
 				}
@@ -273,5 +280,17 @@ textarea:focus + .textarea-title {
 }
 .fzx {
 	font-size: 12px;
+}
+.add-exists {
+	color: #932;
+}
+.modify-null {
+	color: #746;
+}
+.delete-null {
+	color: #654;
+}
+.null-symbol {
+	color: #456;
 }
 </style>
