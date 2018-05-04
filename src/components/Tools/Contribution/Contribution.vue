@@ -24,8 +24,7 @@
 	</div>
 	<button :class="btnClass" @click="handleTerms" @mousedown="clickPlay">{{btnInfo}}</button>
 	<button class="btn" @click="createDemo">测试内容</button>
-	<button class="btn" @click="clearSpace">去除空行</button>
-	<button class="btn btn-danger" @dblclick="clearContent" @click="clearInfo = '双击生效清空'">{{clearInfo}}</button>
+	<button class="btn btn-danger" @dblclick="clearContent" @click="clearInfo = '双击清空'">{{clearInfo}}</button>
 	<a class="btn btn-light" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">键道6加词</a>
 	<p class="alert alert-secondary mb-1">申请表词库处理工具v{{vertion}}</p>
 	<p class="bg-light p-1 rounded mb-1">
@@ -39,7 +38,8 @@
 	<div class="text-left bg-light p-1 mb-1 rounded fzx history-card">
 		<p><button class="btn" @click="clickHistory">更新历史</button><i class="fa fa-arrow-right btn fzb float-right history-arrow" :class="{'history-active':isHover}"></i></p>
 		<div v-if="updates" class="mt-1">
-			<p>更新{{vertion}}：升级添加细节优化处理。</p>
+			<p>更新{{vertion}}：改进成功信息提示时间。</p>
+			<p>更新1.6：升级添加细节优化处理。</p>
 			<p>更新1.5：升级删除时确定编码词条才删除，改善提示内容。</p>
 			<p>更新1.4：修复主动修改!m为*的步骤错误问题。</p>
 			<p>更新1.3：使用*操作符作用主修改操作符，兼容!m修改符。</p>
@@ -60,7 +60,7 @@ export default {
 	name: 'Contribution',
 	data() {
 		return {
-			vertion: 1.6,
+			vertion: '1.6.1',
 			oldTerms: '',
 			newsTerms: '',
 			oldAttr: '请输入原词库\n格式： 词条 [tab] 编码',
@@ -182,14 +182,12 @@ fzxki	+	折子`,
 			this.successInfo = this.successInfoData;
 			this.errorInfo = this.errorInfoData;
 			this.outTerms = this.newTermsData;
+			//发送成功信息
 			this.successMessage = true;
 			setTimeout(()=>{
-				__this.btnInfo = '开始处理';
-				__this.btnClass = 'btn my-2';
-			}, 500)
-			setTimeout(()=>{
-				__this.successMessage = false;
-			}, 2500);
+				//调用清除信息
+				__this.closeSuccessMessage();
+			}, 1000)
 			//清理数据
 			this.successInfoData = this.errorInfoData = this.newTermsData = '';
 		},
@@ -264,6 +262,16 @@ fzxki	+	折子`,
 		clickHistory: function(){
 			this.updates = !this.updates;
 			this.isHover = !this.isHover;
+		},
+		closeSuccessMessage: function(){
+			var __this = this;
+			setTimeout(()=>{
+				__this.btnInfo = '开始处理';
+				__this.btnClass = 'btn my-2';
+			}, 500)
+			setTimeout(()=>{
+				__this.successMessage = false;
+			}, 2500);
 		},
 		oldTermsInput: function() {
 			this.oldTerms = this.oldTerms += '\t';
