@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 const Home = () => import('../components/Home/Home')
-const Header = () => import('../components/Header/Header')
 const Doc =  () => import('../components/Doc/Doc')
 const Download = () => import('../components/Download/Download')
 const Search = () => import('../components/Tools/Search/Search')
