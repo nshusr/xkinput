@@ -29,10 +29,10 @@ export default {
 	},
 	mounted: function (){
         $(window).scroll(function (){
-            if($(window).scrollTop() >= 200){
-                $('#header').addClass('fixed-top bg-dark');
+            if($(window).scrollTop() > 200){
+                $('#header').addClass('fixed-top slide-down bg-dark');
             } else {
-                $('#header').removeClass('fixed-top bg-dark');
+                $('#header').removeClass('fixed-top slide-down bg-dark');
             }
         })
 	}
@@ -43,5 +43,18 @@ export default {
 .bg-alpha {
 	background: rgba(0,0,0,0);
 	color: white;
+}
+@keyframes slide-to-down {
+    0% {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+.slide-down {
+    animation: slide-to-down .3s ease;
 }
 </style>
