@@ -9,7 +9,7 @@ module.exports = {
 
     // Paths
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/rime_jd_web',
+    assetsPublicPath: '/',
     proxyTable: {},
 
     // Various Dev Server settings
@@ -43,7 +43,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/rime_jd_web/',
+    assetsPublicPath: '/jdweb/dist/',
 
     /**
      * Source Maps
