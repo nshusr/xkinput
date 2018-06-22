@@ -13,7 +13,7 @@ export default new Router({
   mode: 'history',
   routes: [
     {
-      path: '/rime_jd_web',
+      path: '/jdweb/dist',
       name: 'Home',
       component: Home
     },
