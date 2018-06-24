@@ -18,27 +18,27 @@ export default new Router({
       component: Home
     },
     {
-      path: '/rime_jd_web/Doc',
+      path: '/jdweb/dist/Doc',
       name: 'Doc',
       component: Doc
     },
     {
-      path: '/rime_jd_web/Download',
+      path: '/jdweb/dist/Download',
       name: 'Download',
       component: Download
     },
     {
-      path: '/rime_jd_web/Tools/Search',
+      path: '/jdweb/dist/Tools/Search',
       name: 'Search',
       component: Search
     },
     {
-      path: '/rime_jd_web/Tools/Contribution',
+      path: '/jdweb/dist/Tools/Contribution',
       name: 'Contribution',
       component: Contribution
     },
     {
-      path: '/rime_jd_web/Tools/Study',
+      path: '/jdweb/dist/Tools/Study',
       name: 'Study',
       component: Study
     }

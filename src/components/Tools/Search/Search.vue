@@ -21,7 +21,6 @@
         <input type="button" class="btn" @click="search" value="查询" />
         <input type="button" class="btn" @click="clear" value="清除" />
         <input type="button" class="btn" @click="help = !help" value="帮助" />
-        <a class="btn" href="https://739497722.docs.qq.com/ez1gAmput5k" target="_black">纠错</a>
       </div>
     </form>
   </div>
