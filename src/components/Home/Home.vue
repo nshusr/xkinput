@@ -9,7 +9,7 @@
 			<div class="text-center m-3">
 				<img :src="logoimg" class="logo" alt="Logo">
 				<br>
-				<router-link class="btn btn-light text-secondary mt-3" to="/rime_jd_web/Download">立即获取</router-link>
+				<router-link class="btn btn-light text-secondary mt-3" to="/jdweb/dist/Download">立即获取</router-link>
 			</div>
 			<div class="text-center m-5">
 				<img class="parpaganda-width img-fluid" :src="propaganda" :alt="propagandaLogo">
