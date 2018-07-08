@@ -24,21 +24,18 @@
 	</div>
 	<button :class="btnClass" @click="handleTerms" @mousedown="clickPlay">{{btnInfo}}</button>
 	<button class="btn" @click="createDemo">测试内容</button>
-	<button class="btn btn-danger" @dblclick="clearContent" @click="clearInfo = '双击清空'">{{clearInfo}}</button>
+	<button class="btn btn-danger" @click="clearContent">清空内容</button>
 	<a class="btn btn-light" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">键道6加词</a>
 	<p class="alert alert-secondary mb-1">申请表词库处理工具v{{vertion}}</p>
 	<p class="bg-light p-1 rounded mb-1">
-		<transition name="translate">
-			<div v-show="showInfoMessage">
-				<span class="d-block">转换后词组，顺序会错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/Tools/TermsTools" target="_black">工具1sortTerms.sh</a></span>
-				<span>请注意！本工具不支持单字、英文（含英文）、重码、操作！！！修改后编码会出现混乱！</span>
-			</div>
-		</transition>
+		<span class="d-block">转换后词组，顺序会错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/Tools/TermsTools" target="_black">工具1sortTerms.sh</a></span>
+		<span>请注意！本工具不支持单字、英文（含英文）、重码、操作！！！修改后编码会出现混乱！</span>
 	</p>
-	<div class="text-left bg-light p-1 mb-1 rounded fzx history-card">
-		<p><button class="btn" @click="clickHistory">更新历史</button><i class="fa fa-arrow-right btn fzb float-right history-arrow" :class="{'history-active':isHover}"></i></p>
+	<div class="text-left bg-light p-1 mb-1 rounded fzx history-card" @click="clickHistory">
+		<p><button class="btn">更新历史</button><i class="fa fa-arrow-right btn fzb float-right history-arrow" :class="{'history-active':isHover}"></i></p>
 		<div v-if="updates" class="mt-1">
-			<p>更新{{vertion}}：改进成功信息提示时间。</p>
+			<p>更新{{vertion}}：新增查看编码所在行数，新增提示处理表的操作符 编码 词条的数量。</p>
+			<p>更新1.6.1：改进成功信息提示时间。</p>
 			<p>更新1.6：升级添加细节优化处理。</p>
 			<p>更新1.5：升级删除时确定编码词条才删除，改善提示内容。</p>
 			<p>更新1.4：修复主动修改!m为*的步骤错误问题。</p>
@@ -49,7 +46,7 @@
 		</div>
 	</div>
 	<transition name="translateRotate">
-		<div class="container alert alert-success fixed-top mt-5" v-if="successMessage">处理完成</div>
+		<div class="container alert fixed-top mt-5" :class="{'alert-success':showMessageData.s,'alert-danger':showMessageData.e}" v-if="showMessageData.show">{{showMessageData.cont}}</div>
 	</transition>
 </div>
 </template>
@@ -60,7 +57,7 @@ export default {
 	name: 'Contribution',
 	data() {
 		return {
-			vertion: '1.6.1',
+			vertion: '1.7',
 			oldTerms: '',
 			newsTerms: '',
 			oldAttr: '请输入原词库\n格式： 词条 [tab] 编码',
@@ -75,7 +72,6 @@ export default {
 			newTermsData: '',
 			successInfoData: '',
 			errorInfoData: '',
-			clearInfo: '清空内容',
 			demoOldData: `剥壳	blkeav
 静力学	jlxhv
 动力学	aaaaa
@@ -87,22 +83,42 @@ dlxhva	*	动力学
 wfmk	!m	万夫莫开
 fzxki	+	折子`,
 			updates: false,
-			successMessage: false,
-			showInfoMessage: false,
+			showMessageData: {
+				cont: '',
+				s: false,
+				e: false,
+				show:false
+			},
 			historyArrow: '>',
-			isHover: false
+			isHover: false,
 		}
-	},
-	mounted () {
-		setTimeout(()=>{
-			this.showInfoMessage = true;
-		}, 100)
 	},
 	methods: {
 		handleTerms: function() {
 			//重置数据
 			this.TermsHandle('oldTermsData');
 			this.TermsHandle('newsTermsData');
+
+			let wordNum = this.newsTermsData.obj.word.length,
+				modifyNum = this.newsTermsData.obj.modify.length,
+				codeNum = this.newsTermsData.obj.code.length;
+			if (0 == ( wordNum + modifyNum + codeNum)){
+				this.showMessage({
+					show: true,
+					s: true,
+					cont: `工作表为空！`
+				});
+				return;
+			}
+			if (wordNum != modifyNum || modifyNum != codeNum || wordNum != codeNum){
+				this.showMessage({
+					show: true,
+					e: true,
+					cont: `请检查新增表内容，编码${codeNum}个、操作符${modifyNum}个、词组${wordNum}个！`
+				});
+				return;
+			}
+
 			//设置公共属性
 			var __this = this;
 			var thisNewData = this.newsTermsData.obj;
@@ -124,11 +140,11 @@ fzxki	+	折子`,
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.search(reg) == -1){
 						this.newTermsData += out + '\n';
-						this.successInfoData += `${out}\t成功\t[+]\n`;
+						this.successInfoData += `${out}\t成功\t[ + 第${parseFloat(x) + 1}行]\n`;
 						SuccessAll ++;
 						AddNum ++;
 					} else {
-						this.errorInfoData += `${out}\t已有编码\t[+]\n`;
+						this.errorInfoData += `${out}\t已有编码\t[ + 第${parseFloat(x) + 1}行]\n`;
 						ErrorAll ++;
 						ErrorNum ++;
 					}
@@ -138,11 +154,11 @@ fzxki	+	折子`,
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.search(reg) != -1) {
 						this.newTermsData = this.newTermsData.replace(reg, out);
-						this.successInfoData += `${out}\t成功\t[*]\n`;
+						this.successInfoData += `${out}\t成功\t[ * 第${parseFloat(x) + 1}行]\n`;
 						SuccessAll ++;
 						ModifyNum ++;
 					} else {
-						this.errorInfoData += `${out}\t未找到\t[*]\n`;
+						this.errorInfoData += `${out}\t未找到编码\t[ * 第${parseFloat(x) + 1}行]\n`;
 						ErrorAll ++;
 						NoNum ++;
 					}
@@ -153,23 +169,23 @@ fzxki	+	折子`,
 					if (this.newTermsData.indexOf(thisNewData.code[x]) != -1){
 						if (this.newTermsData.indexOf(thisNewData.word[x]) != -1) {
 							this.newTermsData = this.newTermsData.replace(eval(reg), '');
-							this.successInfoData += `${out}\t成功\t[-]\n`;
+							this.successInfoData += `${out}\t成功\t[ - 第${parseFloat(x) + 1}行]\n`;
 							SuccessAll ++;
 							DelNum ++;
 						} else {
-							this.errorInfoData += `${out}\t词组编码不同，已放弃删除\t[-]\n`;
+							this.errorInfoData += `${out}\t词组编码不同，已放弃删除\t[ - 第${parseFloat(x) + 1}行]\n`;
 							ErrorAll ++;
 							NoNum ++;
 						}
 					} else {
-						this.errorInfoData += `${out}\t未找到\t[-]\n`;
+						this.errorInfoData += `${out}\t未找到编码\t[ - 第${parseFloat(x) + 1}行]\n`;
 						ErrorAll ++;
 						NoNum ++;
 					}
 				//未知
 				} else {
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
-					this.errorInfoData += `${out}\t未知操作符号\t[?]\n`;
+					this.errorInfoData += `${out}\t未知操作符号\t[第${parseFloat(x) + 1}行]\n`;
 					ErrorAll ++;
 					ErrorAttr ++;
 				}
@@ -183,11 +199,12 @@ fzxki	+	折子`,
 			this.errorInfo = this.errorInfoData;
 			this.outTerms = this.newTermsData;
 			//发送成功信息
-			this.successMessage = true;
-			setTimeout(()=>{
-				//调用清除信息
-				__this.closeSuccessMessage();
-			}, 1000)
+			this.showMessage({
+				show: true,
+				s: true,
+				cont: `处理完毕！共成功${SuccessAll}个、失败${ErrorAll}个！详细内容请看输出表格。`
+			});
+			this.backHandingBtn();
 			//清理数据
 			this.successInfoData = this.errorInfoData = this.newTermsData = '';
 		},
@@ -252,8 +269,12 @@ fzxki	+	折子`,
 			this.newsTerms = this.newsTerms.replace(regMinus, '-');
 			this.newsTerms = this.newsTerms.replace(regModify, '*');
 		},
+		showMessage: function (data){
+			this.showMessageData = data;
+			this.closeMessge();
+		},
 		clickPlay: function (){
-			this.btnInfo = '处理中……';
+			this.btnInfo = '处理中…';
 			this.btnClass = 'btn btn-primary my-2';
 		},
 		clearSpace: function(){
@@ -263,15 +284,24 @@ fzxki	+	折子`,
 			this.updates = !this.updates;
 			this.isHover = !this.isHover;
 		},
-		closeSuccessMessage: function(){
+		closeMessge: function(s){
+			var __this = this;
+			if (s){
+				setTimeout(()=>{
+					__this.showMessageData.show = false;
+				},s)
+			} else {
+				setTimeout(()=>{
+					__this.showMessageData.show = false;
+				},3000)
+			}
+		},
+		backHandingBtn: function(){
 			var __this = this;
 			setTimeout(()=>{
 				__this.btnInfo = '开始处理';
 				__this.btnClass = 'btn my-2';
 			}, 500)
-			setTimeout(()=>{
-				__this.successMessage = false;
-			}, 2500);
 		},
 		oldTermsInput: function() {
 			this.oldTerms = this.oldTerms += '\t';
