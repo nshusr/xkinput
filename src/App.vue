@@ -1,5 +1,5 @@
 <template>
-	<div :style="bg">
+	<div class="mainbg" :style="bg">
 		<div :style="bgcolor" class="container-fluid">
 			<v-nav></v-nav>
 			<router-view></router-view>
@@ -25,9 +25,8 @@ export default {
 			bg: {
 				backgroundImage: 'url('+ require('./assets/background.jpg') + ')',
 				backgroundRepeat: 'no-repeat',
-				backgroundSize: 'cover',
-				backgroundPosition: 'center',
-				backgroundAttachment: 'fixed',
+				backgroundPosition: 'center center',
+				backgroundAttachment: 'fixed'
 			},
 			bgcolor: {
 				backgroundColor: 'rgba(0, 0, 0, 0.4)'
@@ -41,4 +40,7 @@ export default {
 </script>
 
 <style>
+.mainbg {
+	background-size: cover;
+}
 </style>
