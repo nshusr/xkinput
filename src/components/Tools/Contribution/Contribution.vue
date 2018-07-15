@@ -1,31 +1,54 @@
 <template>
 <div class="container text-center">
-	<div class="row">
-		<div class="col-6 p-0">
-			<textarea v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" class="form-control position-relative" cols="30" rows="8" placeholder="词条 [tab] 编码" v-html="oldAttr"></textarea>
-			<span class="position-absolute font-weight-light textarea-title">原词库数据</span>
+	<div class="row main-container">
+		<div class="col-12 col-md-4 p-0">
+			<div class="bg-white info">
+				<span class="textarea-info" v-html="count.old"></span>
+				<span class="textarea-title">词库数据</span>
+			</div>
+			<textarea v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" @keyup.ctrl.86="testing(false)" cols="30" rows="8" :placeholder="oldAttr"></textarea>
 		</div>
-		<div class="col-6 p-0">
-			<textarea v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" class="form-control position-relative" cols="30" rows="8" placeholder="词条 [tab] 编码 [tab] +/-/m" v-html="newAttr"></textarea>
-			<span class="position-absolute font-weight-light textarea-title">更正表数据</span>
+		<div class="col-12 col-md-4 p-0">
+			<div class="bg-white info">
+				<span class="textarea-info" v-html="count.new"></span>
+				<span class="textarea-title">更正数据</span>
+			</div>
+			<textarea v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" @keyup.ctrl.86="testing(false)" cols="30" rows="8" :placeholder="newAttr"></textarea>
 		</div>
-		<div class="col-4 p-0">
-			<textarea readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" class="form-control position-relative" cols="30" rows="8" placeholder="输出转换后内容"></textarea>
-			<span class="position-absolute font-weight-light textarea-title">输出转换后内容</span>
+		<div class="col-12 col-md-4 p-0">
+			<div class="bg-white info">
+				<span class="textarea-info" v-html="count.out"></span>
+				<span class="textarea-title">转换内容</span>
+			</div>
+			<textarea readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" cols="30" rows="8" placeholder="输出转换后内容"></textarea>
 		</div>
-		<div class="col-4 p-0">
-			<textarea readonly v-model="successInfo" class="form-control position-relative" cols="30" rows="8" placeholder="输出成功信息"></textarea>
-			<span class="position-absolute font-weight-light textarea-title">输出成功信息</span>
+		<div class="col-12 col-md-6 p-0">
+			<div class="bg-white info">
+				<span class="textarea-info" v-html="count.success"></span>
+				<span class="textarea-title">成功信息</span>
+			</div>
+			<textarea readonly v-model="successInfo" cols="30" rows="8" placeholder="输出成功信息"></textarea>
 		</div>
-		<div class="col-4 p-0">
-			<textarea readonly v-model="errorInfo" class="form-control position-relative" cols="30" rows="8" placeholder="输出错误信息"></textarea>
-			<span class="position-absolute font-weight-light textarea-title">输出错误信息</span>
+		<div class="col-12 col-md-6 p-0">
+			<div class="bg-white info">
+				<span class="textarea-info" v-html="count.error"></span>
+				<span class="textarea-title">错误信息</span>
+			</div>
+			<textarea readonly v-model="errorInfo" cols="30" rows="8" placeholder="输出错误信息"></textarea>
 		</div>
 	</div>
-	<button :class="btnClass" @click="handleTerms" @mousedown="clickPlay">{{btnInfo}}</button>
-	<button class="btn" @click="createDemo">测试内容</button>
-	<button class="btn btn-danger" @click="clearContent">清空内容</button>
-	<a class="btn btn-light" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">键道6加词</a>
+	
+	<div>
+		<button :class="btnClass" @click="testing(true)" @mousedown="clickPlay">{{btnInfo}}</button>
+		<button class="btn" @click="createDemo">测试内容</button>
+		<div class="btn pl-4 pr-2 form-check bg-white">
+			<input class="form-check-input" id="isIdent" type="checkbox" @click="onIdent" v-model="isIdent">
+			<label class="form-check-label" for="isIdent">重码操作(Beta)</label>
+		</div>
+		<button class="btn btn-danger" @click="clearContent">清空内容</button>
+		<a class="btn btn-light" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">键道6加词</a>
+	</div>
+
 	<p class="alert alert-secondary mb-1">申请表词库处理工具v{{vertion}}</p>
 	<p class="bg-light p-1 rounded mb-1">
 		<span class="d-block">转换后词组，顺序会错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/Tools/TermsTools" target="_black">工具1sortTerms.sh</a></span>
@@ -34,7 +57,9 @@
 	<div class="text-left bg-light p-1 mb-1 rounded fzx history-card" @click="clickHistory">
 		<p><button class="btn">更新历史</button><i class="fa fa-arrow-right btn fzb float-right history-arrow" :class="{'history-active':isHover}"></i></p>
 		<div v-if="updates" class="mt-1">
-			<p>更新{{vertion}}：新增查看编码所在行数，新增提示处理表的操作符 编码 词条的数量。</p>
+			<p>更新{{vertion}}：新增重码操作机制，以编码后缀方式操作词条序。较耗费性能，可关闭。</p>
+			<p>更新1.8：新增头部信息统计，改进自适应布局方式，完善缺失编码检测机制。</p>
+			<p>更新1.7：新增查看编码所在行数，新增提示处理表的操作符 编码 词条的数量。</p>
 			<p>更新1.6.1：改进成功信息提示时间。</p>
 			<p>更新1.6：升级添加细节优化处理。</p>
 			<p>更新1.5：升级删除时确定编码词条才删除，改善提示内容。</p>
@@ -46,7 +71,7 @@
 		</div>
 	</div>
 	<transition name="translateRotate">
-		<div class="container alert fixed-top mt-5" :class="{'alert-success':showMessageData.s,'alert-danger':showMessageData.e}" v-if="showMessageData.show">{{showMessageData.cont}}</div>
+		<div class="container alert fixed-top mt-5" :class="{'alert-success':showMessageData.sc,'alert-danger':showMessageData.e}" v-if="showMessageData.show">{{showMessageData.cont}}</div>
 	</transition>
 </div>
 </template>
@@ -57,202 +82,288 @@ export default {
 	name: 'Contribution',
 	data() {
 		return {
-			vertion: '1.7',
+			vertion: '2.0',
 			oldTerms: '',
 			newsTerms: '',
-			oldAttr: '请输入原词库\n格式： 词条 [tab] 编码',
-			newAttr: '请输入新加词库\n格式： 编码 [tab] +/-/* [tab] 词条',
+			oldAttr: '请输入词库数据\n词条\t编码',
+			newAttr: '请输入更正数据\n编码\t[+/-/*]\t词条',
 			btnClass: 'btn my-2',
 			btnInfo: '开始处理',
+			isIdent: false,
 			outTerms: '',
 			successInfo: '',
 			errorInfo: '',
 			oldTermsData: {},
 			newsTermsData: {},
 			newTermsData: '',
+			newTermsCountData: {},
 			successInfoData: '',
+			count: {
+				old: '词: 0 码: 0',
+				new: '码: 0 符: 0 词: 0',
+				out: '词: 0 码: 0 增: 0',
+				success: '共：0 加: 0 改: 0 删：0',
+				error: '共: 0 错: 0 没：0 缺：0',
+			},
 			errorInfoData: '',
-			demoOldData: `剥壳	blkeav
-静力学	jlxhv
-动力学	aaaaa
-万夫	wfmk
-折子戏	fzxki`,
-			demoNewData: `blkeav	+	剥壳
-jlxhv	-	静力学
-dlxhva	*	动力学
-wfmk	!m	万夫莫开
-fzxki	+	折子`,
+			demoOldData: `剥壳	blke
+经历	jglk
+静力	jglk
+经历	jglk
+博客	blke
+万夫	wffj
+折子戏	fzxi
+万付	wffj`,
+			demoNewData: `blkeav2	+	剥壳
+jglk3	-	经历
+wffj	-	万付`,
 			updates: false,
 			showMessageData: {
 				cont: '',
-				s: false,
+				sc: false,
+				s: 3000,
 				e: false,
 				show:false
 			},
 			historyArrow: '>',
 			isHover: false,
+			begin: '',
+			end: '',
 		}
 	},
 	methods: {
 		handleTerms: function() {
-			//重置数据
-			this.TermsHandle('oldTermsData');
-			this.TermsHandle('newsTermsData');
-
-			let wordNum = this.newsTermsData.obj.word.length,
-				modifyNum = this.newsTermsData.obj.modify.length,
-				codeNum = this.newsTermsData.obj.code.length;
-			if (0 == ( wordNum + modifyNum + codeNum)){
-				this.showMessage({
-					show: true,
-					s: true,
-					cont: `工作表为空！`
-				});
-				return;
-			}
-			if (wordNum != modifyNum || modifyNum != codeNum || wordNum != codeNum){
-				this.showMessage({
-					show: true,
-					e: true,
-					cont: `请检查新增表内容，编码${codeNum}个、操作符${modifyNum}个、词组${wordNum}个！`
-				});
-				return;
-			}
-
 			//设置公共属性
 			var __this = this;
 			var thisNewData = this.newsTermsData.obj;
 			var thisOldData = this.oldTermsData.obj;
-			var reg, out, SuccessAll, ErrorAll, AddNum, ModifyNum, DelNum, ErrorNum, NoNum, ErrorAttr;
+			var reg, out, SuccessAll, ErrorAll, AddNum, ModifyNum, DelNum, ErrorNum, NoNum, ErrorAttr, regIdent, regIdentData, isHasIdent, IdentNum;
 			var SuccessAll = ErrorAll = AddNum = ModifyNum = DelNum = ErrorNum = NoNum = ErrorAttr = 0;
+			var i = 1;
 			//设置文本、编码、属性
 			//1 遍历旧词库
-			for (let y in thisOldData.word){
-				//1.1输出到输出框
-				this.newTermsData += thisOldData.word[y] + '\t' + thisOldData.code[y] + '\r';
+			if (this.isIdent){
+				for (let j in thisOldData.word){
+					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t${thisOldData.code[j]}\\d+`, 'g');
+					IdentNum = new Array();
+
+					regIdentData = this.newTermsData.match(reg);
+				}
+				for (x in regIdentData){
+					IdentNum[x] = regIdentData[x].toString().match(/\d+/g);
+				}
+				for (let y in thisOldData.word){
+					//1.1输出到输出框
+					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t${thisOldData.code[y]}\\d+`, 'g');
+
+					if (this.newTermsData.search(reg) == -1){
+						this.newTermsData += `${thisOldData.word[y]}\t${thisOldData.code[y]}${i}\r\n`;
+					} else {
+						this.newTermsData += `${thisOldData.word[y]}\t${thisOldData.code[y]}${IdentNum.length+1}\r\n`;
+					}
+				}
+			} else {
+				for (let y in thisOldData.word){
+					//1.1输出到输出框
+					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t${thisOldData.code[y]}`, 'g');
+
+					this.newTermsData += `${thisOldData.word[y]}\t${thisOldData.code[y]}\r\n`;
+				}
 			}
 			//2 遍历新词条
 			for(var x in thisNewData.word){
 				//add
 				if(thisNewData.add[x]) {
 					//判断编码是否已存在
-					reg = new RegExp(`[\\b\\u4e00-\\u9fa5\\b]+\\t\\b${thisNewData.code[x]}\\b`, 'g')
+					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t${thisNewData.code[x]}`, 'g')
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.search(reg) == -1){
-						this.newTermsData += out + '\n';
-						this.successInfoData += `${out}\t成功\t[ + 第${parseFloat(x) + 1}行]\n`;
+						this.newTermsData += out + '\r\n';
+						this.successInfoData += `${out}\t[ + 第${parseFloat(x) + 1}行]\r\n`;
 						SuccessAll ++;
 						AddNum ++;
 					} else {
-						this.errorInfoData += `${out}\t已有编码\t[ + 第${parseFloat(x) + 1}行]\n`;
+						this.errorInfoData += `${out}\t已有编码\t[ + 第${parseFloat(x) + 1}行]\r\n`;
 						ErrorAll ++;
 						ErrorNum ++;
 					}
 				//modify
 				} else if (thisNewData.modify[x]) {
-					reg = new RegExp(`[\\b\\u4e00-\\u9fa5\\b]+\\t\\b${thisNewData.code[x]}\\b`, 'g');
+					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t${thisNewData.code[x]}`, 'g');
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.search(reg) != -1) {
 						this.newTermsData = this.newTermsData.replace(reg, out);
-						this.successInfoData += `${out}\t成功\t[ * 第${parseFloat(x) + 1}行]\n`;
+						this.successInfoData += `${out}\t[ * 第${parseFloat(x) + 1}行]\r\n`;
 						SuccessAll ++;
 						ModifyNum ++;
 					} else {
-						this.errorInfoData += `${out}\t未找到编码\t[ * 第${parseFloat(x) + 1}行]\n`;
+						this.errorInfoData += `${out}\t未找到编码\t[ * 第${parseFloat(x) + 1}行]\r\n`;
 						ErrorAll ++;
 						NoNum ++;
 					}
 				//delete
 				} else if (thisNewData.delete[x]) {
-					reg = new RegExp(`[\\b\\u4e00-\\u9fa5\\b]+\\t\\b${thisNewData.code[x]}\\b`, 'g')
+					reg = new RegExp(`[\\b\\u4e00-\\u9fa5\\b]+\\t\\b${thisNewData.code[x]}\\b\\r\\n`, 'g')
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.indexOf(thisNewData.code[x]) != -1){
 						if (this.newTermsData.indexOf(thisNewData.word[x]) != -1) {
 							this.newTermsData = this.newTermsData.replace(eval(reg), '');
-							this.successInfoData += `${out}\t成功\t[ - 第${parseFloat(x) + 1}行]\n`;
+							this.successInfoData += `${out}\t[ - 第${parseFloat(x) + 1}行]\r\n`;
 							SuccessAll ++;
 							DelNum ++;
 						} else {
-							this.errorInfoData += `${out}\t词组编码不同，已放弃删除\t[ - 第${parseFloat(x) + 1}行]\n`;
+							this.errorInfoData += `${out}\t词组编码不同，已放弃删除\t[ - 第${parseFloat(x) + 1}行]\r\n`;
 							ErrorAll ++;
 							NoNum ++;
 						}
 					} else {
-						this.errorInfoData += `${out}\t未找到编码\t[ - 第${parseFloat(x) + 1}行]\n`;
+						this.errorInfoData += `${out}\t未找到编码\t[ - 第${parseFloat(x) + 1}行]\r\n`;
 						ErrorAll ++;
 						NoNum ++;
 					}
 				//未知
 				} else {
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
-					this.errorInfoData += `${out}\t未知操作符号\t[第${parseFloat(x) + 1}行]\n`;
+					this.errorInfoData += `${out}\t未知操作符号\t[第${parseFloat(x) + 1}行]\r\n`;
 					ErrorAll ++;
 					ErrorAttr ++;
 				}
 			}
-			this.successInfoData += `成功统计：\n共 ${SuccessAll}个, 添加 ${AddNum} 个,\n修改 ${ModifyNum} 个, 删除 ${DelNum} 个。\n`;
-			this.errorInfoData += `失败统计：\n共 ${ErrorAll}个, 错误 ${ErrorNum} 个,\n没找到 ${NoNum} 个, 没操作符 ${ErrorAttr} 个。\n`;
+
+			this.TermsCountSet('newTermsData', 'newTermsCountData');
+
+			let nWordNum = this.newTermsCountData.obj.word.length,
+				nCodeNum = this.newTermsCountData.obj.code.length,
+				nAddNum = this.newTermsCountData.obj.word.length - thisOldData.word.length;
+			//填写底部统计
+			this.count.out = `词: ${nWordNum} 码: ${nCodeNum} 增：${nAddNum}`;
+			this.count.success = `共：${SuccessAll} 加: ${AddNum} 改: ${ModifyNum} 删：${DelNum}`;
+			this.count.error = `共: ${ErrorAll} 错: ${ErrorNum} 没：${NoNum} 缺：${ErrorAttr}`;
+			//添加文档底部统计
+			this.successInfoData += `\n成功统计：\n共 ${SuccessAll}个, 添加 ${AddNum} 个,\n修改 ${ModifyNum} 个, 删除 ${DelNum} 个。\n`;
+			if (!ErrorAll && !ErrorNum && !NoNum && !ErrorAttr) {
+				this.errorInfoData += `恭喜，没有错误哦！`
+			} else {
+				this.errorInfoData += `\n失败统计：\n共 ${ErrorAll}个, 错误 ${ErrorNum} 个,\n没找到 ${NoNum} 个, 没操作符 ${ErrorAttr} 个。\n`;
+			}
 			//扫描去除空行
 			this.clearSpace();
 			//填充内容
+			this.outTerms = this.clearIdent(this.isIdent, this.newTermsData);
+			this.newsTerms = this.clearIdent(this.isIdent, this.newsTerms);
 			this.successInfo = this.successInfoData;
 			this.errorInfo = this.errorInfoData;
-			this.outTerms = this.newTermsData;
-			//发送成功信息
-			this.showMessage({
-				show: true,
-				s: true,
-				cont: `处理完毕！共成功${SuccessAll}个、失败${ErrorAll}个！详细内容请看输出表格。`
-			});
 			this.backHandingBtn();
 			//清理数据
 			this.successInfoData = this.errorInfoData = this.newTermsData = '';
+
+			this.end = new Date();
+			//发送成功信息
+			this.showMessage({
+				show: true,
+				sc: true,
+				cont: `用时${__this.end-__this.begin}毫秒 处理完毕！共成功${SuccessAll}个、失败${ErrorAll}个！`
+			});
+			console.log(`用时${__this.end-__this.begin}毫秒 处理完毕！共成功${SuccessAll}个、失败${ErrorAll}个！`);
 		},
-		TermsHandle: function (formName){
+		TermsCountSet: function (formName, formData){
 			//转换符号
 			this.allToHalf();
-			if (formName == "newsTermsData") {
-				this[formName].test = this.newsTerms.split(/[\t\r\n]/g);
-			} else {
-				this[formName].test = this.oldTerms.split(/[\t\r\n]/g);
-			}
-			this[formName].add = [];
-			this[formName].obj = {};
-			this[formName].obj.word = [];
-			this[formName].obj.code = [];
-			this[formName].obj.add = [];
-			this[formName].obj.modify = [];
-			this[formName].obj.delete = [];
-			for (var x in this[formName].test) {
-				var isChinese = /[\u4e00-\u9fa5]+/.test(this[formName].test[x]);
-				var isOpreation = /\+|\-|\*/.test(this[formName].test[x]);
-				var isCode = /[a-z]+/.test(this[formName].test[x]) && /^[^\!]+/.test(this[formName].test[x]);
+			
+			this[formData].test = this[formName].split(/[\t\r\n]/g);
+
+			this[formData].add = [];
+			this[formData].obj = {};
+			this[formData].obj.word = [];
+			this[formData].obj.code = [];
+			this[formData].obj.add = [];
+			this[formData].obj.modify = [];
+			this[formData].obj.delete = [];
+			for (var x in this[formData].test) {
+				var isChinese = /[\u4e00-\u9fa5]+/.test(this[formData].test[x]);
+				var isOpreation = /\+|\-|\*/.test(this[formData].test[x]);
+				var isCode = /[a-z]+/.test(this[formData].test[x]) && /^[^\!]+/.test(this[formData].test[x]);
 				if (isChinese){
-					this[formName].obj.word.push(this[formName].test[x]);
+					this[formData].obj.word.push(this[formData].test[x]);
 				} else if (isOpreation) {
-					switch (this[formName].test[x]) {
+					switch (this[formData].test[x]) {
 						case '+':
-							this[formName].obj.add.push(true);
-							this[formName].obj.modify.push(false);
-							this[formName].obj.delete.push(false);
+							this[formData].obj.add.push(true);
+							this[formData].obj.modify.push(false);
+							this[formData].obj.delete.push(false);
 							break;
 						case '*':
-							this[formName].obj.add.push(false);
-							this[formName].obj.modify.push(true);
-							this[formName].obj.delete.push(false);
+							this[formData].obj.add.push(false);
+							this[formData].obj.modify.push(true);
+							this[formData].obj.delete.push(false);
 							break;
 						case '-':
-							this[formName].obj.add.push(false);
-							this[formName].obj.modify.push(false);
-							this[formName].obj.delete.push(true);
+							this[formData].obj.add.push(false);
+							this[formData].obj.modify.push(false);
+							this[formData].obj.delete.push(true);
 							break;
 						default:
 							break;
 					}
 				} else if (isCode){
-					this[formName].obj.code.push(this[formName].test[x]);
+					this[formData].obj.code.push(this[formData].test[x]);
 				}
 			}
+		},
+		testing: function (isHoundle) {
+			this.begin = new Date();
+			//重置数据
+			this.TermsCountSet('oldTerms', 'oldTermsData');
+			this.TermsCountSet('newsTerms', 'newsTermsData');
+
+			let oWordNum = this.oldTermsData.obj.word.length,
+				oCodeNum = this.oldTermsData.obj.code.length,
+				mWordNum = this.newsTermsData.obj.word.length,
+				mModifyNum = this.newsTermsData.obj.modify.length,
+				mCodeNum = this.newsTermsData.obj.code.length;
+
+			this.count.old = `词: ${oWordNum} 码: ${oCodeNum}`;
+			this.count.new = `码: ${mCodeNum} 符: ${mModifyNum} 词: ${mWordNum}`;
+
+			
+			//测试内容 正常则调用处理数据
+			if (isHoundle){
+				this.handleTerms();
+			} else {
+				return;
+			}
+
+			if (0 == ( mWordNum + mModifyNum + mCodeNum)){
+				this.showMessage({
+					show: true,
+					sc: true,
+					s: 1200,
+					cont: `工作表为空！`
+				});
+				this.backHandingBtn();
+				return;
+			}
+			if (oWordNum != oCodeNum){
+				this.showMessage({
+					show: true,
+					e: true,
+					s: 1200,
+					cont: `请检查词库内容！`
+				});
+				this.count.old = `<b style="color: red;">词: ${oWordNum} 码: ${oCodeNum}<b>`;
+				return;
+			}
+			if (mWordNum != mModifyNum || mModifyNum != mCodeNum || mWordNum != mCodeNum){
+				this.showMessage({
+					show: true,
+					e: true,
+					s: 1200,
+					cont: `请检查更正数据内容！`
+				});
+				this.count.new = `<b style="color: red;">码: ${mCodeNum} 符: ${mModifyNum} 词: ${mWordNum}<b>`;
+				return;
+			}
+
 		},
 		createDemo: function(){
 			this.oldTerms = this.demoOldData;
@@ -269,13 +380,26 @@ fzxki	+	折子`,
 			this.newsTerms = this.newsTerms.replace(regMinus, '-');
 			this.newsTerms = this.newsTerms.replace(regModify, '*');
 		},
+		hasIdent: function (data){
+			var isIdent = data.indexOf('[')
+			return isIdent ? true : false;
+		},
+		clearIdent: function (isclear, data){
+			var result = data.replace(/\d+/g, '');
+			return isclear ? data : result;
+		},
 		showMessage: function (data){
 			this.showMessageData = data;
-			this.closeMessge();
+			this.closeMessge(data.s);
 		},
 		clickPlay: function (){
 			this.btnInfo = '处理中…';
 			this.btnClass = 'btn btn-primary my-2';
+		},
+		onIdent: function (){
+			if (!this.isIdent){
+				alert('该操作较耗费性能时间，请谨慎开启！');
+			}
 		},
 		clearSpace: function(){
 			this.newTermsData = this.newTermsData.replace(/[\r\n]\s/g, '\r')
@@ -320,6 +444,12 @@ fzxki	+	折子`,
 </script>
 
 <style>
+.main-container {
+	border-radius: 0.25rem;
+	overflow: hidden;
+	background: #fff;
+	z-index: 50;
+}
 .translateRotate-enter-active, .translateRotate-leave-active {
 	transition: all 0.5s;
 }
@@ -334,15 +464,49 @@ fzxki	+	折子`,
 	transform: translate3d(0, -10px, 10px);
 	opacity: 0;
 }
-.textarea-title {
-	display: block;
-	color: black;
-	right: 15px;
-	bottom: 5px;
-	opacity: 0.8;
+textarea {
+	width: 100%;
+	resize: none;
+	padding: 5px 10px;
+	border: 1px solid #E0E3DA;
+	background: #fffff3;
 }
-textarea:focus + .textarea-title {
-	display:none;
+textarea:read-only {
+	background: #fffff3;
+}
+textarea:focus {
+	z-index: 99;
+}
+textarea:focus + .info {
+	height: 26px;
+	overflow: initial;
+}
+.info {
+	width: 100%;
+	height: 0;
+	overflow: hidden;
+	text-align: left;
+	border: 1px solid #E0E3DA;
+	border-top: 0;
+	padding-left: 5px;
+	transition: all .3s;
+	animation: info-animate 1s ease-in-out forwards;
+}
+@keyframes info-animate {
+	form {
+		height: 0;
+		overflow: hidden;
+	}
+
+	to {
+		height: 26px;
+		overflow:auto;
+	}
+}
+.textarea-info {
+	float: right;
+	opacity: .7;
+	margin-right: 5px;
 }
 .fzx {
 	font-size: 12px;
