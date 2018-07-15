@@ -142,25 +142,25 @@ wffj	-	万付`,
 			var i = 1;
 			//设置文本、编码、属性
 			//1 遍历旧词库
+			console.log(this.isIdent)
 			if (this.isIdent){
-				for (let j in thisOldData.word){
-					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t${thisOldData.code[j]}\\d+`, 'g');
-					IdentNum = new Array();
-
-					regIdentData = this.newTermsData.match(reg);
-				}
-				for (x in regIdentData){
-					IdentNum[x] = regIdentData[x].toString().match(/\d+/g);
-				}
 				for (let y in thisOldData.word){
 					//1.1输出到输出框
 					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t${thisOldData.code[y]}\\d+`, 'g');
+					regIdentData = this.newTermsData.match(reg);
+
+					for (let x in regIdentData){
+						IdentNum = new Array();
+						IdentNum[x] = regIdentData[x].toString().match(/\d+/g);
+					}
 
 					if (this.newTermsData.search(reg) == -1){
 						this.newTermsData += `${thisOldData.word[y]}\t${thisOldData.code[y]}${i}\r\n`;
 					} else {
 						this.newTermsData += `${thisOldData.word[y]}\t${thisOldData.code[y]}${IdentNum.length+1}\r\n`;
 					}
+
+					console.log(this.newTermsData.match(reg), IdentNum)
 				}
 			} else {
 				for (let y in thisOldData.word){
@@ -249,8 +249,8 @@ wffj	-	万付`,
 			//扫描去除空行
 			this.clearSpace();
 			//填充内容
-			this.outTerms = this.clearIdent(this.isIdent, this.newTermsData);
-			this.newsTerms = this.newsTerms;
+			this.newsTerms = this.clearIdent(this.isIdent, this.newsTerms);
+			this.outTerms = this.clearIdent(false, this.newTermsData);
 			this.successInfo = this.successInfoData;
 			this.errorInfo = this.errorInfoData;
 			this.backHandingBtn();
