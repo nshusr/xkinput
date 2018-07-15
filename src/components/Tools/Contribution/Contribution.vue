@@ -250,7 +250,7 @@ wffj	-	万付`,
 			this.clearSpace();
 			//填充内容
 			this.outTerms = this.clearIdent(this.isIdent, this.newTermsData);
-			this.newsTerms = this.clearIdent(this.isIdent, this.newsTerms);
+			this.newsTerms = this.newsTerms;
 			this.successInfo = this.successInfoData;
 			this.errorInfo = this.errorInfoData;
 			this.backHandingBtn();
