@@ -550,7 +550,7 @@ textarea:focus + .info {
 	width: 100%;
 	left: 0;
 	bottom: 0;
-	background: #379392;
+	background: #013449;
 	z-index: 999;
 }
 @media (min-width: 768px) {
