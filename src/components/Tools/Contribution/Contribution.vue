@@ -44,11 +44,11 @@
 	<div class="controls-btn" v-show="switchControl">
 		<button :class="btnClass" @click="testing(true)" @mousedown="clickPlay">{{btnInfo}}</button>
 		<button class="btn" @click="createDemo">测试内容</button>
-		<div class="btn pl-4 pr-2 form-check bg-white">
+		<div class="btn pl-4 pr-2 form-check bg-light">
 			<input class="form-check-input" id="isIdent" type="checkbox" @click="onIdent" v-model="isIdent">
 			<label class="form-check-label" for="isIdent">重码操作</label>
 		</div>
-		<div class="btn pl-4 pr-2 form-check bg-white" v-if="isIdent">
+		<div class="btn pl-4 pr-2 form-check bg-light" v-if="isIdent">
 			<input class="form-check-input" id="isDev" type="checkbox" @click="isDev = !isDev" v-model="isDev">
 			<label class="form-check-label" for="isDev">重码调式</label>
 		</div>
