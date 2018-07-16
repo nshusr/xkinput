@@ -41,25 +41,25 @@
 	<div class="controls-switch fixed-bottom" style="left: 30px; bottom: 100px;">
 		<button class="btn d-block" @click="switchControlFn"><i class="fa" :class="{'fa-toggle-on':switchControl, 'fa-toggle-off':!switchControl}"></i></button>
 	</div>
-	<div class="controls-btn" v-show="switchControl">
+	<div class="controls-btn p-1" v-show="switchControl">
 		<button :class="btnClass" @click="testing(true)" @mousedown="clickPlay">{{btnInfo}}</button>
-		<button class="btn" @click="createDemo">测试内容</button>
-		<div class="btn pl-4 pr-2 form-check bg-light">
-			<input class="form-check-input" id="isIdent" type="checkbox" @click="onIdent" v-model="isIdent">
+		<div class="btn btn-light pl-4 pr-2 form-check">
+			<input class="form-check-input" id="isIdent" type="checkbox" v-model="isIdent">
 			<label class="form-check-label" for="isIdent">重码操作</label>
 		</div>
-		<div class="btn pl-4 pr-2 form-check bg-light" v-if="isIdent">
+		<div class="btn btn-light pl-4 pr-2 form-check" v-if="isIdent">
 			<input class="form-check-input" id="isDev" type="checkbox" @click="isDev = !isDev" v-model="isDev">
 			<label class="form-check-label" for="isDev">重码调式</label>
 		</div>
+		<button class="btn btn-light" @click="createDemo">测试内容</button>
 		<button class="btn btn-danger" @click="clearContent">清空内容</button>
 		<a class="btn btn-light" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">键道6加词</a>
 	</div>
 
 	<p class="alert alert-secondary my-1">申请表词库处理工具v{{vertion}}</p>
 	<p class="bg-light p-1 rounded mb-1">
-		<span class="d-block">转换后词组，顺序会错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/Tools/TermsTools" target="_black">工具1sortTerms.sh</a></span>
-		<span>请注意！本工具不支持单字、英文（含英文）、重码、操作！！！修改后编码会出现混乱！</span>
+		<span class="d-block">转换后词组，顺序错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/Tools/TermsTools" target="_black">工具1sortTerms.sh</a></span>
+		<span>请注意！本工具不支持英文（含英文）词组准确修改功能！本工具在开启重码操作后提供完整修改重码功能，可能耗时较长，请耐心等待。</span>
 	</p>
 	<div class="text-left bg-light p-1 mb-1 rounded fzx history-card" @click="clickHistory">
 		<p><button class="btn">更新历史</button><i class="fa fa-arrow-right btn fzb float-right history-arrow" :class="{'history-active':isHover}"></i></p>
@@ -95,7 +95,7 @@ export default {
 			newsTerms: '',
 			oldAttr: '请输入词库数据\n词条\t编码',
 			newAttr: '请输入更正数据\n编码\t[+/-/*]\t词条',
-			btnClass: 'btn my-2',
+			btnClass: 'btn btn-light my-2',
 			btnInfo: '开始处理',
 			isIdent: false,
 			outTerms: '',
@@ -435,11 +435,6 @@ wffj	-	万付`,
 			this.btnInfo = '处理中…';
 			this.btnClass = 'btn btn-primary my-2';
 		},
-		onIdent: function (){
-			if (!this.isIdent){
-				alert('该操作较耗费性能时间，请谨慎开启！');
-			}
-		},
 		clearSpace: function(){
 			this.newTermsData = this.newTermsData.replace(/[\r\n]\s/g, '\r')
 		},
@@ -463,7 +458,7 @@ wffj	-	万付`,
 			var __this = this;
 			setTimeout(()=>{
 				__this.btnInfo = '开始处理';
-				__this.btnClass = 'btn my-2';
+				__this.btnClass = 'btn btn-light my-2';
 			}, 500)
 		},
 		switchControlFn: function (){
@@ -555,7 +550,7 @@ textarea:focus + .info {
 	width: 100%;
 	left: 0;
 	bottom: 0;
-	background: rgba(255,255,255,.9);
+	background: #379392;
 	z-index: 999;
 }
 @media (min-width: 768px) {
