@@ -2,54 +2,61 @@
 <div class="container text-center">
 	<div class="row main-container">
 		<div class="col-12 col-md-4 p-0">
-			<div class="bg-white info">
+			<div class="bg-white info" @click="showPlate.old = !showPlate.old">
 				<span class="textarea-info" v-html="count.old"></span>
 				<span class="textarea-title">词库数据</span>
 			</div>
-			<textarea v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" @keyup.ctrl.86="testing(false)" cols="30" rows="8" :placeholder="oldAttr"></textarea>
+			<textarea v-show="showPlate.old" v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" @keyup.ctrl.86="testing(false)" cols="30" rows="8" :placeholder="oldAttr"></textarea>
 		</div>
 		<div class="col-12 col-md-4 p-0">
-			<div class="bg-white info">
+			<div class="bg-white info" @click="showPlate.new = !showPlate.new">
 				<span class="textarea-info" v-html="count.new"></span>
 				<span class="textarea-title">更正数据</span>
 			</div>
-			<textarea v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" @keyup.ctrl.86="testing(false)" cols="30" rows="8" :placeholder="newAttr"></textarea>
+			<textarea v-show="showPlate.new" v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" @keyup.ctrl.86="testing(false)" cols="30" rows="8" :placeholder="newAttr"></textarea>
 		</div>
 		<div class="col-12 col-md-4 p-0">
-			<div class="bg-white info">
+			<div class="bg-white info" @click="showPlate.out = !showPlate.out">
 				<span class="textarea-info" v-html="count.out"></span>
 				<span class="textarea-title">转换内容</span>
 			</div>
-			<textarea readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" cols="30" rows="8" placeholder="输出转换后内容"></textarea>
+			<textarea v-show="showPlate.out" readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" cols="30" rows="8" placeholder="输出转换后内容"></textarea>
 		</div>
 		<div class="col-12 col-md-6 p-0">
-			<div class="bg-white info">
+			<div class="bg-white info" @click="showPlate.suc = !showPlate.suc">
 				<span class="textarea-info" v-html="count.success"></span>
 				<span class="textarea-title">成功信息</span>
 			</div>
-			<textarea readonly v-model="successInfo" cols="30" rows="8" placeholder="输出成功信息"></textarea>
+			<textarea v-show="showPlate.suc" readonly v-model="successInfo" cols="30" rows="8" placeholder="输出成功信息"></textarea>
 		</div>
 		<div class="col-12 col-md-6 p-0">
-			<div class="bg-white info">
+			<div class="bg-white info" @click="showPlate.err = !showPlate.err">
 				<span class="textarea-info" v-html="count.error"></span>
 				<span class="textarea-title">错误信息</span>
 			</div>
-			<textarea readonly v-model="errorInfo" cols="30" rows="8" placeholder="输出错误信息"></textarea>
+			<textarea v-show="showPlate.err" readonly v-model="errorInfo" cols="30" rows="8" placeholder="输出错误信息"></textarea>
 		</div>
 	</div>
 	
-	<div>
+	<div class="controls-switch fixed-bottom" style="left: 30px; bottom: 100px;">
+		<button class="btn d-block" @click="switchControlFn"><i class="fa" :class="{'fa-toggle-on':switchControl, 'fa-toggle-off':!switchControl}"></i></button>
+	</div>
+	<div class="controls-btn" v-show="switchControl">
 		<button :class="btnClass" @click="testing(true)" @mousedown="clickPlay">{{btnInfo}}</button>
 		<button class="btn" @click="createDemo">测试内容</button>
 		<div class="btn pl-4 pr-2 form-check bg-white">
 			<input class="form-check-input" id="isIdent" type="checkbox" @click="onIdent" v-model="isIdent">
-			<label class="form-check-label" for="isIdent">重码操作(Beta)</label>
+			<label class="form-check-label" for="isIdent">重码操作</label>
+		</div>
+		<div class="btn pl-4 pr-2 form-check bg-white" v-if="isIdent">
+			<input class="form-check-input" id="isDev" type="checkbox" @click="isDev = !isDev" v-model="isDev">
+			<label class="form-check-label" for="isDev">重码调式</label>
 		</div>
 		<button class="btn btn-danger" @click="clearContent">清空内容</button>
 		<a class="btn btn-light" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">键道6加词</a>
 	</div>
 
-	<p class="alert alert-secondary mb-1">申请表词库处理工具v{{vertion}}</p>
+	<p class="alert alert-secondary my-1">申请表词库处理工具v{{vertion}}</p>
 	<p class="bg-light p-1 rounded mb-1">
 		<span class="d-block">转换后词组，顺序会错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/Tools/TermsTools" target="_black">工具1sortTerms.sh</a></span>
 		<span>请注意！本工具不支持单字、英文（含英文）、重码、操作！！！修改后编码会出现混乱！</span>
@@ -57,7 +64,8 @@
 	<div class="text-left bg-light p-1 mb-1 rounded fzx history-card" @click="clickHistory">
 		<p><button class="btn">更新历史</button><i class="fa fa-arrow-right btn fzb float-right history-arrow" :class="{'history-active':isHover}"></i></p>
 		<div v-if="updates" class="mt-1">
-			<p>更新{{vertion}}：新增重码操作机制，以编码后缀方式操作词条序。较耗费性能，可关闭。</p>
+			<p>更新{{vertion}}：完善重码调试机制，可正常使用、完善移动端界面布局。</p>
+			<p>更新2.0：新增重码操作机制，以编码后缀方式操作词条序。较耗费性能，可关闭。</p>
 			<p>更新1.8：新增头部信息统计，改进自适应布局方式，完善缺失编码检测机制。</p>
 			<p>更新1.7：新增查看编码所在行数，新增提示处理表的操作符 编码 词条的数量。</p>
 			<p>更新1.6.1：改进成功信息提示时间。</p>
@@ -82,7 +90,7 @@ export default {
 	name: 'Contribution',
 	data() {
 		return {
-			vertion: '2.0',
+			vertion: '2.1',
 			oldTerms: '',
 			newsTerms: '',
 			oldAttr: '请输入词库数据\n词条\t编码',
@@ -101,7 +109,7 @@ export default {
 			count: {
 				old: '词: 0 码: 0',
 				new: '码: 0 符: 0 词: 0',
-				out: '词: 0 码: 0 增: 0',
+				out: '词: 0 码: 0',
 				success: '共：0 加: 0 改: 0 删：0',
 				error: '共: 0 错: 0 没：0 缺：0',
 			},
@@ -114,8 +122,10 @@ export default {
 万夫	wffj
 折子戏	fzxi
 万付	wffj`,
-			demoNewData: `blkeav2	+	剥壳
+			demoNewData: `blkeav2	+	剥个
+blkeav2	*	贝壳
 jglk3	-	经历
+jglk4	+	静静
 wffj	-	万付`,
 			updates: false,
 			showMessageData: {
@@ -129,6 +139,32 @@ wffj	-	万付`,
 			isHover: false,
 			begin: '',
 			end: '',
+			isPhone: false,
+			isDev: false,
+			switchControl: true,
+			showPlate: {
+				old: true,
+				new: true,
+				out: false,
+				suc: false,
+				err: false
+			}
+		}
+	},
+	mounted: function () {
+		if (document.documentElement.clientWidth <= 768){
+			this.isPhone = true;
+		}
+		if (this.isPhone) {
+			this.switchControl = false;
+		} else {
+			this.showPlate = {
+				old: true,
+				new: true,
+				out: true,
+				suc: true,
+				err: true
+			}
 		}
 	},
 	methods: {
@@ -142,11 +178,10 @@ wffj	-	万付`,
 			var i = 1;
 			//设置文本、编码、属性
 			//1 遍历旧词库
-			console.log(this.isIdent)
 			if (this.isIdent){
 				for (let y in thisOldData.word){
 					//1.1输出到输出框
-					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t${thisOldData.code[y]}\\d+`, 'g');
+					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisOldData.code[y]}\\d+\\b`, 'g');
 					regIdentData = this.newTermsData.match(reg);
 
 					for (let x in regIdentData){
@@ -159,23 +194,22 @@ wffj	-	万付`,
 					} else {
 						this.newTermsData += `${thisOldData.word[y]}\t${thisOldData.code[y]}${IdentNum.length+1}\r\n`;
 					}
-
-					console.log(this.newTermsData.match(reg), IdentNum)
 				}
 			} else {
 				for (let y in thisOldData.word){
 					//1.1输出到输出框
-					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t${thisOldData.code[y]}`, 'g');
+					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisOldData.code[y]}\\b`, 'g');
 
 					this.newTermsData += `${thisOldData.word[y]}\t${thisOldData.code[y]}\r\n`;
 				}
+				
 			}
 			//2 遍历新词条
 			for(var x in thisNewData.word){
 				//add
 				if(thisNewData.add[x]) {
 					//判断编码是否已存在
-					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t${thisNewData.code[x]}`, 'g')
+					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisNewData.code[x]}\\b`, 'g')
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.search(reg) == -1){
 						this.newTermsData += out + '\r\n';
@@ -189,7 +223,7 @@ wffj	-	万付`,
 					}
 				//modify
 				} else if (thisNewData.modify[x]) {
-					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t${thisNewData.code[x]}`, 'g');
+					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisNewData.code[x]}\\b`, 'g');
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.search(reg) != -1) {
 						this.newTermsData = this.newTermsData.replace(reg, out);
@@ -203,7 +237,7 @@ wffj	-	万付`,
 					}
 				//delete
 				} else if (thisNewData.delete[x]) {
-					reg = new RegExp(`[\\b\\u4e00-\\u9fa5\\b]+\\t\\b${thisNewData.code[x]}\\b\\r\\n`, 'g')
+					reg = new RegExp(`${thisNewData.word[x]}\\t\\b${thisNewData.code[x]}\\d*[\\r\\n]*`, 'g');
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.indexOf(thisNewData.code[x]) != -1){
 						if (this.newTermsData.indexOf(thisNewData.word[x]) != -1) {
@@ -233,10 +267,9 @@ wffj	-	万付`,
 			this.TermsCountSet('newTermsData', 'newTermsCountData');
 
 			let nWordNum = this.newTermsCountData.obj.word.length,
-				nCodeNum = this.newTermsCountData.obj.code.length,
-				nAddNum = this.newTermsCountData.obj.word.length - thisOldData.word.length;
+				nCodeNum = this.newTermsCountData.obj.code.length;
 			//填写底部统计
-			this.count.out = `词: ${nWordNum} 码: ${nCodeNum} 增：${nAddNum}`;
+			this.count.out = `词: ${nWordNum} 码: ${nCodeNum}`;
 			this.count.success = `共：${SuccessAll} 加: ${AddNum} 改: ${ModifyNum} 删：${DelNum}`;
 			this.count.error = `共: ${ErrorAll} 错: ${ErrorNum} 没：${NoNum} 缺：${ErrorAttr}`;
 			//添加文档底部统计
@@ -249,8 +282,11 @@ wffj	-	万付`,
 			//扫描去除空行
 			this.clearSpace();
 			//填充内容
-			this.newsTerms = this.clearIdent(this.isIdent, this.newsTerms);
-			this.outTerms = this.clearIdent(false, this.newTermsData);
+			if (this.isDev){
+				this.outTerms = this.clearIdent(true, this.newTermsData);
+			} else {
+				this.outTerms = this.clearIdent(false, this.newTermsData);
+			}
 			this.successInfo = this.successInfoData;
 			this.errorInfo = this.errorInfoData;
 			this.backHandingBtn();
@@ -269,6 +305,10 @@ wffj	-	万付`,
 		TermsCountSet: function (formName, formData){
 			//转换符号
 			this.allToHalf();
+
+			if (!this.isIdent){
+				this.newsTerms = this.clearIdent(false, this.newsTerms);
+			}
 			
 			this[formData].test = this[formName].split(/[\t\r\n]/g);
 
@@ -280,12 +320,10 @@ wffj	-	万付`,
 			this[formData].obj.modify = [];
 			this[formData].obj.delete = [];
 			for (var x in this[formData].test) {
-				var isChinese = /[\u4e00-\u9fa5]+/.test(this[formData].test[x]);
 				var isOpreation = /\+|\-|\*/.test(this[formData].test[x]);
-				var isCode = /[a-z]+/.test(this[formData].test[x]) && /^[^\!]+/.test(this[formData].test[x]);
-				if (isChinese){
-					this[formData].obj.word.push(this[formData].test[x]);
-				} else if (isOpreation) {
+				var isCode = /[a-z]+/.test(this[formData].test[x]);
+				var isChinese = /[^a-z]|[^\+\-\*]+/.test(this[formData].test[x]);
+				if (isOpreation) {
 					switch (this[formData].test[x]) {
 						case '+':
 							this[formData].obj.add.push(true);
@@ -307,6 +345,8 @@ wffj	-	万付`,
 					}
 				} else if (isCode){
 					this[formData].obj.code.push(this[formData].test[x]);
+				} else if (isChinese){
+					this[formData].obj.word.push(this[formData].test[x]);
 				}
 			}
 		},
@@ -325,7 +365,6 @@ wffj	-	万付`,
 			this.count.old = `词: ${oWordNum} 码: ${oCodeNum}`;
 			this.count.new = `码: ${mCodeNum} 符: ${mModifyNum} 词: ${mWordNum}`;
 
-			
 			//测试内容 正常则调用处理数据
 			if (isHoundle){
 				this.handleTerms();
@@ -427,6 +466,9 @@ wffj	-	万付`,
 				__this.btnClass = 'btn my-2';
 			}, 500)
 		},
+		switchControlFn: function (){
+			this.switchControl = !this.switchControl;
+		},
 		oldTermsInput: function() {
 			this.oldTerms = this.oldTerms += '\t';
 		},
@@ -507,6 +549,24 @@ textarea:focus + .info {
 	float: right;
 	opacity: .7;
 	margin-right: 5px;
+}
+.controls-btn {
+	position: fixed;
+	width: 100%;
+	left: 0;
+	bottom: 0;
+	background: rgba(255,255,255,.9);
+	z-index: 999;
+}
+@media (min-width: 768px) {
+	.controls-switch {
+		display: none;
+	}
+	.controls-btn {
+		display: block;
+		position: static;
+		background: 0;
+	}
 }
 .fzx {
 	font-size: 12px;
