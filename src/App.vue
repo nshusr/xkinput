@@ -34,7 +34,19 @@ export default {
 		}
 	},
 	mounted: function (){
-
+		document.onkeydown = (ev) => {
+			var ev = ev || event;
+			if (ev.ctrlKey && ev.keyCode == 116) {
+				window.location.href = 'http://localhost:8080/jdweb/dist/Tools/Contribution';
+			} else if (ev.keyCode == 116) {
+				var isGoHome = confirm("刷新将跳转首页，是否前往？");
+				if (isGoHome) {
+					this.$router.push('/jdweb/dist');
+				}
+				ev.preventDefault();
+				return false;
+			}
+		}
 	}
 }
 </script>
