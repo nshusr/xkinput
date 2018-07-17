@@ -40,11 +40,11 @@ export default {
 			if (ev.ctrlKey && ev.keyCode == 116) {
 				 thisHref = 'http://localhost:8080/jdweb/dist/Tools/Contribution';
 			} else if (ev.keyCode == 116) {
-				var isHome = /.*\/jdweb\/dist$/;
+				var isHome = /.*\/jdweb\/dist\/?$/;
 				if (!isHome.test(thisHref)) {
 					ev.preventDefault();
 					var isGoHome = confirm("刷新将跳转首页，是否前往？");
-					isGoHome && this.$router.push('/jdweb/dist');
+					isGoHome && this.$router.push('/jdweb/dist/');
 					return false;
 				} else {
 				 	thisHref = 'http://localhost:8080/jdweb/dist/Tools/Contribution';
