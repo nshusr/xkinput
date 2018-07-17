@@ -36,15 +36,19 @@ export default {
 	mounted: function (){
 		document.onkeydown = (ev) => {
 			var ev = ev || event;
+			var thisHref = window.location.href;
 			if (ev.ctrlKey && ev.keyCode == 116) {
-				window.location.href = 'http://localhost:8080/jdweb/dist/Tools/Contribution';
+				 thisHref = 'http://localhost:8080/jdweb/dist/Tools/Contribution';
 			} else if (ev.keyCode == 116) {
-				var isGoHome = confirm("刷新将跳转首页，是否前往？");
-				if (isGoHome) {
-					this.$router.push('/jdweb/dist');
+				var isHome = /.*\/jdweb\/dist$/;
+				if (!isHome.test(thisHref)) {
+					ev.preventDefault();
+					var isGoHome = confirm("刷新将跳转首页，是否前往？");
+					isGoHome && this.$router.push('/jdweb/dist');
+					return false;
+				} else {
+				 	thisHref = 'http://localhost:8080/jdweb/dist/Tools/Contribution';
 				}
-				ev.preventDefault();
-				return false;
 			}
 		}
 	}
