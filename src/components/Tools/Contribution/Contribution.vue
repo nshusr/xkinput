@@ -421,6 +421,7 @@ wffj	-	万付`,
 		createDemo: function(){
 			this.oldTerms = this.demoOldData;
 			this.newsTerms = this.demoNewData;
+			this.testing(false);
 		},
 		clearContent: function(){
 			this.oldTerms = this.newsTerms = this.outTerms = this.AkeyTerms = '';
