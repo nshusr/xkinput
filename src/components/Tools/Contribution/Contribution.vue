@@ -6,35 +6,45 @@
 				<span class="textarea-info" v-html="count.old"></span>
 				<span class="textarea-title">词库数据</span>
 			</div>
-			<textarea v-show="showPlate.old" v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" @keyup.ctrl.86="testing(false)" cols="30" rows="8" :placeholder="oldAttr"></textarea>
+			<transition name="slide">
+				<textarea v-show="showPlate.old" v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" @keyup.ctrl.86="testing(false)" :placeholder="oldAttr"></textarea>
+			</transition>
 		</div>
 		<div class="col-12 col-md-4 p-0">
 			<div class="bg-white info" @click="showPlate.new = !showPlate.new">
 				<span class="textarea-info" v-html="count.new"></span>
 				<span class="textarea-title">更正数据</span>
 			</div>
-			<textarea v-show="showPlate.new" v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" @keyup.ctrl.86="testing(false)" cols="30" rows="8" :placeholder="newAttr"></textarea>
+			<transition name="slide">
+				<textarea v-show="showPlate.new" v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" @keyup.ctrl.86="testing(false)" :placeholder="newAttr"></textarea>
+			</transition>
 		</div>
 		<div class="col-12 col-md-4 p-0">
 			<div class="bg-white info" @click="showPlate.out = !showPlate.out">
 				<span class="textarea-info" v-html="count.out"></span>
 				<span class="textarea-title">转换内容</span>
 			</div>
-			<textarea v-show="showPlate.out" readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" cols="30" rows="8" placeholder="输出转换后内容"></textarea>
+			<transition name="slide">
+				<textarea v-show="showPlate.out" readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" placeholder="输出转换后内容"></textarea>
+			</transition>
 		</div>
 		<div class="col-12 col-md-6 p-0">
 			<div class="bg-white info" @click="showPlate.suc = !showPlate.suc">
 				<span class="textarea-info" v-html="count.success"></span>
 				<span class="textarea-title">成功信息</span>
 			</div>
-			<textarea v-show="showPlate.suc" readonly v-model="successInfo" cols="30" rows="8" placeholder="输出成功信息"></textarea>
+			<transition name="slide">
+				<textarea v-show="showPlate.suc" readonly v-model="successInfo" placeholder="输出成功信息"></textarea>
+			</transition>
 		</div>
 		<div class="col-12 col-md-6 p-0">
 			<div class="bg-white info" @click="showPlate.err = !showPlate.err">
 				<span class="textarea-info" v-html="count.error"></span>
 				<span class="textarea-title">错误信息</span>
 			</div>
-			<textarea v-show="showPlate.err" readonly v-model="errorInfo" cols="30" rows="8" placeholder="输出错误信息"></textarea>
+			<transition name="slide">
+				<textarea v-show="showPlate.err" readonly v-model="errorInfo" placeholder="输出错误信息"></textarea>
+			</transition>
 		</div>
 	</div>
 	
@@ -494,19 +504,21 @@ wffj	-	万付`,
 	transform: translate3d(0, -10px, 10px) rotate3d(-2, 0, 0, -30deg);
 	opacity: 0;
 }
-.translate-enter-active, .translate-leave-active {
-	transition: all 0.5s;
+.slide-enter-active, .slide-leave-active {
+	transition: all .3s linear;
 }
-.translate-enter, .translate-leave-to {
-	transform: translate3d(0, -10px, 10px);
+.slide-enter, .slide-leave-to {
+	height:  0;
 	opacity: 0;
 }
 textarea {
 	width: 100%;
+	height: 200px;
 	resize: none;
 	padding: 5px 10px;
 	border: 1px solid #E0E3DA;
 	background: #fffff3;
+	display: flex;
 }
 textarea:read-only {
 	background: #fffff3;
