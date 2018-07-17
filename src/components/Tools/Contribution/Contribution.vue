@@ -162,7 +162,8 @@ wffj	-	万付`,
 				out: false,
 				suc: false,
 				err: false
-			}
+			},
+			timeOf: []
 		}
 	},
 	mounted: function () {
@@ -286,15 +287,22 @@ wffj	-	万付`,
 			this.count.out = `词: ${nWordNum} 码: ${nCodeNum}`;
 			this.count.success = `共：${SuccessAll} 加: ${AddNum} 改: ${ModifyNum} 删：${DelNum}`;
 			this.count.error = `共: ${ErrorAll} 错: ${ErrorNum} 没：${NoNum} 缺：${ErrorAttr}`;
-			//添加文档底部统计
-			this.successInfoData += `\n成功统计：\n共 ${SuccessAll}个, 添加 ${AddNum} 个,\n修改 ${ModifyNum} 个, 删除 ${DelNum} 个。\n`;
-			if (!ErrorAll && !ErrorNum && !NoNum && !ErrorAttr) {
-				this.errorInfoData += `恭喜，没有错误哦！`
-			} else {
-				this.errorInfoData += `\n失败统计：\n共 ${ErrorAll}个, 错误 ${ErrorNum} 个,\n没找到 ${NoNum} 个, 没操作符 ${ErrorAttr} 个。\n`;
-			}
 			//扫描去除空行
 			this.clearSpace();
+
+			//统计最后用时
+			this.end = new Date();
+			var thisTimeOf = this.MillisecondToDate(this.end - this.begin);
+			this.timeOf.push(thisTimeOf)
+
+			//添加文档底部统计
+			this.successInfoData = `成功统计：完成共计用时${thisTimeOf}\n共有 ${SuccessAll} 个, 添加 ${AddNum} 个,\n修改 ${ModifyNum} 个, 删除 ${DelNum} 个。\n\n${this.successInfoData}`;
+			if (!ErrorAll && !ErrorNum && !NoNum && !ErrorAttr) {
+				this.errorInfoData = `恭喜，没有错误哦！`
+			} else {
+				this.errorInfoData = `失败统计：\n共有 ${ErrorAll}个, 错误 ${ErrorNum} 个,\n没找到 ${NoNum} 个, 没操作符 ${ErrorAttr} 个。\n\n${this.errorInfoData}`;
+			}
+			
 			//填充内容
 			if (this.isDev){
 				this.outTerms = this.clearIdent(true, this.newTermsData);
@@ -304,17 +312,16 @@ wffj	-	万付`,
 			this.successInfo = this.successInfoData;
 			this.errorInfo = this.errorInfoData;
 			this.backHandingBtn();
-			//清理数据
-			this.successInfoData = this.errorInfoData = this.newTermsData = '';
 
-			this.end = new Date();
 			//发送成功信息
 			this.showMessage({
 				show: true,
 				sc: true,
 				cont: `用时${__this.end-__this.begin}毫秒 处理完毕！共成功${SuccessAll}个、失败${ErrorAll}个！`
 			});
-			console.log(`用时${__this.end-__this.begin}毫秒 处理完毕！共成功${SuccessAll}个、失败${ErrorAll}个！`);
+
+			//清理数据
+			this.successInfoData = this.errorInfoData = this.newTermsData = '';
 		},
 		TermsCountSet: function (formName, formData){
 			//转换符号
@@ -476,6 +483,28 @@ wffj	-	万付`,
 				__this.btnInfo = '开始处理';
 				__this.btnClass = 'btn btn-light my-2';
 			}, 500)
+		},
+		MillisecondToDate:function (msd) {
+			var time = parseFloat(msd) / 1000;
+			if (null != time && "" != time) {
+				if (time > 60 && time < 60 * 60) {
+					time = parseInt(time / 60.0) + "分" + parseInt((parseFloat(time / 60.0) -
+						parseInt(time / 60.0)) * 60) + "秒";
+				}
+				else if (time >= 60 * 60 && time < 60 * 60 * 24) {
+					time = parseInt(time / 3600.0) + "时" + parseInt((parseFloat(time / 3600.0) -
+						parseInt(time / 3600.0)) * 60) + "分" +
+						parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
+						parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60) + "秒";
+				}
+				else if (time >= 1000){
+					time = parseInt(time) + "秒";
+				}
+				else {
+					time = msd + "毫秒";
+				}
+			}
+			return time;
 		},
 		switchControlFn: function (){
 			this.switchControl = !this.switchControl;
