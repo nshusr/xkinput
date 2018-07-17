@@ -425,6 +425,7 @@ wffj	-	万付`,
 		},
 		clearContent: function(){
 			this.oldTerms = this.newsTerms = this.outTerms = this.AkeyTerms = '';
+			this.testing(false);
 		},
 		allToHalf: function(){
 			var regPlus = /\＋/g;
