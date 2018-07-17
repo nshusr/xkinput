@@ -49,22 +49,26 @@
 	</div>
 	
 	<div class="controls-switch fixed-bottom" style="left: 30px; bottom: 100px;">
-		<button class="btn d-block" @click="switchControlFn"><i class="fa" :class="{'fa-toggle-on':switchControl, 'fa-toggle-off':!switchControl}"></i></button>
+		<button class="btn btn-light d-block" @click="switchControlFn"><i class="fa" :class="{'fa-toggle-on':switchControl, 'fa-toggle-off':!switchControl}"></i></button>
 	</div>
-	<div class="controls-btn p-1" v-show="switchControl">
-		<button :class="btnClass" @click="testing(true)" @mousedown="clickPlay">{{btnInfo}}</button>
-		<div class="btn btn-light pl-4 pr-2 form-check">
-			<input class="form-check-input" id="isIdent" type="checkbox" v-model="isIdent">
-			<label class="form-check-label" for="isIdent">重码操作</label>
+	<transition name="slide">
+		<div class="controls-btn p-1" v-show="switchControl">
+			<button :class="btnClass" @click="testing(true)" @mousedown="clickPlay">{{btnInfo}}</button>
+			<div class="btn btn-light custom-control custom-checkbox d-inline-block">
+				<input class="custom-control-input" id="isIdent" type="checkbox" v-model="isIdent">
+				<label class="custom-control-label" for="isIdent">重码操作</label>
+			</div>
+			<transition name="slide">
+				<div class="btn btn-light custom-control custom-checkbox d-inline-block" v-if="isIdent">
+					<input class="custom-control-input" id="isDev" type="checkbox" @click="isDev = !isDev" v-model="isDev">
+					<label class="custom-control-label" for="isDev">重码调式</label>
+				</div>
+			</transition>
+			<button class="btn btn-light" @click="createDemo">测试内容</button>
+			<button class="btn btn-danger" @click="clearContent">清空内容</button>
+			<a class="btn btn-light" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">键道6加词</a>
 		</div>
-		<div class="btn btn-light pl-4 pr-2 form-check" v-if="isIdent">
-			<input class="form-check-input" id="isDev" type="checkbox" @click="isDev = !isDev" v-model="isDev">
-			<label class="form-check-label" for="isDev">重码调式</label>
-		</div>
-		<button class="btn btn-light" @click="createDemo">测试内容</button>
-		<button class="btn btn-danger" @click="clearContent">清空内容</button>
-		<a class="btn btn-light" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">键道6加词</a>
-	</div>
+	</transition>
 
 	<p class="alert alert-secondary my-1">申请表词库处理工具v{{vertion}}</p>
 	<p class="bg-light p-1 rounded mb-1">
@@ -494,7 +498,6 @@ wffj	-	万付`,
 .main-container {
 	border-radius: 0.25rem;
 	overflow: hidden;
-	background: #fff;
 	z-index: 50;
 }
 .translateRotate-enter-active, .translateRotate-leave-active {
@@ -574,6 +577,11 @@ textarea:focus + .info {
 		position: static;
 		background: 0;
 	}
+}
+.custom-control .custom-control-label::after,
+.custom-control .custom-control-label::before {
+	top: 10px;
+	left: 5px;
 }
 .fzx {
 	font-size: 12px;
