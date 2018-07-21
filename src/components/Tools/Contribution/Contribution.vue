@@ -46,54 +46,57 @@
 				<textarea v-show="showPlate.err" readonly v-model="errorInfo" placeholder="输出错误信息"></textarea>
 			</transition>
 		</div>
-	</div>
 	
-	<div class="controls-switch fixed-bottom" style="left: 30px; bottom: 100px;">
-		<button class="btn btn-light d-block" @click="switchControlFn"><i class="fa" :class="{'fa-toggle-on':switchControl, 'fa-toggle-off':!switchControl}"></i></button>
-	</div>
-	<transition name="slide">
-		<div class="controls-btn p-1" v-show="switchControl">
-			<button :class="btnClass" @click="testing(true)" @mousedown="clickPlay">{{btnInfo}}</button>
-			<div class="btn btn-light custom-control custom-checkbox d-inline-block">
-				<input class="custom-control-input" id="isIdent" type="checkbox" v-model="isIdent">
-				<label class="custom-control-label" for="isIdent">重码操作</label>
-			</div>
-			<transition name="slide">
-				<div class="btn btn-light custom-control custom-checkbox d-inline-block" v-if="isIdent">
-					<input class="custom-control-input" id="isDev" type="checkbox" @click="isDev = !isDev" v-model="isDev">
-					<label class="custom-control-label" for="isDev">重码调式</label>
-				</div>
-			</transition>
-			<button class="btn btn-light" @click="createDemo">测试内容</button>
-			<button class="btn btn-danger" @click="clearContent">清空内容</button>
-			<a class="btn btn-light" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">键道6加词</a>
+		<div class="controls-switch fixed-bottom" style="left: 30px; bottom: 100px;" v-show="switchControl">
+			<button class="btn btn-light d-block" @click="switchControlFn"><i class="fa" :class="{'fa-toggle-on':switchControl, 'fa-toggle-off':!switchControl}"></i></button>
 		</div>
-	</transition>
 
-	<p class="alert alert-secondary my-1">申请表词库处理工具v{{vertion}}</p>
-	<p class="bg-light p-1 rounded mb-1">
-		<span class="d-block">转换后词组，顺序错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/Tools/TermsTools" target="_black">工具1sortTerms.sh</a></span>
-		<span>请注意！本工具不支持英文（含英文）词组准确修改功能！本工具在开启重码操作后提供完整修改重码功能，可能耗时较长，请耐心等待。</span>
-	</p>
-	<div class="text-left bg-light p-1 mb-1 rounded fzx history-card" @click="clickHistory">
-		<p><button class="btn">更新历史</button><i class="fa fa-arrow-right btn fzb float-right history-arrow" :class="{'history-active':isHover}"></i></p>
-		<div v-if="updates" class="mt-1">
-			<p>更新{{vertion}}：完善重码调试机制，可正常使用、完善移动端界面布局。</p>
-			<p>更新2.0：新增重码操作机制，以编码后缀方式操作词条序。较耗费性能，可关闭。</p>
-			<p>更新1.8：新增头部信息统计，改进自适应布局方式，完善缺失编码检测机制。</p>
-			<p>更新1.7：新增查看编码所在行数，新增提示处理表的操作符 编码 词条的数量。</p>
-			<p>更新1.6.1：改进成功信息提示时间。</p>
-			<p>更新1.6：升级添加细节优化处理。</p>
-			<p>更新1.5：升级删除时确定编码词条才删除，改善提示内容。</p>
-			<p>更新1.4：修复主动修改!m为*的步骤错误问题。</p>
-			<p>更新1.3：使用*操作符作用主修改操作符，兼容!m修改符。</p>
-			<p>更新1.2：新增*操作符，等同于!m，自动解决，全角半角问题。</p>
-			<p>更新1.1：自动解决，全角半角问题。</p>
-			<p>更新1.0：正常使用，发布版本。</p>
+		<transition name="slide">
+			<div class="controls-btn p-1">
+				<button :class="btnClass" @click="testing(true)" @mousedown="clickPlay">{{btnInfo}}</button>
+				<div class="btn btn-light custom-control custom-checkbox d-inline-block">
+					<input class="custom-control-input" id="isDev" type="checkbox" @click="isDev = !isDev" v-model="isDev">
+					<label class="custom-control-label" for="isDev">重数调式</label>
+				</div>
+				<button class="btn btn-light" @click="createDemo">测试内容</button>
+				<button class="btn btn-danger" @click="clearContent">清空内容</button>
+				<a class="btn btn-light" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">键道6加词</a>
+			</div>
+		</transition>
+
+		<div class="bottom-info w-100">
+			<p class="alert alert-secondary my-1">申请表词库处理工具v{{version}}</p>
+			<p class="bg-light p-1 rounded mb-1">
+				<span class="d-block small">转换后词组，顺序错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/Tools/TermsTools" target="_black">工具1sortTerms.sh</a></span>
+				<span class="small">请注意！本工具不支持<b>英文（含英文）</b>词组准确修改功能！工具遇重码操作后计算耗时较长，请耐心等待。</span>
+			</p>
+			<div class="text-left bg-light p-1 mb-1 rounded fzx history-card" @click="clickHistory">
+				<p><button class="btn">更新历史</button><i class="fa fa-arrow-right btn fzb float-right history-arrow" :class="{'history-active':isHover}"></i></p>
+				<p><span class="badge badge-success">new</span> {{updateHistory[updateHistoryLength].ver}}: {{updateHistory[updateHistoryLength].cont}}</p>
+				<p><span class="badge badge-info">hot</span> {{updateHistory[updateHistoryLength-1].ver}}: {{updateHistory[updateHistoryLength-1].cont}}</p>
+				<p><span class="badge badge-secondary">hot</span> {{updateHistory[updateHistoryLength-2].ver}}: {{updateHistory[updateHistoryLength-2].cont}}</p>
+				<div v-if="updates" class="mt-1">
+					<div v-for="item in updateHistory" :key="item.cont">
+						<p>{{item.ver}}: {{item.cont}}</p>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<transition name="translateRotate">
 		<div class="container alert fixed-top mt-5" :class="{'alert-success':showMessageData.sc,'alert-danger':showMessageData.e}" v-if="showMessageData.show">{{showMessageData.cont}}</div>
+	</transition>
+	<transition name="slide">
+		<div class="layer-box" v-show="layer.show">
+			<div class="layer-card card fixed-top h-50 mx-auto" :class="layer.class" @mousewheel.prevent>
+				<div class="card-header card-title">{{layer.title}}</div>
+				<div class="card-body card-text">{{layer.content}}</div>
+				<div class="card-footer">
+					<button class="card-link" @click="closeLayer">关闭</button>
+				</div>
+			</div>
+			<div class="layer-card-mask"></div>
+		</div>
 	</transition>
 </div>
 </template>
@@ -104,14 +107,13 @@ export default {
 	name: 'Contribution',
 	data() {
 		return {
-			vertion: '2.1',
+			version: -1,
 			oldTerms: '',
 			newsTerms: '',
 			oldAttr: '请输入词库数据\n词条\t编码',
 			newAttr: '请输入更正数据\n编码\t[+/-/*]\t词条',
 			btnClass: 'btn btn-light my-2',
 			btnInfo: '开始处理',
-			isIdent: false,
 			outTerms: '',
 			successInfo: '',
 			errorInfo: '',
@@ -163,27 +165,40 @@ wffj	-	万付`,
 				suc: false,
 				err: false
 			},
-			timeOf: []
+			layer: {
+				show: false
+			},
+			timeOf: [],
+			updateHistory: [
+				{ 'ver': '1.0', 'cont': "正常使用，发布版本。"},
+				{ 'ver': '1.1', 'cont': '自动解决，全角半角问题。'},
+				{ 'ver': '1.2', 'cont': '新增*操作符，等同于!m，自动解决，全角半角问题。'},
+				{ 'ver': '1.3', 'cont': '使用*操作符作用主修改操作符，兼容!m修改符。'},
+				{ 'ver': '1.4', 'cont': '修复主动修改!m为*的步骤错误问题。'},
+				{ 'ver': '1.5', 'cont': '升级删除时确定编码词条才删除，改善提示内容。'},
+				{ 'ver': '1.6', 'cont': '升级添加细节优化处理。'},
+				{ 'ver': '1.6.1', 'cont': '改进成功信息提示时间。'},
+				{ 'ver': '1.7', 'cont': '新增查看编码所在行数，新增提示处理表的操作符 编码 词条的数量。'},
+				{ 'ver': '1.8', 'cont': '新增头部信息统计，改进自适应布局方式，完善缺失编码检测机制。'},
+				{ 'ver': '2.0', 'cont': '新增重码操作机制，以编码后缀方式操作词条序。较耗费性能，可关闭。'},
+				{ 'ver': '2.1', 'cont': '完善重码调试机制，可正常使用、完善移动端界面布局。'},
+				{ 'ver': '2.2', 'cont': '新增自动鉴别处理模式，无重码时操作更快，有重码自动转至重码模式。'}
+			],
+			updateHistoryLength: 0,
 		}
 	},
-	mounted: function () {
-		if (document.documentElement.clientWidth <= 768){
-			this.isPhone = true;
-		}
-		if (this.isPhone) {
-			this.switchControl = false;
-		} else {
-			this.showPlate = {
-				old: true,
-				new: true,
-				out: true,
-				suc: true,
-				err: true
-			}
-		}
+	created: function (){
+		this.isPhoneFn();
+		this.getVersion();
+	},
+	mounted: function (){
+		this.showHello();
 	},
 	methods: {
-		handleTerms: function() {
+		getVersion: function (){
+			this.version = this.updateHistory[this.updateHistoryLength].ver;
+		},
+		handleTerms: function(haveRepeat) {
 			//设置公共属性
 			var __this = this;
 			var thisNewData = this.newsTermsData.obj;
@@ -193,7 +208,7 @@ wffj	-	万付`,
 			var i = 1;
 			//设置文本、编码、属性
 			//1 遍历旧词库
-			if (this.isIdent){
+			if (haveRepeat){
 				for (let y in thisOldData.word){
 					//1.1输出到输出框
 					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisOldData.code[y]}\\d+\\b`, 'g');
@@ -217,7 +232,6 @@ wffj	-	万付`,
 
 					this.newTermsData += `${thisOldData.word[y]}\t${thisOldData.code[y]}\r\n`;
 				}
-				
 			}
 			//2 遍历新词条
 			for(var x in thisNewData.word){
@@ -293,10 +307,10 @@ wffj	-	万付`,
 			//统计最后用时
 			this.end = new Date();
 			var thisTimeOf = this.MillisecondToDate(this.end - this.begin);
-			this.timeOf.push(thisTimeOf)
+			this.timeOf.push(thisTimeOf);
 
 			//添加文档底部统计
-			this.successInfoData = `成功统计：完成共计用时${thisTimeOf}\n共有 ${SuccessAll} 个, 添加 ${AddNum} 个,\n修改 ${ModifyNum} 个, 删除 ${DelNum} 个。\n\n${this.successInfoData}`;
+			this.successInfoData = `成功统计：\t\t完成共计用时${thisTimeOf}\n共有 ${SuccessAll} 个, 添加 ${AddNum} 个,\n修改 ${ModifyNum} 个, 删除 ${DelNum} 个。\n\n${this.successInfoData}`;
 			if (!ErrorAll && !ErrorNum && !NoNum && !ErrorAttr) {
 				this.errorInfoData = `恭喜，没有错误哦！`
 			} else {
@@ -309,6 +323,7 @@ wffj	-	万付`,
 			} else {
 				this.outTerms = this.clearIdent(false, this.newTermsData);
 			}
+			this.oldTerms = this.clearIdent(false, this.oldTerms);
 			this.successInfo = this.successInfoData;
 			this.errorInfo = this.errorInfoData;
 			this.backHandingBtn();
@@ -326,10 +341,8 @@ wffj	-	万付`,
 		TermsCountSet: function (formName, formData){
 			//转换符号
 			this.allToHalf();
-
-			if (!this.isIdent){
-				this.newsTerms = this.clearIdent(false, this.newsTerms);
-			}
+			
+			this.oldTerms = this.clearIdent(false, this.oldTerms);
 			
 			this[formData].test = this[formName].split(/[\t\r\n]/g);
 
@@ -372,7 +385,20 @@ wffj	-	万付`,
 			}
 		},
 		testing: function (isHoundle) {
+			let haveRepeat = /\d+/.test(this.newsTerms);
 			this.begin = new Date();
+			
+			if (0 == this.oldTerms.length){
+				this.showMessage({
+					show: true,
+					sc: true,
+					s: 1200,
+					cont: `工作表为空！`
+				});
+				this.backHandingBtn();
+				return;
+			}
+			
 			//重置数据
 			this.TermsCountSet('oldTerms', 'oldTermsData');
 			this.TermsCountSet('newsTerms', 'newsTermsData');
@@ -386,23 +412,6 @@ wffj	-	万付`,
 			this.count.old = `词: ${oWordNum} 码: ${oCodeNum}`;
 			this.count.new = `码: ${mCodeNum} 符: ${mModifyNum} 词: ${mWordNum}`;
 
-			//测试内容 正常则调用处理数据
-			if (isHoundle){
-				this.handleTerms();
-			} else {
-				return;
-			}
-
-			if (0 == ( mWordNum + mModifyNum + mCodeNum)){
-				this.showMessage({
-					show: true,
-					sc: true,
-					s: 1200,
-					cont: `工作表为空！`
-				});
-				this.backHandingBtn();
-				return;
-			}
 			if (oWordNum != oCodeNum){
 				this.showMessage({
 					show: true,
@@ -413,6 +422,7 @@ wffj	-	万付`,
 				this.count.old = `<b style="color: red;">词: ${oWordNum} 码: ${oCodeNum}<b>`;
 				return;
 			}
+
 			if (mWordNum != mModifyNum || mModifyNum != mCodeNum || mWordNum != mCodeNum){
 				this.showMessage({
 					show: true,
@@ -421,6 +431,13 @@ wffj	-	万付`,
 					cont: `请检查更正数据内容！`
 				});
 				this.count.new = `<b style="color: red;">码: ${mCodeNum} 符: ${mModifyNum} 词: ${mWordNum}<b>`;
+				return;
+			}
+			
+			//正常则调用处理数据，否则仅计数，判断是否有错误内容
+			if (isHoundle){
+				this.handleTerms(haveRepeat);
+			} else {
 				return;
 			}
 
@@ -441,10 +458,6 @@ wffj	-	万付`,
 			this.newsTerms = this.newsTerms.replace(regPlus, '+');
 			this.newsTerms = this.newsTerms.replace(regMinus, '-');
 			this.newsTerms = this.newsTerms.replace(regModify, '*');
-		},
-		hasIdent: function (data){
-			var isIdent = data.indexOf('[')
-			return isIdent ? true : false;
 		},
 		clearIdent: function (isclear, data){
 			var result = data.replace(/\d+/g, '');
@@ -476,6 +489,11 @@ wffj	-	万付`,
 					__this.showMessageData.show = false;
 				},3000)
 			}
+		},
+		closeLayer: function (){
+			this.layer = {show: false};
+			this.setCookie('showUpdate', this.updateHistory[this.updateHistoryLength].ver, 365);
+			this.bodyblur(0);
 		},
 		backHandingBtn: function(){
 			var __this = this;
@@ -520,6 +538,76 @@ wffj	-	万付`,
 		},
 		AkeyTermsInput: function() {
 			this.AkeyTerms = this.AkeyTerms += '\t';
+		},
+		setCookie: function (cname,cvalue,exdays){
+			var d = new Date();
+			d.setTime(d.getTime()+(exdays*24*60*60*1000));
+			var expires = "expires="+d.toGMTString();
+			document.cookie = cname + "=" + cvalue + "; " + expires;
+		},
+		getCookie: function (cname){
+			var name = cname + "=";
+			var ca = document.cookie.split(';');
+			for(var i=0; i<ca.length; i++) 
+			{
+				var c = ca[i].trim();
+				if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+			}
+			return "";
+		},
+		bodyblur: function (to){
+			var $s = (s) => {
+				return document.querySelector(s);
+			}
+			var bl = 'blur(3px)';
+			if (to == 0){
+				$s('#header').style.filter =
+				$s('.main-container').style.filter =
+				$s('#util').style.filter =
+				$s('#footer').style.filter = '';
+			} else {
+				$s('#header').style.filter = 
+				$s('.main-container').style.filter = 
+				$s('#util').style.filter = 
+				$s('#footer').style.filter = bl;
+			}
+		},
+		showHello: function (){
+			var isShowUpdate = this.getCookie('showUpdate');
+			var newVer = parseFloat(this.updateHistory[this.updateHistoryLength].ver);
+
+			if (isShowUpdate != newVer){
+				this.layer = {
+					show: true,
+					title: '欢迎信',
+					content: `
+						你好，我是工具作者，在这里呢，首先欢迎你的使用，
+						这次版本更新${this.updateHistory[this.updateHistoryLength].cont}，
+						版本号为${this.updateHistory[this.updateHistoryLength].ver}，
+						详情请查阅底部说明。
+					`,
+					class: 'card-info'
+				}
+				this.bodyblur();
+			}
+		},
+		isPhoneFn: function (){
+			if (document.documentElement.clientWidth <= 750){
+				this.isPhone = true;
+			}
+			if (!this.isPhone) {
+				this.showPlate = {
+					old: true,
+					new: true,
+					out: true,
+					suc: true,
+					err: true
+				}
+				this.switchControl = false;
+			}
+			for(let x in this.updateHistory){
+				this.updateHistoryLength = x;
+			}
 		}
 	}
 }
@@ -599,21 +687,69 @@ textarea:focus + .info {
 	background: #013449;
 	z-index: 999;
 }
-@media (min-width: 768px) {
-	.controls-switch {
-		display: none;
-	}
-	.controls-btn {
-		display: block;
-		position: static;
-		background: 0;
-	}
-}
 .custom-control .custom-control-label::after,
 .custom-control .custom-control-label::before {
 	top: 10px;
 	left: 5px;
 }
+
+.layer-card {
+	position: fixed;
+	margin-top: 35%;
+	width: 85%;
+	box-shadow: 0 0 5px rgba(0,0,0,.5);
+	z-index: 1032;
+}
+
+.layer-card + .layer-card-mask {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 105%;
+	height: 105%;
+	background: rgba(0,0,0,.7);-webkit-filter: blur(5px); /* Chrome, Safari, Opera */
+    filter: blur(5px);
+	z-index: 1031;
+}
+
+@media (min-width: 375px) {
+	.layer-card {
+		margin-top: 40%;
+		width: 80%;
+	}
+}
+
+@media (min-width: 414px) {
+	.layer-card {
+		margin-top: 42%;
+		width: 85%;
+	}
+}
+
+@media (min-width: 512px) {
+	.layer-card {
+		margin-top: 30%;
+		width: 50%;
+	}
+}
+
+@media (min-width: 768px) {
+	.layer-card {
+		width: 50%;
+		margin-top: 10%;
+	}
+	.controls-btn {
+		position: static;
+		background: 0;
+	}
+}
+
+@media (min-width: 1000px) {
+	.layer-card {
+		width: 45%;
+	}
+}
+
 .fzx {
 	font-size: 12px;
 }
@@ -626,6 +762,10 @@ textarea:focus + .info {
 .history-active {
 	transition: all 0.5s;
 	transform: rotate(90deg)
+}
+.history-card {
+	max-height: 300px;
+	overflow-y: scroll;
 }
 .history-card:hover .history-arrow {
 	transition: all 0.5s;

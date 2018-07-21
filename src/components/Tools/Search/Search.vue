@@ -60,7 +60,7 @@
         <th scope="col">拆分</th>
       </thead>
       <tbody>
-        <tr v-for="cont in content">
+        <tr v-for="cont in content" :key="cont.num">
           <td scope="row">{{ cont.num }}</td>
           <td>{{ cont.word }}</td>
           <td>{{ cont.pronunciation }}</td>
