@@ -3,7 +3,7 @@
     <div class="d-flex justify-content-between p-2 pt-2">
       <span class="lead text-secondary pt-2">{{termsData.name ? termsData.name : '未读取文件'}}&nbsp;{{termsData.size ? termsData.mbSize : 0}}</span>
       <div id="fileUpBox" class="">
-        <label class="btn border" title="载入键道单字">键道单字</label>
+        <!-- <label class="btn border" title="载入键道单字">键道单字</label> -->
         <label class="btn border" :class="{'btn-danger':notUpFileClass}" for="file" title="上传词库文件">上传</label>
         <input id="file" ref="file" @change="readFile" type="file">
       </div>
