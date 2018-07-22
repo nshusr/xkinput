@@ -44,7 +44,9 @@ export default {
 				if (!isHome.test(thisHref)) {
 					ev.preventDefault();
 					var isGoHome = confirm("刷新将跳转首页，是否前往？");
-					isGoHome && this.$router.push('/jdweb/dist/');
+					isGoHome
+					? this.$router.push('/jdweb/dist/')
+					: this.$router.go(1)
 					return false;
 				} else {
 				 	thisHref = 'http://localhost:8080/jdweb/dist/Tools/Contribution';

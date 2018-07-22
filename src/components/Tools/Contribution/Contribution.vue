@@ -92,7 +92,7 @@
 				<div class="card-header card-title">{{layer.title}}</div>
 				<div class="card-body card-text">{{layer.content}}</div>
 				<div class="card-footer">
-					<button class="card-link" @click="closeLayer">关闭</button>
+					<button class="btn btn-light" @click="closeLayer">关闭</button>
 				</div>
 			</div>
 			<div class="layer-card-mask"></div>
@@ -698,7 +698,7 @@ textarea:focus + .info {
 	margin-top: 35%;
 	width: 85%;
 	box-shadow: 0 0 5px rgba(0,0,0,.5);
-	z-index: 1032;
+	z-index: 1035;
 }
 
 .layer-card + .layer-card-mask {
