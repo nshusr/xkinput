@@ -28,11 +28,12 @@
             <div class="card mb-1 col col-sm-3">
                 <img style="background: #666; height: 100px" class="rounded mt-1" src="http://rime.im/images/home-title.svg" alt="Rime">
                 <h4 class="card-title">Rime平台</h4>
-                <p>尚在维护且可用于以下操作系统：</p>
+                <p>可用于以下操作系统：</p>
                 <div class="card-block text-left">
                     <span class="badge badge-primary">Windows</span>
                     <span class="badge badge-success">Android</span>
                     <span class="badge badge-dark">Linux</span>
+                    <span class="badge badge-danger">IOS</span>
                     <span class="badge badge-light">Mac</span>
                 </div>
                 <div class="card-block">
