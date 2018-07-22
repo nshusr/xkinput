@@ -185,9 +185,10 @@ wffj	-	万付`,
 				{ 'ver': '2.2', 'cont': '新增自动鉴别处理模式，无重码时操作更快，有重码自动转至重码模式。'},
 				{ 'ver': '2.3', 'cont': '纠正删除编码重码时的准确匹配，纠正Bug。'},
 				{ 'ver': '2.4', 'cont': '完成支持英文词库处理，前提每个英文词条中必须有至少一个大写字母。'},
+				{ 'ver': '2.5', 'cont': '完成检测词库数据中含有数字是否清除判断选项，避免误处理。'},
 			],
 			updateHistoryLength: 0,
-			haveRepeat: /\d+/.test(this.newsTerms),
+			isClearOldIdent: false,
 		}
 	},
 	created: function (){
@@ -201,7 +202,7 @@ wffj	-	万付`,
 		getVersion: function (){
 			this.version = this.updateHistory[this.updateHistoryLength].ver;
 		},
-		handleTerms: function() {
+		handleTerms: function(newsHaveRepeat) {
 			//设置公共属性
 			var __this = this;
 			var thisNewData = this.newsTermsData.obj;
@@ -211,7 +212,7 @@ wffj	-	万付`,
 			var i = 1;
 			//设置文本、编码、属性
 			//1 遍历旧词库
-			if (this.haveRepeat){
+			if (newsHaveRepeat){
 				for (let y in thisOldData.word){
 					//1.1输出到输出框
 					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisOldData.code[y]}\\d+\\b`, 'g');
@@ -340,14 +341,17 @@ wffj	-	万付`,
 
 			//清理数据
 			this.successInfoData = this.errorInfoData = this.newTermsData = '';
+			this.isClearOldIdent = false;
 		},
-		TermsCountSet: function (formName, formData, isClearIdent){
+		TermsCountSet: function (formName, formData){
 			//转换符号
 			this.allToHalf();
+			var oldHaveRepeat = /\d+/.test(this.oldTerms);
 			
-			if (this.haveRepeat && this.isClearIdent){
+			if (oldHaveRepeat && !this.isClearOldIdent){
 				let isClear = confirm('检测到词库中包含数字，是否是重码标识？如果是将清除，处理中会自动计算重码。')
 				if (isClear) this.oldTerms = this.clearIdent(false, this.oldTerms);
+				this.isClearOldIdent = true;
 			}
 			
 			this[formData].test = this[formName].split(/[\t\r\n]/g);
@@ -361,7 +365,7 @@ wffj	-	万付`,
 			this[formData].obj.delete = [];
 			for (var x in this[formData].test) {
 				var isOpreation = /^[\+\-\*]$/.test(this[formData].test[x]);
-				var isCode = /^[a-z]+$/.test(this[formData].test[x]);
+				var isCode = /^[a-z]+\d*$/.test(this[formData].test[x]);
 				var isChinese = /[^a-z]|[^\+\-\*]+/.test(this[formData].test[x]);
 				if (isOpreation) {
 					switch (this[formData].test[x]) {
@@ -392,6 +396,7 @@ wffj	-	万付`,
 		},
 		testing: function (isHoundle) {
 			this.begin = new Date();
+			var newsHaveRepeat = /\d+/.test(this.newsTerms);
 			
 			if (0 == this.oldTerms.length){
 				this.showMessage({
@@ -441,7 +446,7 @@ wffj	-	万付`,
 			
 			//正常则调用处理数据，否则仅计数，判断是否有错误内容
 			if (isHoundle){
-				this.handleTerms(this.haveRepeat);
+				this.handleTerms(newsHaveRepeat);
 			} else {
 				return;
 			}
