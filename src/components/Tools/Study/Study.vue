@@ -11,14 +11,14 @@
     <div class="d-flex mx-auto flex-row justify-content-center align-items-center p-3">
       <label id="word" class="border-0">{{word}}</label>
       <input id="code" class="border rounded px-2" 
-            maxlength="8"
+            maxlength="6"
             @click="isReadFile"
             :class="{'': status == 0, 'border-primary': status == 1,'border-success': status == 2, 'border-danger': status == -1}" type="text"
             @keyup.space="isRight" @keydown.space.prevent autocomplete="off"
             v-model="code" title="请输入编码">
     </div>
     <div>
-      <p class="text-center">V.Beta 1.0</p>
+      <p class="text-center">version 1.0</p>
       <p class="text-center">请选择一个Rime词库后上传体验，输入编码后空格键确定，校验成功后自动下一个。</p>
       <p class="text-center">使用英文输入法</p>
     </div>
@@ -71,15 +71,20 @@ export default {
 
       var x;
       var reg = new RegExp(`^.{${this.errNum}}`);
+      var trim = /[\s+|\r+|\n+]/g;
+
+      this.code = this.code.replace(trim, '');
+      this.nextData.code = this.nextData.code.replace(trim, '');
 
       if (this.code.length >= 1) {
-        if (this.nextData.code == this.code && this.nextData.word == this.word){
+        if (this.nextData.code == this.code){
           this.showMessage({
             show: true,
             class: 'alert-info',
             cont: `编码：${this.nextData.code}\t词条：${this.nextData.word}\t√`
           })
           this.status = 2;
+          this.errNum = 2;
           this.next();
         } else {
           this.status = -1;
@@ -89,7 +94,7 @@ export default {
             class: 'alert-danger',
             cont: `错误请重新输入\t提示：共有${this.nextData.code.length}位，前${this.errNum}位是：${this.nextData.code.match(eval(reg))}\t×`
           })
-          this.nextData.code.length > this.errNum && this.errNum++;
+          if (this.nextData.code.length > this.errNum) this.errNum++;
         }
       }
     },
@@ -103,7 +108,7 @@ export default {
         }
         __this.status = 0;
         __this.nextData.word = __this.word = __this.termsData.content[random];
-        __this.nextData.code = __this.code = __this.termsData.content[random-1];
+        __this.nextData.code = __this.code = __this.termsData.content[random+1];
         __this.code = '';
       }
     },
