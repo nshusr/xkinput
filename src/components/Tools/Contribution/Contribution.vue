@@ -582,7 +582,7 @@ wffj	-	万付`,
 					title: '欢迎信',
 					content: `
 						你好，我是工具作者，在这里呢，首先欢迎你的使用，
-						这次版本更新${this.updateHistory[this.updateHistoryLength].cont}，
+						这次版本更新${this.updateHistory[this.updateHistoryLength].cont}
 						版本号为${this.updateHistory[this.updateHistoryLength].ver}，
 						详情请查阅底部说明。
 					`,
