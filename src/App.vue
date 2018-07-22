@@ -38,18 +38,15 @@ export default {
 			var ev = ev || event;
 			var thisHref = window.location.href;
 			if (ev.ctrlKey && ev.keyCode == 116) {
-				 thisHref = 'http://localhost:8080/jdweb/dist/Tools/Contribution';
 			} else if (ev.keyCode == 116) {
-				var isHome = /.*\/jdweb\/dist\/?$/;
+				var isHome = /.*\/jdweb\/?$/;
 				if (!isHome.test(thisHref)) {
 					ev.preventDefault();
 					var isGoHome = confirm("刷新将跳转首页，是否前往？");
 					isGoHome
-					? this.$router.push('/jdweb/dist/')
+					? this.$router.push('/jdweb/')
 					: this.$router.go(1)
 					return false;
-				} else {
-				 	thisHref = 'http://localhost:8080/jdweb/dist/Tools/Contribution';
 				}
 			}
 		}
