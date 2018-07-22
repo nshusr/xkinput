@@ -1,7 +1,8 @@
 <template>
   <div class="container card mb-3">
+    <h1 class="title-name lead text-center py-2">单字词组练习工具<small>Rime词库</small></h1>
     <div class="d-flex justify-content-between p-2 pt-2">
-      <span class="lead text-secondary pt-2">{{termsData.name ? termsData.name : '未读取文件'}}&nbsp;{{termsData.size ? termsData.mbSize : 0}}</span>
+      <span class="lead text-secondary pt-1">{{termsData.name ? termsData.name : '未读取文件'}}&nbsp;{{termsData.size ? termsData.mbSize : 0}}</span>
       <div id="fileUpBox" class="">
         <!-- <label class="btn border" title="载入键道单字">键道单字</label> -->
         <label class="btn border" :class="{'btn-danger':notUpFileClass}" for="file" title="上传词库文件">上传</label>
@@ -17,10 +18,12 @@
             @keyup.space="isRight" @keydown.space.prevent autocomplete="off"
             v-model="code" title="请输入编码">
     </div>
-    <div>
-      <p class="text-center">version 1.0</p>
-      <p class="text-center">请选择一个Rime词库后上传体验，输入编码后空格键确定，校验成功后自动下一个。</p>
-      <p class="text-center">使用英文输入法</p>
+    <div class="lead"><p class="text-center">version 1.0</p></div>
+    <div class="lead help-div row py-5">
+      <p class="col-6 col-md-3 text-center">一、请选择一个Rime词库上传。</p>
+      <p class="col-6 col-md-3 text-center">二、切换使用英文输入法。</p>
+      <p class="col-6 col-md-3 text-center">三、输入对应词条编码，空格确定。</p>
+      <p class="col-6 col-md-3 text-center">四、校验成功自动下一个。</p>
     </div>
     <div id="message" class="fixed-top w-20 alert p-3" :class="message.class" v-show="message.show">
       {{message.cont}}
@@ -186,6 +189,19 @@ export default {
 </script>
 
 <style>
+.title-name {
+  font-size: 25px;
+}
+.title-name small {
+  font-size: 14px;
+  font-weight: 100;
+}
+
+.help-div p {
+  font-size: 14px;
+  line-height: 26px;
+}
+
 #word {
   text-align: center;
   font-size: 33px;

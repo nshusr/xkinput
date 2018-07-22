@@ -12,7 +12,7 @@
                 <a class="dropdown-item" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">在线加词</a>
                 <router-link class="dropdown-item" to="/jdweb/Tools/Search">查码工具</router-link>
                 <router-link class="dropdown-item" to="/jdweb/Tools/Contribution">加词处理</router-link>
-                <router-link class="dropdown-item" to="/jdweb/Tools/Study">跟打器</router-link>
+                <router-link class="dropdown-item" to="/jdweb/Tools/Study">跟打器 <span class="badge badge-info">NEW</span></router-link>
             </div>
         </div>
     </div>
