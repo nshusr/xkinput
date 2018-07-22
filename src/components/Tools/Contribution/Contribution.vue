@@ -182,7 +182,8 @@ wffj	-	万付`,
 				{ 'ver': '1.8', 'cont': '新增头部信息统计，改进自适应布局方式，完善缺失编码检测机制。'},
 				{ 'ver': '2.0', 'cont': '新增重码操作机制，以编码后缀方式操作词条序。较耗费性能，可关闭。'},
 				{ 'ver': '2.1', 'cont': '完善重码调试机制，可正常使用、完善移动端界面布局。'},
-				{ 'ver': '2.2', 'cont': '新增自动鉴别处理模式，无重码时操作更快，有重码自动转至重码模式。'}
+				{ 'ver': '2.2', 'cont': '新增自动鉴别处理模式，无重码时操作更快，有重码自动转至重码模式。'},
+				{ 'ver': '2.3', 'cont': '纠正删除编码重码时的准确匹配，纠正Bug。'}
 			],
 			updateHistoryLength: 0,
 		}
@@ -266,7 +267,7 @@ wffj	-	万付`,
 					}
 				//delete
 				} else if (thisNewData.delete[x]) {
-					reg = new RegExp(`${thisNewData.word[x]}\\t\\b${thisNewData.code[x]}\\d*[\\r\\n]*`, 'g');
+					reg = new RegExp(`${thisNewData.word[x]}\\t\\b${thisNewData.code[x]}\\d*\\b[\\r\\n]*`, 'g');
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.indexOf(thisNewData.code[x]) != -1){
 						if (this.newTermsData.indexOf(thisNewData.word[x]) != -1) {
@@ -579,14 +580,13 @@ wffj	-	万付`,
 			if (isShowUpdate != newVer){
 				this.layer = {
 					show: true,
-					title: '欢迎信',
+					title: '更新说明',
 					content: `
-						你好，我是工具作者，在这里呢，首先欢迎你的使用，
 						这次版本更新${this.updateHistory[this.updateHistoryLength].cont}
 						版本号为${this.updateHistory[this.updateHistoryLength].ver}，
 						详情请查阅底部说明。
 					`,
-					class: 'card-info'
+					class: 'card-blue'
 				}
 				this.bodyblur();
 			}
