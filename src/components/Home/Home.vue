@@ -9,7 +9,7 @@
 			<div class="text-center m-3">
 				<img :src="logoimg" class="logo" alt="Logo">
 				<br>
-				<router-link class="btn btn-light text-secondary mt-3" to="/jdweb/dist/Download">立即获取</router-link>
+				<router-link class="btn btn-light text-secondary mt-3" to="/jdweb/Download">立即获取</router-link>
 			</div>
 			<div class="text-center m-5">
 				<img class="parpaganda-width img-fluid" :src="propaganda" :alt="propagandaLogo">
@@ -20,7 +20,7 @@
 				<div class="carousel-item active">
 					顶功输入法
 				</div>
-				<div class="carousel-item" v-for="items in propagandaItem">
+				<div class="carousel-item" v-for="items in propagandaItem" :key="items.item">
 					{{ items.item }}
 				</div>
 				<a class="carousel-control-prev" href="#propaganda" role="button" data-slide="prev">

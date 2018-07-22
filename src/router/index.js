@@ -13,32 +13,32 @@ export default new Router({
   mode: 'history',
   routes: [
     {
-      path: '/jdweb/dist',
+      path: '/jdweb',
       name: 'Home',
       component: Home
     },
     {
-      path: '/jdweb/dist/Doc',
+      path: '/jdweb/Doc',
       name: 'Doc',
       component: Doc
     },
     {
-      path: '/jdweb/dist/Download',
+      path: '/jdweb/Download',
       name: 'Download',
       component: Download
     },
     {
-      path: '/jdweb/dist/Tools/Search',
+      path: '/jdweb/Tools/Search',
       name: 'Search',
       component: Search
     },
     {
-      path: '/jdweb/dist/Tools/Contribution',
+      path: '/jdweb/Tools/Contribution',
       name: 'Contribution',
       component: Contribution
     },
     {
-      path: '/jdweb/dist/Tools/Study',
+      path: '/jdweb/Tools/Study',
       name: 'Study',
       component: Study
     }
