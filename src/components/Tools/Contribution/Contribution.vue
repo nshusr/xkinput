@@ -698,7 +698,7 @@ textarea:focus + .info {
 	margin-top: 35%;
 	width: 85%;
 	box-shadow: 0 0 5px rgba(0,0,0,.5);
-	z-index: 1035;
+	z-index: 1035 !important;
 }
 
 .layer-card + .layer-card-mask {
