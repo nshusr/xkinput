@@ -604,6 +604,7 @@ wffj	-	万付`,
 					suc: true,
 					err: true
 				}
+			} else {
 				this.switchControl = false;
 			}
 			for(let x in this.updateHistory){
