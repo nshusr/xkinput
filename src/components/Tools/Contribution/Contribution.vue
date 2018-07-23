@@ -134,14 +134,14 @@ export default {
 经历	jglk
 静力	jglk
 经历	jglk
-博客	blke
-万夫	wffj
+博客6	blke
+万夫6	wffj
 折子戏	fzxi
 万付	wffj`,
-			demoNewData: `blkeav2	+	剥个
-blkeav2	*	贝壳
-jglk3	-	经历
-jglk4	+	静静
+			demoNewData: `blke	+	剥个
+blkeav#2	*	贝壳
+jglk#3	-	经历
+jglk#4	+	静静
 wffj	-	万付`,
 			updates: false,
 			showMessageData: {
@@ -186,9 +186,9 @@ wffj	-	万付`,
 				{ 'ver': '2.3', 'cont': '纠正删除编码重码时的准确匹配，纠正Bug。'},
 				{ 'ver': '2.4', 'cont': '完成支持英文词库处理，前提每个英文词条中必须有至少一个大写字母。'},
 				{ 'ver': '2.5', 'cont': '完成检测词库数据中含有数字是否清除判断选项，避免误处理。'},
+				{ 'ver': '3.0', 'cont': '重码检测模式改进，使用#符号代替纯数字，不与词库中本有数字冲突。'},
 			],
 			updateHistoryLength: 0,
-			isClearOldIdent: false,
 		}
 	},
 	created: function (){
@@ -215,18 +215,18 @@ wffj	-	万付`,
 			if (newsHaveRepeat){
 				for (let y in thisOldData.word){
 					//1.1输出到输出框
-					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisOldData.code[y]}\\d+\\b`, 'g');
+					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisOldData.code[y]}#*\\d+\\b`, 'g');
 					regIdentData = this.newTermsData.match(reg);
 
 					for (let x in regIdentData){
-						IdentNum = new Array();
-						IdentNum[x] = regIdentData[x].toString().match(/\d+/g);
+						IdentNum = [];
+						IdentNum[x] = regIdentData[x].toString().match(/#\d+/g);
 					}
 
 					if (this.newTermsData.search(reg) == -1){
-						this.newTermsData += `${thisOldData.word[y]}\t${thisOldData.code[y]}${i}\r\n`;
+						this.newTermsData += `${thisOldData.word[y]}\t${thisOldData.code[y]}#${i}\r\n`;
 					} else {
-						this.newTermsData += `${thisOldData.word[y]}\t${thisOldData.code[y]}${IdentNum.length+1}\r\n`;
+						this.newTermsData += `${thisOldData.word[y]}\t${thisOldData.code[y]}#${IdentNum.length+1}\r\n`;
 					}
 				}
 			} else {
@@ -250,7 +250,8 @@ wffj	-	万付`,
 						SuccessAll ++;
 						AddNum ++;
 					} else {
-						this.errorInfoData += `${out}\t已有编码\t[ + 第${parseFloat(x) + 1}行]\r\n`;
+						this.errorInfoData +=
+						`[ + 第${parseFloat(x) + 1}行]\t\t${out}\r\n$ 编码存在：\t\t${this.newTermsData.match(reg)}\r\n`;
 						ErrorAll ++;
 						ErrorNum ++;
 					}
@@ -264,34 +265,31 @@ wffj	-	万付`,
 						SuccessAll ++;
 						ModifyNum ++;
 					} else {
-						this.errorInfoData += `${out}\t未找到编码\t[ * 第${parseFloat(x) + 1}行]\r\n`;
+						this.errorInfoData += 
+						`[  * 第${parseFloat(x) + 1}行]\t\t${out}\r\n$ 未找到编码：\t\t${thisNewData.code[x]}\r\n`;
 						ErrorAll ++;
 						NoNum ++;
 					}
 				//delete
 				} else if (thisNewData.delete[x]) {
-					reg = new RegExp(`${thisNewData.word[x]}\\t\\b${thisNewData.code[x]}\\d*\\b[\\r\\n]*`, 'g');
+					reg = new RegExp(`${thisNewData.word[x]}\\t\\b${thisNewData.code[x]}#?\\d*\\b[\\r\\n]*`, 'g');
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
-					if (this.newTermsData.indexOf(thisNewData.code[x]) != -1){
-						if (this.newTermsData.indexOf(thisNewData.word[x]) != -1) {
-							this.newTermsData = this.newTermsData.replace(eval(reg), '');
-							this.successInfoData += `${out}\t[ - 第${parseFloat(x) + 1}行]\r\n`;
-							SuccessAll ++;
-							DelNum ++;
-						} else {
-							this.errorInfoData += `${out}\t词组编码不同，已放弃删除\t[ - 第${parseFloat(x) + 1}行]\r\n`;
-							ErrorAll ++;
-							NoNum ++;
-						}
+					if (this.newTermsData.search(reg) != -1){
+						this.newTermsData = this.newTermsData.replace(eval(reg), '');
+						this.successInfoData += `${out}\t[ - 第${parseFloat(x) + 1}行]\r\n`;
+						SuccessAll ++;
+						DelNum ++;
 					} else {
-						this.errorInfoData += `${out}\t未找到编码\t[ - 第${parseFloat(x) + 1}行]\r\n`;
+						this.errorInfoData += 
+						`[  - 第${parseFloat(x) + 1}行]\t\t${out}\r\n$ 词组与编码不同或编码不存在。\r\n`
 						ErrorAll ++;
 						NoNum ++;
 					}
 				//未知
 				} else {
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
-					this.errorInfoData += `${out}\t未知操作符号\t[第${parseFloat(x) + 1}行]\r\n`;
+					this.errorInfoData +=
+					`[  - 第${parseFloat(x) + 1}行]\t\t${out}\r\n$ 未知操作符号。\r\n`;
 					ErrorAll ++;
 					ErrorAttr ++;
 				}
@@ -327,7 +325,7 @@ wffj	-	万付`,
 			} else {
 				this.outTerms = this.clearIdent(false, this.newTermsData);
 			}
-			this.oldTerms = this.clearIdent(false, this.oldTerms);
+			this.oldTerms = this.oldTerms;
 			this.successInfo = this.successInfoData;
 			this.errorInfo = this.errorInfoData;
 			this.backHandingBtn();
@@ -341,18 +339,12 @@ wffj	-	万付`,
 
 			//清理数据
 			this.successInfoData = this.errorInfoData = this.newTermsData = '';
-			this.isClearOldIdent = false;
 		},
 		TermsCountSet: function (formName, formData){
 			//转换符号
 			this.allToHalf();
-			var oldHaveRepeat = /\d+/.test(this.oldTerms);
 			
-			if (oldHaveRepeat && !this.isClearOldIdent){
-				let isClear = confirm('检测到词库中包含数字，是否是重码标识？如果是将清除，处理中会自动计算重码。')
-				if (isClear) this.oldTerms = this.clearIdent(false, this.oldTerms);
-				this.isClearOldIdent = true;
-			}
+			this.oldTerms = this.clearIdent(false, this.oldTerms);
 			
 			this[formData].test = this[formName].split(/[\t\r\n]/g);
 
@@ -365,7 +357,7 @@ wffj	-	万付`,
 			this[formData].obj.delete = [];
 			for (var x in this[formData].test) {
 				var isOpreation = /^[\+\-\*]$/.test(this[formData].test[x]);
-				var isCode = /^[a-z]+\d*$/.test(this[formData].test[x]);
+				var isCode = /^[a-z]+#?\d*$/.test(this[formData].test[x]);
 				var isChinese = /[^a-z]|[^\+\-\*]+/.test(this[formData].test[x]);
 				if (isOpreation) {
 					switch (this[formData].test[x]) {
@@ -396,7 +388,7 @@ wffj	-	万付`,
 		},
 		testing: function (isHoundle) {
 			this.begin = new Date();
-			var newsHaveRepeat = /\d+/.test(this.newsTerms);
+			var newsHaveRepeat = /#\d+/.test(this.newsTerms);
 			
 			if (0 == this.oldTerms.length){
 				this.showMessage({
@@ -470,7 +462,7 @@ wffj	-	万付`,
 			this.newsTerms = this.newsTerms.replace(regModify, '*');
 		},
 		clearIdent: function (isclear, data){
-			var result = data.replace(/\d+/g, '');
+			var result = data.replace(/#\d+/g, '');
 			return isclear ? data : result;
 		},
 		showMessage: function (data){
