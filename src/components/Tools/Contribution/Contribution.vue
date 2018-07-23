@@ -47,12 +47,12 @@
 			</transition>
 		</div>
 	
-		<div class="controls-switch fixed-bottom" style="left: 30px; bottom: 100px;" v-show="switchControl">
+		<div class="controls-switch fixed-bottom" style="left: 30px; bottom: 100px;">
 			<button class="btn btn-light d-block" @click="switchControlFn"><i class="fa" :class="{'fa-toggle-on':switchControl, 'fa-toggle-off':!switchControl}"></i></button>
 		</div>
 
 		<transition name="slide">
-			<div class="controls-btn p-1">
+			<div class="controls-btn p-1" v-show="switchControl">
 				<button :class="btnClass" @click="testing(true)" @mousedown="clickPlay">{{btnInfo}}</button>
 				<div class="btn btn-light custom-control custom-checkbox d-inline-block">
 					<input class="custom-control-input" id="isDev" type="checkbox" @click="isDev = !isDev" v-model="isDev">
@@ -742,6 +742,9 @@ textarea:focus + .info {
 	.controls-btn {
 		position: static;
 		background: 0;
+	}
+	.controls-switch {
+		display: none;
 	}
 }
 
