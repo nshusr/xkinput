@@ -207,7 +207,7 @@ wffj	-	万付`,
 			var __this = this;
 			var thisNewData = this.newsTermsData.obj;
 			var thisOldData = this.oldTermsData.obj;
-			var reg, out, SuccessAll, ErrorAll, AddNum, ModifyNum, DelNum, ErrorNum, NoNum, ErrorAttr, regIdent, regIdentData, isHasIdent, IdentNum;
+			var reg, out, log, ope, SuccessAll, ErrorAll, AddNum, ModifyNum, DelNum, ErrorNum, NoNum, ErrorAttr, regIdent, regIdentData, isHasIdent, IdentNum;
 			var SuccessAll = ErrorAll = AddNum = ModifyNum = DelNum = ErrorNum = NoNum = ErrorAttr = 0;
 			var i = 1;
 			//设置文本、编码、属性
@@ -242,7 +242,9 @@ wffj	-	万付`,
 				//add
 				if(thisNewData.add[x]) {
 					//判断编码是否已存在
-					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisNewData.code[x]}\\b`, 'g')
+					ope = '+';
+					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisNewData.code[x]}\\b`, 'g');
+					log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.search(reg) == -1){
 						this.newTermsData += out + '\r\n';
@@ -251,13 +253,15 @@ wffj	-	万付`,
 						AddNum ++;
 					} else {
 						this.errorInfoData +=
-						`[ + 第${parseFloat(x) + 1}行]\t\t${out}\r\n$ 编码存在：\t\t${this.newTermsData.match(reg)}\r\n`;
+						`[第${parseFloat(x) + 1}行]\t${log}\r\n$ 编码已存在：\r\n{ ${this.newTermsData.match(reg)} }\r\n`;
 						ErrorAll ++;
 						ErrorNum ++;
 					}
 				//modify
 				} else if (thisNewData.modify[x]) {
+					ope = '*'
 					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisNewData.code[x]}\\b`, 'g');
+					log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.search(reg) != -1) {
 						this.newTermsData = this.newTermsData.replace(reg, out);
@@ -266,30 +270,42 @@ wffj	-	万付`,
 						ModifyNum ++;
 					} else {
 						this.errorInfoData += 
-						`[  * 第${parseFloat(x) + 1}行]\t\t${out}\r\n$ 未找到编码：\t\t${thisNewData.code[x]}\r\n`;
+						`[第${parseFloat(x) + 1}行]\t${log}\r\n$ 未找到编码：\r\n{ ${thisNewData.code[x]} }\r\n`;
 						ErrorAll ++;
 						NoNum ++;
 					}
 				//delete
 				} else if (thisNewData.delete[x]) {
-					reg = new RegExp(`${thisNewData.word[x]}\\t\\b${thisNewData.code[x]}#?\\d*\\b[\\r\\n]*`, 'g');
+					let HaveCodeReg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisNewData.code[x]}#?\\d*\\b[\\r\\n]*`, 'g');
+					let TermsCorrectCodeReg = new RegExp(`${thisNewData.word[x]}\\t\\b${thisNewData.code[x]}#?\\d*\\b[\\r\\n]*`, 'g');
+					ope = '-'
+					log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
-					if (this.newTermsData.search(reg) != -1){
-						this.newTermsData = this.newTermsData.replace(eval(reg), '');
-						this.successInfoData += `${out}\t[ - 第${parseFloat(x) + 1}行]\r\n`;
-						SuccessAll ++;
-						DelNum ++;
+					if (this.newTermsData.search(HaveCodeReg) != -1){
+						if (this.newTermsData.search(TermsCorrectCodeReg) != -1){
+							this.newTermsData = this.newTermsData.replace(eval(TermsCorrectCodeReg), '');
+							this.successInfoData += `${out}\t[ - 第${parseFloat(x) + 1}行]\r\n`;
+							SuccessAll ++;
+							DelNum ++;
+						} else {
+							this.errorInfoData += 
+							`[第${parseFloat(x) + 1}行]\t${log}\r\n$ 词组编码不对应：\r\n{ ${this.newTermsData.match(HaveCodeReg)} }\r\n`
+							ErrorAll ++;
+							NoNum ++;
+						}
 					} else {
+						log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
 						this.errorInfoData += 
-						`[  - 第${parseFloat(x) + 1}行]\t\t${out}\r\n$ 词组与编码不同或编码不存在。\r\n`
+						`[第${parseFloat(x) + 1}行]\t${log}\r\n$ 编码不存在：\r\n{ ${thisNewData.code[x]} }\r\n`;
 						ErrorAll ++;
 						NoNum ++;
 					}
 				//未知
 				} else {
+					ope = '×';
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					this.errorInfoData +=
-					`[  - 第${parseFloat(x) + 1}行]\t\t${out}\r\n$ 未知操作符号。\r\n`;
+					`[第${parseFloat(x) + 1}行]\t${log}\r\n$ 未知操作符号。\r\n`;
 					ErrorAll ++;
 					ErrorAttr ++;
 				}

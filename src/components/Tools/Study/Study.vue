@@ -2,8 +2,8 @@
   <div class="container card mb-3">
     <h1 class="title-name lead text-center py-2">单字词组练习工具<small>Rime词库</small></h1>
     <div class="d-flex justify-content-between p-2 pt-2">
-      <span class="lead text-secondary pt-1">{{termsData.name ? termsData.name : '未读取文件'}}&nbsp;{{termsData.size ? termsData.mbSize : 0}}</span>
-      <div id="fileUpBox" class="">
+      <span class="term-name lead text-secondary pt-1 w-80" :title="termsData.name">{{termsData.name ? termsData.name : '未读取文件'}}&nbsp;{{termsData.size ? termsData.mbSize : 0}}</span>
+      <div id="fileUpBox" class="w-20">
         <!-- <label class="btn border" title="载入键道单字">键道单字</label> -->
         <label class="btn border" :class="{'btn-danger':notUpFileClass}" for="file" title="上传词库文件">上传</label>
         <input id="file" ref="file" @change="readFile" type="file">
@@ -189,6 +189,11 @@ export default {
 </script>
 
 <style>
+.term-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .title-name {
   font-size: 25px;
 }
