@@ -647,13 +647,13 @@ textarea:focus + .info {
 	margin-right: 5px;
 }
 .controls-switch {
-	position: fixed;
+	position: fixed !important;
 	left: 20px;
 	bottom: 110px;
 	z-index: 5;
 }
 .controls-btn {
-	position: fixed;
+	position: fixed !important;
 	width: 100%;
 	left: 0;
 	bottom: 0;
@@ -670,10 +670,10 @@ textarea:focus + .info {
 
 @media (min-width: 768px) {
 	.controls-btn {
-		position: static;
+		position: static !important;
 	}
 	.controls-switch {
-		display: none;
+		display: none !important;
 	}
 }
 </style>
