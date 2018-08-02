@@ -1,8 +1,9 @@
 <template>
-    <div id="footer" class="row text-center bg-light">
-        <p class="col-12 mt-1 mb-0">© 2018 星空键道</p>
-        <p class="col-12">加入<a href="https://jq.qq.com/?_wv=1027&k=5sTEYIQ">大牛双拼&星空输入法</a></p>
-    </div>
+    <Card id="footer">
+        <h6>© 2018 星空输入法</h6>
+        <small>加入<a href="https://jq.qq.com/?_wv=1027&k=5TZNXjj" target="_blank">大牛双拼&星空输入法</a></small>
+        <Divider style="margin: 15px 0 0;"><small>The End</small></Divider>
+    </Card>
 </template>
 
 <script>
@@ -12,7 +13,9 @@ export default {
 </script>
 
 <style>
-
+#footer {
+    text-align: center;
+}
 </style>
 
 

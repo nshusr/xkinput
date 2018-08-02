@@ -1,36 +1,9 @@
 <template>
-    <div>
-        <blockquote class="blockquote">
-            <p  class="text-light lead">键道6键盘布局</p>
-        </blockquote>
-        <table class="table table-striped table-light table-responsive-sm table-bordered table-hover text-center">
-            <thead>
-                <tr class="d-none">
-                    <th scope="col"></th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="tr in inputs">
-                    <td v-for="td in tr" v-html="td">
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <blockquote class="blockquote">
-            <footer class="blockquote-footer">
-                <cite>吅吅大山</cite>
-            </footer>
-        </blockquote>
-    </div>
+    <Card>
+        <h4 slot="title">键道6键盘布局</h4>
+        <small slot="extra">@吅吅大山</small>
+        <Table :columns="columns1" :data="inputs" border stripe :showHeader="false" :ellipsis="true"></Table>
+    </Card>
 </template>
 
 <script>
@@ -38,13 +11,113 @@ import $ from 'jquery';
 export default {
   data () {
         return {
+            columns1: [
+                {
+                    title: '0',
+                    key: '0',
+                    render: (h, parmas) => {
+                        let result = [];
+                        for (let x of parmas.row[0]) {
+                            result.push(h('Tag', x));
+                        }
+                        return h('div', result)
+                    }
+                },{
+                    title: '1',
+                    key: '1',
+                    render: (h, parmas) => {
+                        let result = [];
+                        for (let x of parmas.row[1]) {
+                            result.push(h('Tag', x));
+                        }
+                        return h('div', result)
+                    }
+                },{
+                    title: '2',
+                    key: '2',
+                    render: (h, parmas) => {
+                        let result = [];
+                        for (let x of parmas.row[2]) {
+                            result.push(h('Tag', x));
+                        }
+                        return h('div', result)
+                    }
+                },{
+                    title: '3',
+                    key: '3',
+                    render: (h, parmas) => {
+                        let result = [];
+                        for (let x of parmas.row[3]) {
+                            result.push(h('Tag', x));
+                        }
+                        return h('div', result)
+                    }
+                },{
+                    title: '4',
+                    key: '4',
+                    render: (h, parmas) => {
+                        let result = [];
+                        for (let x of parmas.row[4]) {
+                            result.push(h('Tag', x));
+                        }
+                        return h('div', result)
+                    }
+                },{
+                    title: '5',
+                    key: '5',
+                    render: (h, parmas) => {
+                        let result = [];
+                        for (let x of parmas.row[5]) {
+                            result.push(h('Tag', x));
+                        }
+                        return h('div', result)
+                    }
+                },{
+                    title: '6',
+                    key: '6',
+                    render: (h, parmas) => {
+                        let result = [];
+                        for (let x of parmas.row[6]) {
+                            result.push(h('Tag', x));
+                        }
+                        return h('div', result)
+                    }
+                },{
+                    title: '7',
+                    key: '7',
+                    render: (h, parmas) => {
+                        let result = [];
+                        for (let x of parmas.row[7]) {
+                            result.push(h('Tag', x));
+                        }
+                        return h('div', result)
+                    }
+                },{
+                    title: '8',
+                    key: '8',
+                    render: (h, parmas) => {
+                        let result = [];
+                        for (let x of parmas.row[8]) {
+                            result.push(h('Tag', x));
+                        }
+                        return h('div', result)
+                    }
+                },{
+                    title: '9',
+                    key: '9',
+                    render: (h, parmas) => {
+                        let result = [];
+                        for (let x of parmas.row[9]) {
+                            result.push(h('Tag', x));
+                        }
+                        return h('div', result)
+                    }
+                }
+            ],
             inputs: require('./inputs.json').data
         }
   },
   mounted: function (){
-      if ($(document.body)[0].clientWidth < 575) {
-          $('table').addClass('table-sm');
-      }
   }
 }
 </script>

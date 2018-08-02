@@ -1,104 +1,116 @@
 <template>
-<div class="container text-center">
-	<div class="row main-container">
-		<div class="col-12 col-md-4 p-0">
-			<div class="bg-white info" @click="showPlate.old = !showPlate.old">
-				<span class="textarea-info" v-html="count.old"></span>
-				<span class="textarea-title">词库数据</span>
+	<Row type="flex" justify="center">
+		<Row style="max-width: 1200px; padding: 0 20px;">
+			<Card>
+				<Row type="flex" justify="center">
+					<Col :xs="24" :md="8">
+						<div class="info" @click="showPlate.old = !showPlate.old">
+							<span class="textarea-title">词库数据</span>
+							<span class="textarea-info" v-html="count.old"></span>
+						</div>
+						<transition name="slide">
+							<textarea v-show="showPlate.old" v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" @keyup.ctrl.86="testing(false)" :placeholder="oldAttr"></textarea>
+						</transition>
+					</Col>
+					<Col :xs="24" :md="8">
+						<div class="info" @click="showPlate.new = !showPlate.new">
+							<span class="textarea-info" v-html="count.new"></span>
+							<span class="textarea-title">更正数据</span>
+						</div>
+						<transition name="slide">
+							<textarea v-show="showPlate.new" v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" @keyup.ctrl.86="testing(false)" :placeholder="newAttr"></textarea>
+						</transition>
+					</Col>
+					<Col :xs="24" :md="8">
+						<div class="info" @click="showPlate.out = !showPlate.out">
+							<span class="textarea-info" v-html="count.out"></span>
+							<span class="textarea-title">转换内容</span>
+						</div>
+						<transition name="slide">
+							<textarea v-show="showPlate.out" readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" placeholder="输出转换后内容"></textarea>
+						</transition>
+					</Col>
+					<Col :xs="24" :md="12">
+						<div class="info" @click="showPlate.suc = !showPlate.suc">
+							<span class="textarea-info" v-html="count.success"></span>
+							<span class="textarea-title">成功信息</span>
+						</div>
+						<transition name="slide">
+							<textarea v-show="showPlate.suc" readonly v-model="successInfo" placeholder="输出成功信息"></textarea>
+						</transition>
+					</Col>
+					<Col :xs="24" :md="12">
+						<div class="info" @click="showPlate.err = !showPlate.err">
+							<span class="textarea-info" v-html="count.error"></span>
+							<span class="textarea-title">错误信息</span>
+						</div>
+						<transition name="slide">
+							<textarea v-show="showPlate.err" readonly v-model="errorInfo" placeholder="输出错误信息"></textarea>
+						</transition>
+					</Col>
+				</Row>
+			</Card>
+			
+			<div class="controls-switch fixed-bottom" style="left: 30px; bottom: 100px;">
+				<button class="btn btn-light d-block" @click="switchControlFn"><i class="fa" :class="{'fa-toggle-on':switchControl, 'fa-toggle-off':!switchControl}"></i></button>
 			</div>
-			<transition name="slide">
-				<textarea v-show="showPlate.old" v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" @keyup.ctrl.86="testing(false)" :placeholder="oldAttr"></textarea>
-			</transition>
-		</div>
-		<div class="col-12 col-md-4 p-0">
-			<div class="bg-white info" @click="showPlate.new = !showPlate.new">
-				<span class="textarea-info" v-html="count.new"></span>
-				<span class="textarea-title">更正数据</span>
-			</div>
-			<transition name="slide">
-				<textarea v-show="showPlate.new" v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" @keyup.ctrl.86="testing(false)" :placeholder="newAttr"></textarea>
-			</transition>
-		</div>
-		<div class="col-12 col-md-4 p-0">
-			<div class="bg-white info" @click="showPlate.out = !showPlate.out">
-				<span class="textarea-info" v-html="count.out"></span>
-				<span class="textarea-title">转换内容</span>
-			</div>
-			<transition name="slide">
-				<textarea v-show="showPlate.out" readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" placeholder="输出转换后内容"></textarea>
-			</transition>
-		</div>
-		<div class="col-12 col-md-6 p-0">
-			<div class="bg-white info" @click="showPlate.suc = !showPlate.suc">
-				<span class="textarea-info" v-html="count.success"></span>
-				<span class="textarea-title">成功信息</span>
-			</div>
-			<transition name="slide">
-				<textarea v-show="showPlate.suc" readonly v-model="successInfo" placeholder="输出成功信息"></textarea>
-			</transition>
-		</div>
-		<div class="col-12 col-md-6 p-0">
-			<div class="bg-white info" @click="showPlate.err = !showPlate.err">
-				<span class="textarea-info" v-html="count.error"></span>
-				<span class="textarea-title">错误信息</span>
-			</div>
-			<transition name="slide">
-				<textarea v-show="showPlate.err" readonly v-model="errorInfo" placeholder="输出错误信息"></textarea>
-			</transition>
-		</div>
-	
-		<div class="controls-switch fixed-bottom" style="left: 30px; bottom: 100px;">
-			<button class="btn btn-light d-block" @click="switchControlFn"><i class="fa" :class="{'fa-toggle-on':switchControl, 'fa-toggle-off':!switchControl}"></i></button>
-		</div>
 
-		<transition name="slide">
-			<div class="controls-btn p-1" v-show="switchControl">
-				<button :class="btnClass" @click="testing(true)" @mousedown="clickPlay">{{btnInfo}}</button>
-				<div class="btn btn-light custom-control custom-checkbox d-inline-block">
-					<input class="custom-control-input" id="isDev" type="checkbox" @click="isDev = !isDev" v-model="isDev">
-					<label class="custom-control-label" for="isDev">重数调式</label>
-				</div>
-				<button class="btn btn-light" @click="createDemo">测试内容</button>
-				<button class="btn btn-danger" @click="clearContent">清空内容</button>
-				<a class="btn btn-light" href="https://739497722.docs.qq.com/ipGva4mn5bo" target="_black">键道6加词</a>
-			</div>
-		</transition>
+			<i-switch class="controls-switch" v-model="switchControl" @on-change="switchControlFn"></i-switch>
 
-		<div class="bottom-info w-100">
-			<p class="alert alert-secondary my-1">申请表词库处理工具v{{version}}</p>
-			<p class="bg-light p-1 rounded mb-1">
-				<span class="d-block small">转换后词组，顺序错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<a href="https://gitee.com/nmlixa/Rime_JD/tree/master/Tools/TermsTools" target="_black">工具1sortTerms.sh</a></span>
-				<span class="small">请注意！本工具不支持<b>英文（含英文）</b>词组准确修改功能！工具遇重码操作后计算耗时较长，请耐心等待。</span>
-			</p>
-			<div class="text-left bg-light p-1 mb-1 rounded fzx history-card" @click="clickHistory">
-				<p><button class="btn">更新历史</button><i class="fa fa-arrow-right btn fzb float-right history-arrow" :class="{'history-active':isHover}"></i></p>
-				<p><span class="badge badge-success">new</span> {{updateHistory[updateHistoryLength].ver}}: {{updateHistory[updateHistoryLength].cont}}</p>
-				<p><span class="badge badge-info">hot</span> {{updateHistory[updateHistoryLength-1].ver}}: {{updateHistory[updateHistoryLength-1].cont}}</p>
-				<p><span class="badge badge-secondary">hot</span> {{updateHistory[updateHistoryLength-2].ver}}: {{updateHistory[updateHistoryLength-2].cont}}</p>
-				<div v-if="updates" class="mt-1">
-					<div v-for="item in updateHistory" :key="item.cont">
-						<p>{{item.ver}}: {{item.cont}}</p>
-					</div>
-				</div>
+			<transition name="slide">
+				<Card style="padding: 0 20%;">
+					<Row type="flex" justify="space-around" align="middle">
+						<Button size="large" @click="testing(true)">开始处理</Button>
+						<Tooltip content="在转换内容各编码后缀添加编码重数" placement="top">
+							<i-switch size="large" v-model="isDev">
+								<span slot="open">重数</span>
+								<span slot="close">重数</span>
+							</i-switch>
+						</Tooltip>
+						<Tooltip content="填写测试信息至词库数据与更新数据中" placement="top">
+							<Button size="large" @click="createDemo">测试内容</Button>
+						</Tooltip>
+						<Button size="large" type="error" @click="clearContent">清空内容</Button>
+					</Row>
+				</Card>
+			</transition>
+
+			<div class="bottom-info w-100">
+				<Card>
+					<Row type="flex" justify="center">
+						<h5>申请表词库处理工具v{{version}}</h5>
+					</Row>
+				</Card>
+				<Card>
+					<Row type="flex" justify="center">
+						<p>转换后词组，顺序错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。<Button to="https://gitee.com/nmlixa/Rime_JD/tree/master/Tools/TermsTools" target="_blank">工具1sortTerms.sh</Button></p>
+						<p>请注意！本工具不支持<b>英文（含英文）</b>词组准确修改功能！工具遇重码操作后计算耗时较长，请耐心等待。</p>
+					</Row>
+				</Card>
+				<Card>
+					<h6 slot="title">更新历史</h6>
+					<Button slot="extra" @click="updateAll = !updateAll">展开所有</Button>
+					<Row>
+						<Timeline>
+							<TimelineItem>
+								<Tag color="success">new</Tag>{{updateHistory[updateHistoryLength].ver}}: {{updateHistory[updateHistoryLength].cont}}
+							</TimelineItem>
+							<TimelineItem>
+								<Tag>new</Tag>{{updateHistory[updateHistoryLength-1].ver}}: {{updateHistory[updateHistoryLength-1].cont}}
+							</TimelineItem>
+						</Timeline>
+					</Row>
+					<Row v-if="updateAll">
+						<Timeline>
+							<TimelineItem v-for="item in updateHistory" :key="item.cont">
+								{{item.ver}}: {{item.cont}}
+							</TimelineItem>
+						</Timeline>
+					</Row>
+				</Card>
 			</div>
-		</div>
-	</div>
-	<transition name="translateRotate">
-		<div class="container alert fixed-top mt-5" :class="{'alert-success':showMessageData.sc,'alert-danger':showMessageData.e}" v-if="showMessageData.show">{{showMessageData.cont}}</div>
-	</transition>
-	<transition name="slide">
-		<div class="layer-box" v-show="layer.show">
-			<div class="layer-card card fixed-top h-50 mx-auto" :class="layer.class" @mousewheel.prevent>
-				<div class="card-header card-title">{{layer.title}}</div>
-				<div class="card-body card-text">{{layer.content}}</div>
-				<div class="card-footer">
-					<button class="btn btn-light" @click="closeLayer">关闭</button>
-				</div>
-			</div>
-			<div class="layer-card-mask"></div>
-		</div>
-	</transition>
-</div>
+		</Row>
+	</Row>
 </template>
 
 <script>
@@ -144,15 +156,6 @@ jglk#3	-	经历
 jglk#4	+	静静
 wffj	-	万付`,
 			updates: false,
-			showMessageData: {
-				cont: '',
-				sc: false,
-				s: 3000,
-				e: false,
-				show:false
-			},
-			historyArrow: '>',
-			isHover: false,
 			begin: '',
 			end: '',
 			isPhone: false,
@@ -165,10 +168,8 @@ wffj	-	万付`,
 				suc: false,
 				err: false
 			},
-			layer: {
-				show: false
-			},
 			timeOf: [],
+			updateAll: false,
 			updateHistory: [
 				{ 'ver': '1.0', 'cont': "正常使用，发布版本。"},
 				{ 'ver': '1.1', 'cont': '自动解决，全角半角问题。'},
@@ -187,6 +188,7 @@ wffj	-	万付`,
 				{ 'ver': '2.4', 'cont': '完成支持英文词库处理，前提每个英文词条中必须有至少一个大写字母。'},
 				{ 'ver': '2.5', 'cont': '完成检测词库数据中含有数字是否清除判断选项，避免误处理。'},
 				{ 'ver': '3.0', 'cont': '重码检测模式改进，使用#符号代替纯数字，不与词库中本有数字冲突。'},
+				{ 'ver': '4.0 Alpha', 'cont': '全局主题由Bootstrap迁移至iViewUI，优化重码处理速度。'},
 			],
 			updateHistoryLength: 0,
 		}
@@ -196,7 +198,7 @@ wffj	-	万付`,
 		this.getVersion();
 	},
 	mounted: function (){
-		this.showHello();
+		this.Notice();
 	},
 	methods: {
 		getVersion: function (){
@@ -207,22 +209,20 @@ wffj	-	万付`,
 			var __this = this;
 			var thisNewData = this.newsTermsData.obj;
 			var thisOldData = this.oldTermsData.obj;
-			var reg, out, log, ope, SuccessAll, ErrorAll, AddNum, ModifyNum, DelNum, ErrorNum, NoNum, ErrorAttr, regIdent, regIdentData, isHasIdent, IdentNum;
+			var reg, out, log, ope, SuccessAll, ErrorAll, AddNum, ModifyNum, DelNum, ErrorNum, NoNum, ErrorAttr, regIdent, regIdentData, isHasIdent, IdentNum, HaveCodeReg, TermsCorrectCodeReg;
 			var SuccessAll = ErrorAll = AddNum = ModifyNum = DelNum = ErrorNum = NoNum = ErrorAttr = 0;
-			var i = 1;
+			var i = 1, y = 0, x = 0;
 			//设置文本、编码、属性
 			//1 遍历旧词库
 			if (newsHaveRepeat){
-				for (let y in thisOldData.word){
+				for (y in thisOldData.word){
 					//1.1输出到输出框
-					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisOldData.code[y]}#*\\d+\\b`, 'g');
+					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisOldData.code[y]}#*\\d*`, 'g');
 					regIdentData = this.newTermsData.match(reg);
-
-					for (let x in regIdentData){
+					for (x in regIdentData){
 						IdentNum = [];
 						IdentNum[x] = regIdentData[x].toString().match(/#\d+/g);
 					}
-
 					if (this.newTermsData.search(reg) == -1){
 						this.newTermsData += `${thisOldData.word[y]}\t${thisOldData.code[y]}#${i}\r\n`;
 					} else {
@@ -230,20 +230,21 @@ wffj	-	万付`,
 					}
 				}
 			} else {
-				for (let y in thisOldData.word){
+				for (y in thisOldData.word){
 					//1.1输出到输出框
 					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisOldData.code[y]}\\b`, 'g');
 
 					this.newTermsData += `${thisOldData.word[y]}\t${thisOldData.code[y]}\r\n`;
 				}
 			}
+			
 			//2 遍历新词条
-			for(var x in thisNewData.word){
+			for(x in thisNewData.word){
 				//add
 				if(thisNewData.add[x]) {
 					//判断编码是否已存在
 					ope = '+';
-					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisNewData.code[x]}\\b`, 'g');
+					reg = new RegExp(`.+\\t\\b${thisNewData.code[x]}\\b`, 'g');
 					log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.search(reg) == -1){
@@ -253,14 +254,14 @@ wffj	-	万付`,
 						AddNum ++;
 					} else {
 						this.errorInfoData +=
-						`[第${parseFloat(x) + 1}行]\t${log}\r\n$ 编码已存在：\r\n{ ${this.newTermsData.match(reg)} }\r\n`;
+						`[第${parseFloat(x) + 1}行]\t${log}\r\n>> Error 编码已存在：\r\n${this.newTermsData.match(reg).join('，')}\r\n\r\n`;
 						ErrorAll ++;
 						ErrorNum ++;
 					}
 				//modify
 				} else if (thisNewData.modify[x]) {
 					ope = '*'
-					reg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisNewData.code[x]}\\b`, 'g');
+					reg = new RegExp(`.+\\t\\b${thisNewData.code[x]}\\b`, 'g');
 					log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					if (this.newTermsData.search(reg) != -1) {
@@ -270,14 +271,14 @@ wffj	-	万付`,
 						ModifyNum ++;
 					} else {
 						this.errorInfoData += 
-						`[第${parseFloat(x) + 1}行]\t${log}\r\n$ 未找到编码：\r\n{ ${thisNewData.code[x]} }\r\n`;
+						`[第${parseFloat(x) + 1}行]\t${log}\r\n>> Error 未找到编码：\r\n${thisNewData.code[x]}\r\n\r\n`;
 						ErrorAll ++;
 						NoNum ++;
 					}
 				//delete
 				} else if (thisNewData.delete[x]) {
-					let HaveCodeReg = new RegExp(`[\\u4e00-\\u9fa5]+\\t\\b${thisNewData.code[x]}#?\\d*\\b[\\r\\n]*`, 'g');
-					let TermsCorrectCodeReg = new RegExp(`${thisNewData.word[x]}\\t\\b${thisNewData.code[x]}#?\\d*\\b[\\r\\n]*`, 'g');
+					HaveCodeReg = new RegExp(`.+\\t\\b${thisNewData.code[x]}#?\\d*\\b[\\r\\n]*`, 'g');
+					TermsCorrectCodeReg = new RegExp(`${thisNewData.word[x]}\\t\\b${thisNewData.code[x]}#?\\d*\\b[\\r\\n]*`, 'g');
 					ope = '-'
 					log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
@@ -289,14 +290,14 @@ wffj	-	万付`,
 							DelNum ++;
 						} else {
 							this.errorInfoData += 
-							`[第${parseFloat(x) + 1}行]\t${log}\r\n$ 词组编码不对应：\r\n{ ${this.newTermsData.match(HaveCodeReg)} }\r\n`
+							`[第${parseFloat(x) + 1}行]\t${log}\r\n>> Warn 词组编码不对应：\r\n${this.newTermsData.match(HaveCodeReg).join('，')}\r\n\r\n`
 							ErrorAll ++;
 							NoNum ++;
 						}
 					} else {
 						log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
 						this.errorInfoData += 
-						`[第${parseFloat(x) + 1}行]\t${log}\r\n$ 编码不存在：\r\n{ ${thisNewData.code[x]} }\r\n`;
+						`[第${parseFloat(x) + 1}行]\t${log}\r\n>> Error 编码不存在：\r\n${thisNewData.code[x]}\r\n\r\n`;
 						ErrorAll ++;
 						NoNum ++;
 					}
@@ -305,7 +306,7 @@ wffj	-	万付`,
 					ope = '×';
 					out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 					this.errorInfoData +=
-					`[第${parseFloat(x) + 1}行]\t${log}\r\n$ 未知操作符号。\r\n`;
+					`[第${parseFloat(x) + 1}行]\t${log}\r\n>> Dang 未知操作符号。\r\n${thisNewData.code[x]}\r\n\r\n`;
 					ErrorAll ++;
 					ErrorAttr ++;
 				}
@@ -344,13 +345,12 @@ wffj	-	万付`,
 			this.oldTerms = this.oldTerms;
 			this.successInfo = this.successInfoData;
 			this.errorInfo = this.errorInfoData;
-			this.backHandingBtn();
 
+			this.$Spin.hide();
 			//发送成功信息
-			this.showMessage({
-				show: true,
-				sc: true,
-				cont: `用时${__this.end-__this.begin}毫秒 处理完毕！共成功${SuccessAll}个、失败${ErrorAll}个！`
+			this.$Message.success({
+				content: `用时${__this.end-__this.begin}毫秒 处理完毕！共成功${SuccessAll}个、失败${ErrorAll}个！`,
+				duration: 5
 			});
 
 			//清理数据
@@ -407,13 +407,7 @@ wffj	-	万付`,
 			var newsHaveRepeat = /#\d+/.test(this.newsTerms);
 			
 			if (0 == this.oldTerms.length){
-				this.showMessage({
-					show: true,
-					sc: true,
-					s: 1200,
-					cont: `工作表为空！`
-				});
-				this.backHandingBtn();
+				this.$Message.success(`工作表为空！`);
 				return;
 			}
 			
@@ -431,29 +425,35 @@ wffj	-	万付`,
 			this.count.new = `码: ${mCodeNum} 符: ${mModifyNum} 词: ${mWordNum}`;
 
 			if (oWordNum != oCodeNum){
-				this.showMessage({
-					show: true,
-					e: true,
-					s: 1200,
-					cont: `请检查词库内容！`
-				});
+				this.$Message.error(`请检查词库内容！`);
 				this.count.old = `<b style="color: red;">词: ${oWordNum} 码: ${oCodeNum}<b>`;
 				return;
 			}
 
 			if (mWordNum != mModifyNum || mModifyNum != mCodeNum || mWordNum != mCodeNum){
-				this.showMessage({
-					show: true,
-					e: true,
-					s: 1200,
-					cont: `请检查更正数据内容！`
-				});
+				this.$Message.error(`请检查更正数据内容！`);
 				this.count.new = `<b style="color: red;">码: ${mCodeNum} 符: ${mModifyNum} 词: ${mWordNum}<b>`;
 				return;
 			}
+
+			oWordNum = mModifyNum = mModifyNum = mCodeNum = mWordNum = mCodeNum = 0;
 			
 			//正常则调用处理数据，否则仅计数，判断是否有错误内容
 			if (isHoundle){
+				this.$Spin.show({
+					render: (h) => {
+						return h('div', [
+							h('Icon', {
+								'class': 'main-spin-icon-load',
+								props: {
+									type: 'ios-loading',
+									size: 22
+								}
+							}),
+							h('div', '正在处理中...')
+						])
+					}
+				});
 				this.handleTerms(newsHaveRepeat);
 			} else {
 				return;
@@ -466,8 +466,10 @@ wffj	-	万付`,
 			this.testing(false);
 		},
 		clearContent: function(){
-			this.oldTerms = this.newsTerms = this.outTerms = this.AkeyTerms = '';
+			this.oldTerms = this.newsTerms = this.outTerms = this.AkeyTerms = this.oldTermsData = this.newTermsData =  '';
 			this.testing(false);
+			this.$Message.destroy();
+			this.$Message.success(`已清空数据`);
 		},
 		allToHalf: function(){
 			var regPlus = /\＋/g;
@@ -481,44 +483,12 @@ wffj	-	万付`,
 			var result = data.replace(/#\d+/g, '');
 			return isclear ? data : result;
 		},
-		showMessage: function (data){
-			this.showMessageData = data;
-			this.closeMessge(data.s);
-		},
-		clickPlay: function (){
-			this.btnInfo = '处理中…';
-			this.btnClass = 'btn btn-primary my-2';
-		},
 		clearSpace: function(){
 			this.newTermsData = this.newTermsData.replace(/[\r\n]\s/g, '\r')
 		},
 		clickHistory: function(){
 			this.updates = !this.updates;
 			this.isHover = !this.isHover;
-		},
-		closeMessge: function(s){
-			var __this = this;
-			if (s){
-				setTimeout(()=>{
-					__this.showMessageData.show = false;
-				},s)
-			} else {
-				setTimeout(()=>{
-					__this.showMessageData.show = false;
-				},3000)
-			}
-		},
-		closeLayer: function (){
-			this.layer = {show: false};
-			this.setCookie('showUpdate', this.updateHistory[this.updateHistoryLength].ver, 365);
-			this.bodyblur(0);
-		},
-		backHandingBtn: function(){
-			var __this = this;
-			setTimeout(()=>{
-				__this.btnInfo = '开始处理';
-				__this.btnClass = 'btn btn-light my-2';
-			}, 500)
 		},
 		MillisecondToDate:function (msd) {
 			var time = parseFloat(msd) / 1000;
@@ -573,39 +543,25 @@ wffj	-	万付`,
 			}
 			return "";
 		},
-		bodyblur: function (to){
-			var $s = (s) => {
-				return document.querySelector(s);
-			}
-			var bl = 'blur(3px)';
-			if (to == 0){
-				$s('#header').style.filter =
-				$s('.main-container').style.filter =
-				$s('#util').style.filter =
-				$s('#footer').style.filter = '';
-			} else {
-				$s('#header').style.filter = 
-				$s('.main-container').style.filter = 
-				$s('#util').style.filter = 
-				$s('#footer').style.filter = bl;
-			}
-		},
-		showHello: function (){
+		Notice: function (){
 			var isShowUpdate = this.getCookie('showUpdate');
 			var newVer = parseFloat(this.updateHistory[this.updateHistoryLength].ver);
 
 			if (isShowUpdate != newVer){
-				this.layer = {
-					show: true,
-					title: '更新说明',
-					content: `
-						这次版本更新${this.updateHistory[this.updateHistoryLength].cont}
+				var __this = this;
+				this.$Notice.open({
+					title: '版本更新了',
+					desc: `
+						本次版本更新${this.updateHistory[this.updateHistoryLength].cont}
 						版本号为${this.updateHistory[this.updateHistoryLength].ver}，
 						详情请查阅底部说明。
 					`,
-					class: 'card-blue'
-				}
-				this.bodyblur();
+					duration: 0,
+					onClose: ()=> {
+						__this.setCookie('showUpdate', newVer, 365*24*60*60*1000)
+					}
+
+				})
 			}
 		},
 		isPhoneFn: function (){
@@ -657,6 +613,7 @@ textarea {
 	resize: none;
 	padding: 5px 10px;
 	border: 1px solid #E0E3DA;
+	border-top: 0;
 	background: #fffff3;
 	display: flex;
 }
@@ -676,7 +633,6 @@ textarea:focus + .info {
 	overflow: hidden;
 	text-align: left;
 	border: 1px solid #E0E3DA;
-	border-top: 0;
 	padding-left: 5px;
 	transition: all .3s;
 	animation: info-animate 1s ease-in-out forwards;
@@ -711,51 +667,11 @@ textarea:focus + .info {
 	left: 5px;
 }
 
-.layer-card {
-	position: fixed;
-	margin-top: 35%;
-	width: 85%;
-	box-shadow: 0 0 5px rgba(0,0,0,.5);
-	z-index: 1035 !important;
-}
-
-.layer-card + .layer-card-mask {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 105%;
-	height: 105%;
-	background: rgba(0,0,0,.7);-webkit-filter: blur(5px); /* Chrome, Safari, Opera */
-    filter: blur(5px);
-	z-index: 1031;
-}
-
-@media (min-width: 375px) {
-	.layer-card {
-		margin-top: 40%;
-		width: 80%;
-	}
-}
-
-@media (min-width: 414px) {
-	.layer-card {
-		margin-top: 42%;
-		width: 85%;
-	}
-}
-
-@media (min-width: 512px) {
-	.layer-card {
-		margin-top: 30%;
-		width: 50%;
-	}
+.main-spin-icon-load{
+	animation: ani-demo-spin 1s linear infinite;
 }
 
 @media (min-width: 768px) {
-	.layer-card {
-		width: 50%;
-		margin-top: 10%;
-	}
 	.controls-btn {
 		position: static;
 		background: 0;
@@ -763,33 +679,5 @@ textarea:focus + .info {
 	.controls-switch {
 		display: none;
 	}
-}
-
-@media (min-width: 1000px) {
-	.layer-card {
-		width: 45%;
-	}
-}
-
-.fzx {
-	font-size: 12px;
-}
-.fzb {
-	font-size: 16px;
-}
-.history-arrow {
-	transition: all 0.5s;
-}
-.history-active {
-	transition: all 0.5s;
-	transform: rotate(90deg)
-}
-.history-card {
-	max-height: 300px;
-	overflow-y: scroll;
-}
-.history-card:hover .history-arrow {
-	transition: all 0.5s;
-	transform: rotate(90deg)
 }
 </style>

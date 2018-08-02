@@ -1,56 +1,50 @@
 <template>
-	<div id="content-top">
-		<div>
-			<div class="row top-title">
-				<hr class="col title-hr">
-				<h1 class="text-white ml-2 mr-2" style="font-size: 1.5em">{{logo}}</h1>
-				<hr class="col title-hr">
-			</div>
-			<div class="text-center m-3">
-				<img :src="logoimg" class="logo" alt="Logo">
-				<br>
-				<router-link class="btn btn-light text-secondary mt-3" to="/jdweb/Download">立即获取</router-link>
-			</div>
-			<div class="text-center m-5">
-				<img class="parpaganda-width img-fluid" :src="propaganda" :alt="propagandaLogo">
-			</div>
-		</div>
-		<div id="propaganda" class="carousel mt-4 p-4 slide bt row content-alpha content-carousel-shadow text-white text-center" data-ride="carousel">
-			<div class="carousel-inner">
-				<div class="carousel-item active">
-					顶功输入法
-				</div>
-				<div class="carousel-item" v-for="items in propagandaItem" :key="items.item">
-					{{ items.item }}
-				</div>
-				<a class="carousel-control-prev" href="#propaganda" role="button" data-slide="prev">
-					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-					<span class="sr-only">Previous</span>
-				</a>
-				<a class="carousel-control-next" href="#propaganda" role="button" data-slide="next">
-					<span class="carousel-control-next-icon" aria-hidden="true"></span>
-					<span class="sr-only">Next</span>
-				</a>
-			</div>
-		</div>
-		<div class="row content-alpha">
-			<div class="container mt-2">
+	<div>
+		<Card class="home-top-card" :bordered="false">
+			<Row class="home-top">
+				<Carousel class="main-carousel" :autoplay="true" :loop="true"  :autoplay-speed="10000">
+					<CarouselItem v-for="scheme in schemes" :key="scheme.name">
+						<Row type="flex" justify="center" align="middle">
+							<Card class="main-card">
+								<strong slot="title">{{scheme.name}}</strong>
+								<!-- <a slot="extra" :href="scheme.url" target="_blank">获取</a> -->
+								<Button slot="extra" type="primary" :to="scheme.url" target="_blank">获取</Button>
+								<div>
+									<Row type="flex" justify="center">
+										<Col span="6" class="logo">
+											<Row type="flex" justify="center" align="middle">
+												<img :src="scheme.logo" :alt="scheme.name">
+											</Row>
+										</Col>
+										<Col span="18" class="schemeTags">
+											<Row type="flex" justify="center" align="middle">
+												<Tag type="dot" v-for="items in scheme.propagandaItem" :key="items.item">
+													{{items.item}}
+												</Tag>
+											</Row>
+										</Col>
+									</Row>
+								</div>
+							</Card>
+						</Row>
+					</CarouselItem>
+				</Carousel>
+				<div class="mask"></div>
+				<img :src="xkbg" alt="" class="xkbg">
+				<img :src="xkbg" alt="" class="xkbg" id="xkbgRotate">
+			</Row>
+		</Card>
+		<Layout>
+			<Content class="home-content">
 				<v-inputs></v-inputs>
-				<blockquote class="blockquote">
-					<p class="lead text-light">键道6打字效果</p>
-				</blockquote>
-				<div class="text-center bg-white rounded">
-					<img :src="inputsImg" class="mw-100" alt="键道6打字效果">
-				</div>
-				<blockquote class="blockquote">
-					<footer class="blockquote-footer">
-						<cite>别打脸脸</cite>
-					</footer>
-				</blockquote>
-				<blockquote class="blockquote">
-					<p class="lead text-light">我的输入法之梦</p>
-				</blockquote>
-				<div class="p-3 mb-3 rounded bg-white">
+				<Card>
+					<h4 slot="title">键道6打字效果</h4>
+					<small slot="extra">@别打脸脸</small>
+					<img :src="inputsImg" alt="键道6打字效果">
+				</Card>
+				<Card>
+					<h4 slot="title">我的输入法之梦</h4>
+					<small slot="extra">吅吅大山</small>
 					<p>此岸是双拼，彼岸是双拼加形</p>
 					<p>键道，将使你成为一个巨人，左脚此岸，右脚彼岸</p>
 					<p>大风越狠，我心越荡</p>
@@ -75,14 +69,9 @@
 					<p>我的emotion，在sysy的洪流中放纵</p>
 					<p>我的thought，在syxb中雕琢</p>
 					<p>我的wisdom，在syb中激发</p>
-				</div>
-				<blockquote class="blockquote">
-					<footer class="blockquote-footer">
-						<cite>吅吅大山</cite>
-					</footer>
-				</blockquote>
-			</div>
-		</div>
+				</Card>
+			</Content>
+		</Layout>
 	</div>
 </template>
 
@@ -93,38 +82,69 @@ export default {
 	name: 'Home',
 	data () {
 		return {
-			logo: '星空键道',
-			logoimg: require('../../assets/jd.ico'),
-			propagandaLogo: '键道6，一代变迁。',
-			propaganda: require('../../assets/propaganda.png'),
-			propagandaItem: [
-				{'item': '200个两键上屏单字'},
-				{'item': '2000个三键上屏单字'},
-				{'item': '60+％的左右击键率'},
-				{'item': '活跃的词库维护平台'},
-				{'item': '21键位双拼'},
-				{'item': '0.4％的低重音率'},
-				{'item': '多平台无缝使用'}
+			schemes: [
+				{
+					logo: require('../../assets/jd.ico'),
+					name: "键道6",
+					url: 'https://gitee.com/nmlixa/Rime_JD',
+					propagandaItem: [
+						{'item': '200个两键上屏单字'},
+						{'item': '2000个三键上屏单字'},
+						{'item': '60+％的左右击键率'},
+						{'item': '活跃的词库维护平台'},
+						{'item': '21键位双拼'},
+						{'item': '0.4％的低重音率'},
+						{'item': '多平台无缝使用'},
+						{'item': '超高频易记简词，大大缩短码长'},
+					],
+					propagandaIndex: '',
+
+				},
+				{
+					logo: require('../../assets/jd.ico'),
+					name: "两笔",
+					url: 'https://gitee.com/morler/rime_xklb',
+					propagandaItem: [
+						{'item': '提笔忘字学两笔'},
+						{'item': '离散高，码长短'},
+					],
+					propagandaIndex: '',
+
+				},
+				{
+					logo: require('../../assets/jd.ico'),
+					name: "一笔",
+					url: 'https://gitee.com/dzyht/rime_xkybd',
+					propagandaItem: [
+						{'item': '招募广告词'},
+					],
+					propagandaIndex: '',
+
+				},
+				{
+					logo: require('../../assets/jd.ico'),
+					name: "一道",
+					url: 'https://gitee.com/dzyht/rime_xkybd',
+					propagandaItem: [
+						{'item': '招募广告词'}
+					],
+					propagandaIndex: '',
+
+				},
+				{
+					logo: require('../../assets/jd.ico'),
+					name: "魔道",
+					url: 'https://gitee.com/dzyht/rime_xkybd',
+					propagandaItem: [
+						{'item': '招募广告词'}
+					],
+					propagandaIndex: '',
+
+				},
 			],
-			propagandaIndex: '',
-			inputsImg: require('../../assets/inputs.gif')
+			inputsImg: require('../../assets/inputs.gif'),
+			xkbg: require('../../assets/starbg.jpg'),
 		}
-	},
-	mounted: function() {
-		var visualWidth = document.documentElement.clientWidth || document.body.clientWidth;
-		if (visualWidth < 750){
-			this.propaganda = require('../../assets/propaganda_moblie.png');
-		}
-		for (let x in this.propagandaItem){
-			this.propagandaIndex = x;
-		}
-		$(window).scroll(function (){
-			if ($(window).scrollTop() >= 200){
-				$('#content-top').addClass('content-top');
-			} else {
-				$('#content-top').removeClass('content-top');
-			}
-		})
 	},
 	components: {
 		'v-inputs': Inputs
@@ -132,29 +152,90 @@ export default {
 }
 </script>
 
-<style>
-.content-top {
-	margin-top: 80px;
+<style lang="less">
+.home-top-card {
+	border-radius: 0 0 3px 3px;
+	margin-bottom: 5px;
+	overflow: hidden;
+	.ivu-card-body {
+		padding: 0;
+	}
 }
-.bg-alpha {
-	background: rgba(0,0,0,0);
-	color: white;
+.home-top {
+	width: 100%;
+	position: relative;
+	overflow: hidden;
+	background: #000;
 }
-.top-title {
-	width: 75%;
-	margin: 5px auto !important;
+.home-content {
+	margin: 0 20px;
+	@media screen and(min-width: 768px) {
+		margin: 0 8%;
+	}
 }
-h1 {
-	font-size: 25px;
+.mask {
+	width: 100%;
+	height: 400px;
+	background: rgba(0,0,0,.5);
+	z-index: 2;
+	position: absolute;
+	top: 0;
+	left: 0;
 }
-.title-hr {
-	border-top: 1px solid skyblue;
+.xkbg {
+	width: 100%;
+	position: absolute;
+	top: -20px;
+	left: 0;
+	z-index: 1;
 }
-.content-alpha {
-	background: rgba(255, 255, 255, 0.4);
+#xkbgRotate {
+	width: 200%;
+	height: auto;
+	animation: rotate 300s infinite linear;
+	top: -45%;
+	left: -45%;
+	@media screen and (min-width: 768px) {
+		top: -70%;
+		left: -50%;
+	}
 }
-.content-carousel-shadow {
-	background: rgba(255, 255, 255, 0.6);
-	box-shadow: 0 0 100px white;
+.main-carousel {
+	margin: -5px 0 0;
+	z-index: 3;
+	.Carousel__container {
+		height: 330px;
+	}
+}
+.main-card {
+	width: 500px;
+	height: 260px;
+	margin: 65px 8% 65px;
+	z-index: 5;
+	.logo {
+		text-align: center;
+		>div {
+			height: 100%;
+			>img {
+				height: 48px;
+			}
+		}
+	}
+	.ivu-card-extra {
+		top: 5px;
+	}
+	.schemeTags {
+		text-align: center;
+		padding: 25px 0;
+	}
+}
+
+@keyframes rotate {
+	form {
+		transform: rotate(0)
+	}
+	to {
+		transform: rotate(360deg)
+	}
 }
 </style>

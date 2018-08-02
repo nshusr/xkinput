@@ -1,37 +1,54 @@
 <template>
-  <div class="container card mb-3">
-    <h1 class="title-name lead text-center py-2">单字词组练习工具<small>Rime词库</small></h1>
-    <div class="d-flex justify-content-between p-2 pt-2">
-      <span class="term-name lead text-secondary pt-1 w-80" :title="termsData.name">{{termsData.name ? termsData.name : '未读取文件'}}&nbsp;{{termsData.size ? termsData.mbSize : 0}}</span>
-      <div id="fileUpBox" class="w-20">
-        <!-- <label class="btn border" title="载入键道单字">键道单字</label> -->
-        <label class="btn border" :class="{'btn-danger':notUpFileClass}" for="file" title="上传词库文件">上传</label>
-        <input id="file" ref="file" @change="readFile" type="file">
-      </div>
-    </div>
-    <div class="d-flex mx-auto flex-row justify-content-center align-items-center p-3">
-      <label id="word" class="border-0">{{word}}</label>
-      <input id="code" class="border rounded px-2" 
-            maxlength="6"
-            @click="isReadFile"
-            :class="{'': status == 0, 'border-primary': status == 1,'border-success': status == 2, 'border-danger': status == -1}" type="text"
-            @keyup.space="isRight" @keydown.space.prevent autocomplete="off"
-            v-model="code" title="请输入编码">
-    </div>
-    <div class="lead"><p class="text-center">version 1.0</p></div>
-    <div class="lead help-div row py-5">
-      <p class="col-6 col-md-3 text-center">一、请选择一个Rime词库上传。</p>
-      <p class="col-6 col-md-3 text-center">二、切换使用英文输入法。</p>
-      <p class="col-6 col-md-3 text-center">三、输入对应词条编码，空格确定。</p>
-      <p class="col-6 col-md-3 text-center">四、校验成功自动下一个。</p>
-    </div>
-    <div id="message" class="fixed-top w-20 alert p-3" :class="message.class" v-show="message.show">
-      {{message.cont}}
-    </div>
-  </div>
+	<Row type="flex" justify="center">
+		<Row style="max-width: 1200px; padding: 0 20px;">
+      <Card>
+        <Row type="flex" justify="center">
+          <h1 class="main-title">单字词组练习工具<small>Rime词库</small></h1>
+        </Row>
+        <Row>
+          <Card class="study-main-card">
+            <span slot="title" :title="termsData.name">{{termsData.name ? termsData.name : '未读取文件'}}&nbsp;{{termsData.size ? termsData.mbSize : 0}}</span>
+            <div slot="extra">
+              <label class="ivu-btn ivu-btn-default" for="file">上传</label>
+              <input id="file" ref="file" @change="readFile" type="file">
+            </div>
+            <Row type="flex" justify="center">
+              <span id="word" data-clipboard-target="#word">{{word}}</span>
+              <input
+                class="ivu-input ivu-input-default"
+                maxlength="6"
+                @click="isReadFile"
+                :class="{'': status == 0, 'border-primary': status == 1,'border-success': status == 2, 'border-danger': status == -1}" type="text"
+                @keyup.space="isRight"
+                @keydown.space.prevent
+                autocomplete="off"
+                v-model="code"
+                placeholder="请输入词组对应编码"></button>
+            </Row>
+          </Card>
+          <p class="text-center">version 1.1</p></div>
+          <Row type="flex" justify="center" style="margin-top: 15px;">
+            <Col :xs="12" :md="6" style="padding: 0 5px;">
+              <p>一、请选择一个Rime词库上传。</p>
+            </Col> 
+            <Col :xs="12" :md="6" style="padding: 0 5px;">
+              <p>二、切换使用英文输入法。</p>
+            </Col> 
+            <Col :xs="12" :md="6" style="padding: 0 5px;">
+              <p>三、输入对应词条编码，空格确定。</p>
+            </Col> 
+            <Col :xs="12" :md="6" style="padding: 0 5px;">
+              <p>四、校验成功自动下一个。</p>
+            </Col>
+          </Row>
+        </Row>
+      </Card>
+		</Row>
+  </Row>
 </template>
 
 <script>
+import Clipboard from 'clipboard';
 export default {
   name: 'study',
   data () {
@@ -57,15 +74,21 @@ export default {
       errNum: 2
     }
   },
+  mounted () {
+    var clip = new Clipboard('#word'),
+      __this = this;
+    clip.on('success', e => {
+      __this.$Message.success(`已复制`);
+    })
+  },
   methods: {
     isReadFile: function (){
       if (!this.termsData.size) {
         this.notUpFileClass = true;
-        this.showMessage({
-          show: true,
-          class: 'alert-danger',
-          cont: `未读取词库文件，请点击上传选择词库文件。`
-        });
+        this.$Notice.error({
+          title: `词库文件为空`,
+          desc: `未读取词库文件，请点击上传选择词库文件。`
+        })
         return;
       }
     },
@@ -81,10 +104,9 @@ export default {
 
       if (this.code.length >= 1) {
         if (this.nextData.code == this.code){
-          this.showMessage({
-            show: true,
-            class: 'alert-info',
-            cont: `编码：${this.nextData.code}\t词条：${this.nextData.word}\t√`
+          this.$Notice.info({
+            title: `词组信息：`,
+            desc: `编码：${this.nextData.code}\t词条：${this.nextData.word}\t√`
           })
           this.status = 2;
           this.errNum = 2;
@@ -92,10 +114,9 @@ export default {
         } else {
           this.status = -1;
 
-          this.showMessage({
-            show: true,
-            class: 'alert-danger',
-            cont: `错误请重新输入\t提示：共有${this.nextData.code.length}位，前${this.errNum}位是：${this.nextData.code.match(eval(reg))}\t×`
+          this.$Notice.error({
+            title: `编码有误`,
+            desc: `错误请重新输入\t提示：共有${this.nextData.code.length}位，前${this.errNum}位是：${this.nextData.code.match(eval(reg))}\t×`
           })
           if (this.nextData.code.length > this.errNum) this.errNum++;
         }
@@ -131,11 +152,10 @@ export default {
         var file = this.$refs.file.files[this.$refs.file.files.length-1];
         var reader = new FileReader();
         if (!/yaml|txt|xls/.test(file.name)){
-          this.showMessage({
-            show: true,
-            class: 'alert-danger',
-            cont: `您上传的${file.name}文件格式不受支持。`
-          });
+          this.$Notice.error({
+            title: `上传文件有误`,
+            desc: `您上传的${file.name}文件格式不受支持。`
+          })
         } else {
           this.termsData = this.$refs.file.files[this.$refs.file.files.length-1];      
           this.termsData.mbSize = this.kbToMb(this.termsData.size);
@@ -151,11 +171,9 @@ export default {
           this.notUpFileClass = false;
 
           this.next();
-
-          this.showMessage({
-            show: true,
-            class: 'alert-success',
-            cont: '词库已加载。'
+          this.$Notice.error({
+            title: `词组载入成功`,
+            desc: `词库文件已加载完成，词库为${this.termsData.name}，词库大小${this.termsData.mbSize}。`
           })
         }
 
@@ -168,27 +186,19 @@ export default {
       } else {
         return eval(computedData / 1048576).toFixed(1) + "MB";
       }
-    },
-    showMessage: function(data){
-      var __this = this;
-      this.message = data;
-      this.closeMessage();
-    },
-    closeMessage: function(){
-      var __this = this;
-      setTimeout(function(){
-        __this.message = {
-          show: false,
-          class: '',
-          cont: ''
-        }
-      }, 3000);
     }
   }
 }
 </script>
 
 <style>
+.main-title,
+.main-title small {
+  font-weight: lighter;
+}
+.study-main-card .ivu-card-extra {
+  top: 6px;
+}
 .term-name {
   overflow: hidden;
   text-overflow: ellipsis;

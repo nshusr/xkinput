@@ -1,11 +1,11 @@
 <template>
-	<div class="mainbg" :style="bg">
-		<div :style="bgcolor" class="container-fluid">
-			<v-nav></v-nav>
+	<div id="app">
+		<v-nav></v-nav>
+		<Layout class="main-layout">
 			<router-view></router-view>
-			<v-footer></v-footer>
-			<v-utiltes></v-utiltes>
-		</div>
+		</Layout>
+		<v-footer></v-footer>
+		<v-utiltes></v-utiltes>
 	</div>
 </template>
 
@@ -22,16 +22,11 @@ export default {
 	},
 	data () {
 		return {
-			bg: {
-				backgroundImage: 'url('+ require('./assets/background.jpg') + ')',
-				backgroundRepeat: 'no-repeat',
-				backgroundPosition: 'center center',
-				backgroundAttachment: 'fixed'
-			},
-			bgcolor: {
-				backgroundColor: 'rgba(0, 0, 0, 0.4)'
-			}
+			isDestroyed: true,
 		}
+	},
+	created: function () {
+		this.$Spin.show();
 	},
 	mounted: function (){
 		document.onkeydown = (ev) => {
@@ -50,12 +45,17 @@ export default {
 				}
 			}
 		}
+	},
+	beforeUpdate: function () {
+		this.$Spin.hide();
 	}
 }
 </script>
 
 <style>
-.mainbg {
-	background-size: cover;
+
+.main-layout {
+	padding: 70px 0 10px;
 }
+
 </style>
