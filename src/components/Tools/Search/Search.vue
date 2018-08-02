@@ -2,7 +2,7 @@
   <Row style="max-width: 600px; margin: 0 auto;">
     <Row type="flex" justify="center">
       <Card style="width: 100%;">
-        <h4>星空单字查码工具</h4>
+        <h3>星空单字查码工具</h3>
         <Form status-icon :model="formData" :rules="rules" ref="formData">
           <FormItem label="词条：" prop="keyword">
             <Input type="text" v-model="formData.keyword" placeholder="请输入你要查询的字词"></Input>

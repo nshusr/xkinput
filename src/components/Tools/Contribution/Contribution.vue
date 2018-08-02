@@ -50,15 +50,11 @@
 					</Col>
 				</Row>
 			</Card>
-			
-			<div class="controls-switch fixed-bottom" style="left: 30px; bottom: 100px;">
-				<button class="btn btn-light d-block" @click="switchControlFn"><i class="fa" :class="{'fa-toggle-on':switchControl, 'fa-toggle-off':!switchControl}"></i></button>
-			</div>
 
-			<i-switch class="controls-switch" v-model="switchControl" @on-change="switchControlFn"></i-switch>
+			<i-switch class="controls-switch" v-model="switchControl" @click="switchControl = !switchControl"></i-switch>
 
 			<transition name="slide">
-				<Card style="padding: 0 20%;">
+				<Card class="controls-btn" style="padding: 0 20%;" v-if="switchControl">
 					<Row type="flex" justify="space-around" align="middle">
 						<Button size="large" @click="testing(true)">开始处理</Button>
 						<Tooltip content="在转换内容各编码后缀添加编码重数" placement="top">
@@ -78,7 +74,7 @@
 			<div class="bottom-info w-100">
 				<Card>
 					<Row type="flex" justify="center">
-						<h5>申请表词库处理工具v{{version}}</h5>
+						<h3>申请表词库处理工具v{{version}}</h3>
 					</Row>
 				</Card>
 				<Card>
@@ -87,8 +83,8 @@
 						<p>请注意！本工具不支持<b>英文（含英文）</b>词组准确修改功能！工具遇重码操作后计算耗时较长，请耐心等待。</p>
 					</Row>
 				</Card>
-				<Card>
-					<h6 slot="title">更新历史</h6>
+				<Card class="history-card">
+					<h4 slot="title">更新历史</h4>
 					<Button slot="extra" @click="updateAll = !updateAll">展开所有</Button>
 					<Row>
 						<Timeline>
@@ -512,9 +508,6 @@ wffj	-	万付`,
 			}
 			return time;
 		},
-		switchControlFn: function (){
-			this.switchControl = !this.switchControl;
-		},
 		oldTermsInput: function() {
 			this.oldTerms = this.oldTerms += '\t';
 		},
@@ -653,28 +646,31 @@ textarea:focus + .info {
 	opacity: .7;
 	margin-right: 5px;
 }
+.controls-switch {
+	position: fixed;
+	left: 20px;
+	bottom: 110px;
+	z-index: 5;
+}
 .controls-btn {
 	position: fixed;
 	width: 100%;
 	left: 0;
 	bottom: 0;
-	background: #013449;
 	z-index: 999;
-}
-.custom-control .custom-control-label::after,
-.custom-control .custom-control-label::before {
-	top: 10px;
-	left: 5px;
 }
 
 .main-spin-icon-load{
 	animation: ani-demo-spin 1s linear infinite;
 }
 
+.history-card .ivu-card-extra {
+	top: 3px;
+}
+
 @media (min-width: 768px) {
 	.controls-btn {
 		position: static;
-		background: 0;
 	}
 	.controls-switch {
 		display: none;

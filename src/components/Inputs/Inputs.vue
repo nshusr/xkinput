@@ -2,7 +2,16 @@
     <Card>
         <h4 slot="title">键道6键盘布局</h4>
         <small slot="extra">@吅吅大山</small>
-        <Table :columns="columns1" :data="inputs" border stripe :showHeader="false" :ellipsis="true"></Table>
+        <Row class="inputs-talbe">
+            <Table
+            :columns="columns1"
+            :data="inputs"
+            width="1100"
+            border
+            stripe
+            :showHeader="false"
+            :ellipsis="true"></Table>
+        </Row>
     </Card>
 </template>
 
@@ -123,6 +132,8 @@ export default {
 </script>
 
 <style>
-
+.inputs-talbe {
+    overflow-x: scroll;
+}
 </style>
 

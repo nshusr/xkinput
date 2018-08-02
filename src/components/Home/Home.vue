@@ -212,6 +212,7 @@ export default {
 	height: 260px;
 	margin: 65px 8% 65px;
 	z-index: 5;
+	overflow: hidden;
 	.logo {
 		text-align: center;
 		>div {

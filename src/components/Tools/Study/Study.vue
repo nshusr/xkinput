@@ -26,7 +26,9 @@
                 placeholder="请输入词组对应编码"></button>
             </Row>
           </Card>
-          <p class="text-center">version 1.1</p></div>
+          <Row type="flex" justify="center">
+            <p>version 1.1</p>
+          </Row>
           <Row type="flex" justify="center" style="margin-top: 15px;">
             <Col :xs="12" :md="6" style="padding: 0 5px;">
               <p>一、请选择一个Rime词库上传。</p>
