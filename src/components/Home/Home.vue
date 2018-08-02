@@ -13,7 +13,7 @@
 									<Row type="flex" justify="center">
 										<Col span="6" class="logo">
 											<Row type="flex" justify="center" align="middle">
-												<img :src="scheme.logo" :alt="scheme.name">
+												<img width="48" height="48" :src="scheme.logo" :alt="scheme.name">
 											</Row>
 										</Col>
 										<Col span="18" class="schemeTags">
@@ -101,7 +101,7 @@ export default {
 
 				},
 				{
-					logo: require('../../assets/jd.ico'),
+					logo: require('../../assets/star.png'),
 					name: "两笔",
 					url: 'https://gitee.com/morler/rime_xklb',
 					propagandaItem: [
@@ -112,7 +112,7 @@ export default {
 
 				},
 				{
-					logo: require('../../assets/jd.ico'),
+					logo: require('../../assets/star.png'),
 					name: "一笔",
 					url: 'https://gitee.com/dzyht/rime_xkybd',
 					propagandaItem: [
@@ -122,7 +122,7 @@ export default {
 
 				},
 				{
-					logo: require('../../assets/jd.ico'),
+					logo: require('../../assets/star.png'),
 					name: "一道",
 					url: 'https://gitee.com/dzyht/rime_xkybd',
 					propagandaItem: [
@@ -132,7 +132,7 @@ export default {
 
 				},
 				{
-					logo: require('../../assets/jd.ico'),
+					logo: require('../../assets/star.png'),
 					name: "魔道",
 					url: 'https://gitee.com/dzyht/rime_xkybd',
 					propagandaItem: [
