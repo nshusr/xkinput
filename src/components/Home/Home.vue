@@ -37,7 +37,7 @@
 		<Layout>
 			<Content class="home-content">
 				<v-inputs></v-inputs>
-				<Card>
+				<Card class="inputs-card">
 					<h4 slot="title">键道6打字效果</h4>
 					<small slot="extra">@别打脸脸</small>
 					<img :src="inputsImg" alt="键道6打字效果">
@@ -229,6 +229,10 @@ export default {
 		text-align: center;
 		padding: 25px 0;
 	}
+}
+
+.inputs-card {
+	overflow: hidden;
 }
 
 @keyframes rotate {

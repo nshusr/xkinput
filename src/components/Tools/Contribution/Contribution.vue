@@ -400,7 +400,7 @@ wffj	-	万付`,
 		},
 		testing: function (isHoundle) {
 			this.begin = new Date();
-			var newsHaveRepeat = /#\d+/.test(this.newsTerms);
+			var newsHaveRepeat = /#\d+/.test(this.newsTerms)
 			
 			if (0 == this.oldTerms.length){
 				this.$Message.success(`工作表为空！`);
@@ -450,7 +450,9 @@ wffj	-	万付`,
 						])
 					}
 				});
-				this.handleTerms(newsHaveRepeat);
+				setTimeout(() => {
+					this.handleTerms(newsHaveRepeat);
+				}, 300);
 			} else {
 				return;
 			}
