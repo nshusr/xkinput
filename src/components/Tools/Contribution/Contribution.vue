@@ -288,12 +288,14 @@ wffj	-	万付`,
         y = 0;
 
       this.$Loading.start();
+      this.$Message.destroy();
       this.$Message.loading({
         content: `启动转换进程：共有${
           this.oldTermsData.obj.word.length
         }，已开始处理请稍后…`,
         duration: 0
       });
+      if (this.handleTermsWorker) this.handleTermsWorker = null;
       //设置文本、编码、属性
       //1 遍历旧词库,转换内容
       this.handleTermsWorker = this.$worker
