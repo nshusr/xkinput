@@ -6,7 +6,7 @@
 					<Button to="http://daniushuangpin.ys168.com/" target="_blank" shape="circle"><Icon size="14" type="md-cloud" /></Button>
 				</MenuItem>
 				<MenuItem name="home">
-					<Button to="/" shape="circle"><Icon size="14" type="md-home" /></Button>
+					<Button to="/jdweb" shape="circle"><Icon size="14" type="md-home" /></Button>
 				</MenuItem>
 				<MenuItem name="menu">
 					<Dropdown>

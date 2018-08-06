@@ -12,7 +12,7 @@ export default new Router({
   mode: "history",
   routes: [
     {
-      path: "/",
+      path: "/jdweb",
       name: "Home",
       component: Home
     },
