@@ -282,8 +282,7 @@ wffj	-	万付`,
       var thisOldData = this.oldTermsData.obj,
         thisNewData = this.newTermsData,
         thisIsLog = this.isLog,
-        reg,
-        regIdentData;
+        reg;
       var i = 1,
         y = 0;
 
@@ -305,16 +304,13 @@ wffj	-	万付`,
             if (newsHaveRepeat) {
               for (y in thisOldData.word) {
                 reg = new RegExp(`.+\\t\\b${thisOldData.code[y]}#*\\d*`, "g");
-                if (resultData.search(reg) == -1) {
-                  resultData += `${thisOldData.word[y]}\t${
-                    thisOldData.code[y]
-                  }#${i}\r\n`;
-                } else {
-                  regIdentData = resultData.match(reg);
-                  resultData += `${thisOldData.word[y]}\t${
-                    thisOldData.code[y]
-                  }#${parseFloat(regIdentData.length) + 1}\r\n`;
-                }
+                resultData.search(reg) == -1
+                  ? (resultData += `${thisOldData.word[y]}\t${
+                      thisOldData.code[y]
+                    }#${i}\r\n`)
+                  : (resultData += `${thisOldData.word[y]}\t${
+                      thisOldData.code[y]
+                    }#${parseFloat(resultData.match(reg).length) + 1}\r\n`);
                 thisIsLog && console.log("已完成：", parseFloat(y) + 1);
               }
             } else {
