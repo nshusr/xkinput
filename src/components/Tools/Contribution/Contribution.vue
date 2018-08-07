@@ -152,21 +152,22 @@ export default {
         error: "共: 0 错: 0 没：0 缺：0"
       },
       errorInfoData: "",
-      demoOldData: `剥壳	blke
+      demoData: {
+        old: `剥壳	blke
 经历	jglk
 尽力	jglk
 博客6	blke
 万夫6	wffj
 折子戏	fzxi
 万付	wffj`,
-      demoNewData: `blke	+	剥个
+        new: `blke	+	剥个
 blkeav#2	*	贝壳
 jglk#3	-	经历
 jglk#4	+	静静
-wffj	-	万付`,
+wffj	-	万付`
+      },
       updates: false,
-      begin: "",
-      end: "",
+      timeRecord: {},
       isPhone: false,
       isDev: false,
       isLog: false,
@@ -279,12 +280,14 @@ wffj	-	万付`,
       this.version = this.updateHistory[this.updateHistoryLength].ver;
     },
     handleOldTerms: function(newsHaveRepeat) {
-      var thisOldData = this.oldTermsData.obj,
-        thisNewData = this.newTermsData,
-        thisIsLog = this.isLog,
+      var thisData = {},
+        i = 1,
+        y = 0,
         reg;
-      var i = 1,
-        y = 0;
+
+      thisData.old = this.oldTermsData.obj;
+      thisData.new = this.newTermsData;
+      thisData.isLog = this.isLog;
 
       this.$Loading.start();
       this.$Message.destroy();
@@ -294,66 +297,68 @@ wffj	-	万付`,
         }，已开始处理请稍后…`,
         duration: 0
       });
-      if (this.handleTermsWorker) this.handleTermsWorker = null;
-      //设置文本、编码、属性
+
+      this.handleTermsWorker = null;
       //1 遍历旧词库,转换内容
       this.handleTermsWorker = this.$worker
         .run(
-          (newsHaveRepeat, thisOldData, thisNewData, i, y, thisIsLog) => {
-            var resultData = thisNewData;
+          (newsHaveRepeat, thisData, i, y) => {
+            var resultData = thisData.new;
             if (newsHaveRepeat) {
-              for (y in thisOldData.word) {
-                reg = new RegExp(`.+\\t\\b${thisOldData.code[y]}#*\\d*`, "g");
+              for (y in thisData.old.word) {
+                reg = new RegExp(`.+\\t\\b${thisData.old.code[y]}#*\\d*`, "g");
                 resultData.search(reg) == -1
-                  ? (resultData += `${thisOldData.word[y]}\t${
-                      thisOldData.code[y]
+                  ? (resultData += `${thisData.old.word[y]}\t${
+                      thisData.old.code[y]
                     }#${i}\r\n`)
-                  : (resultData += `${thisOldData.word[y]}\t${
-                      thisOldData.code[y]
+                  : (resultData += `${thisData.old.word[y]}\t${
+                      thisData.old.code[y]
                     }#${parseFloat(resultData.match(reg).length) + 1}\r\n`);
-                thisIsLog && console.log("已完成：", parseFloat(y) + 1);
+                thisData.isLog && console.log("1：已完成：", parseFloat(y) + 1);
               }
             } else {
-              for (y in thisOldData.word) {
-                reg = new RegExp(`.+\\t\\b${thisOldData.code[y]}\\b`, "g");
-                resultData += `${thisOldData.word[y]}\t${
-                  thisOldData.code[y]
+              for (y in thisData.old.word) {
+                reg = new RegExp(`.+\\t\\b${thisData.old.code[y]}\\b`, "g");
+                resultData += `${thisData.old.word[y]}\t${
+                  thisData.old.code[y]
                 }\r\n`;
               }
             }
             return resultData;
           },
-          [newsHaveRepeat, thisOldData, thisNewData, i, y, thisIsLog]
+          [newsHaveRepeat, thisData, i, y]
         )
         .then(res => {
           this.newTermsData = res;
+          this.$Message.destroy();
           this.handleTerms();
         })
         .catch(e => {
           this.$Message.error("遇到错误：", e);
+          console.log(e);
         });
-      this.handleTermsWorker = null;
     },
     handleTerms: function() {
       //设置公共属性
-      var _this = this;
-      var thisNewData = this.newsTermsData.obj;
-      var reg,
+      var thisNewData = this.newsTermsData.obj,
+        x = 0,
+        reg,
         out,
         log,
         ope,
-        SuccessAll,
-        ErrorAll,
-        AddNum,
-        ModifyNum,
-        DelNum,
-        ErrorNum,
-        NoNum,
-        ErrorAttr,
+        num,
         HaveCodeReg,
         TermsCorrectCodeReg;
-      SuccessAll = ErrorAll = AddNum = ModifyNum = DelNum = ErrorNum = NoNum = ErrorAttr = 0;
-      var x = 0;
+      num = {
+        suc: 0,
+        errall: 0,
+        add: 0,
+        mod: 0,
+        del: 0,
+        err: 0,
+        no: 0,
+        erratt: 0
+      };
 
       //2 遍历新词条
       for (x in thisNewData.word) {
@@ -367,15 +372,15 @@ wffj	-	万付`,
           if (this.newTermsData.search(reg) == -1) {
             this.newTermsData += out + "\r\n";
             this.successInfoData += `${out}\t[ + 第${parseFloat(x) + 1}行]\r\n`;
-            SuccessAll++;
-            AddNum++;
+            num.suc++;
+            num.add++;
           } else {
             this.errorInfoData += `[第${parseFloat(x) +
               1}行]\t${log}\r\n>> Error 编码已存在：\r\n${this.newTermsData
               .match(reg)
               .join("，")}\r\n\r\n`;
-            ErrorAll++;
-            ErrorNum++;
+            num.errall++;
+            num.errnum++;
           }
           //modify
         } else if (thisNewData.modify[x]) {
@@ -386,15 +391,15 @@ wffj	-	万付`,
           if (this.newTermsData.search(reg) != -1) {
             this.newTermsData = this.newTermsData.replace(reg, out);
             this.successInfoData += `${out}\t[ * 第${parseFloat(x) + 1}行]\r\n`;
-            SuccessAll++;
-            ModifyNum++;
+            num.suc++;
+            num.mod++;
           } else {
             this.errorInfoData += `[第${parseFloat(x) +
               1}行]\t${log}\r\n>> Error 未找到编码：\r\n${
               thisNewData.code[x]
             }\r\n\r\n`;
-            ErrorAll++;
-            NoNum++;
+            num.errall++;
+            num.no++;
           }
           //delete
         } else if (thisNewData.delete[x]) {
@@ -419,15 +424,15 @@ wffj	-	万付`,
               );
               this.successInfoData += `${out}\t[ - 第${parseFloat(x) +
                 1}行]\r\n`;
-              SuccessAll++;
-              DelNum++;
+              num.suc++;
+              num.del++;
             } else {
               this.errorInfoData += `[第${parseFloat(x) +
                 1}行]\t${log}\r\n>> Warn 词组编码不对应：\r\n${this.newTermsData
                 .match(HaveCodeReg)
                 .join("，")}\r\n\r\n`;
-              ErrorAll++;
-              NoNum++;
+              num.errall++;
+              num.no++;
             }
           } else {
             log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
@@ -435,8 +440,8 @@ wffj	-	万付`,
               1}行]\t${log}\r\n>> Error 编码不存在：\r\n${
               thisNewData.code[x]
             }\r\n\r\n`;
-            ErrorAll++;
-            NoNum++;
+            num.errall++;
+            num.no++;
           }
           //未知
         } else {
@@ -446,8 +451,8 @@ wffj	-	万付`,
             1}行]\t${log}\r\n>> Danger 未知操作符号。\r\n${
             thisNewData.code[x]
           }\r\n\r\n`;
-          ErrorAll++;
-          ErrorAttr++;
+          num.errall++;
+          num.erratt++;
         }
       }
 
@@ -457,24 +462,34 @@ wffj	-	万付`,
         nCodeNum = this.newTermsCountData.obj.code.length;
       //填写底部统计
       this.count.out = `词: ${nWordNum} 码: ${nCodeNum}`;
-      this.count.success = `共：${SuccessAll} 加: ${AddNum} 改: ${ModifyNum} 删：${DelNum}`;
-      this.count.error = `共: ${ErrorAll} 错: ${ErrorNum} 没：${NoNum} 缺：${ErrorAttr}`;
+      this.count.success = `共：${num.suc} 加: ${num.add} 改: ${num.mod} 删：${
+        num.del
+      }`;
+      this.count.error = `共: ${num.errall} 错: ${num.errnum} 没：${
+        num.no
+      } 缺：${num.erratt}`;
       //扫描去除空行
       this.clearSpace();
 
       //统计最后用时
-      this.end = new Date();
-      var thisTimeOf = this.MillisecondToDate(this.end - this.begin);
+      this.timeRecord.end = new Date();
+      let thisTimeOf = this.MillisecondToDate(
+        this.timeRecord.end - this.timeRecord.begin
+      );
       this.timeOf.push(thisTimeOf);
 
       //添加文档底部统计
-      this.successInfoData = `成功统计：\t\t完成共计用时${thisTimeOf}\n共有 ${SuccessAll} 个, 添加 ${AddNum} 个,\n修改 ${ModifyNum} 个, 删除 ${DelNum} 个。\n\n${
+      this.successInfoData = `成功统计：\t\t完成共计用时${thisTimeOf}\n共有 ${
+        num.suc
+      } 个, 添加 ${num.add} 个,\n修改 ${num.mod} 个, 删除 ${num.del} 个。\n\n${
         this.successInfoData
       }`;
-      if (!ErrorAll && !ErrorNum && !NoNum && !ErrorAttr) {
+      if (!num.errall && !num.errnum && !num.no && !num.erratt) {
         this.errorInfoData = `恭喜，没有错误哦！`;
       } else {
-        this.errorInfoData = `失败统计：\n共有 ${ErrorAll}个, 错误 ${ErrorNum} 个,\n没找到 ${NoNum} 个, 没操作符 ${ErrorAttr} 个。\n\n${
+        this.errorInfoData = `失败统计：\n共有 ${num.errall}个, 错误 ${
+          num.errnum
+        } 个,\n没找到 ${num.no} 个, 没操作符 ${num.erratt} 个。\n\n${
           this.errorInfoData
         }`;
       }
@@ -493,8 +508,9 @@ wffj	-	万付`,
       //发送成功信息
       this.$Message.destroy();
       this.$Message.success({
-        content: `用时${_this.end -
-          _this.begin}毫秒 处理完毕！共成功${SuccessAll}个、失败${ErrorAll}个！`,
+        content: `用时${thisTimeOf}毫秒 处理完毕！共成功${num.suc}个、失败${
+          num.errall
+        }个！`,
         duration: 3
       });
 
@@ -547,7 +563,7 @@ wffj	-	万付`,
       }
     },
     testing: function(isHoundle) {
-      this.begin = new Date();
+      this.timeRecord.begin = new Date();
       var newsHaveRepeat = /#\d+/.test(this.newsTerms);
 
       if (0 == this.oldTerms.length) {
@@ -592,8 +608,8 @@ wffj	-	万付`,
       }
     },
     createDemo: function() {
-      this.oldTerms = this.demoOldData;
-      this.newsTerms = this.demoNewData;
+      this.oldTerms = this.demoData.old;
+      this.newsTerms = this.demoData.new;
       this.testing(false);
     },
     clearContent: function() {
