@@ -447,7 +447,7 @@ wffj	-	万付`,
           ope = "×";
           out = thisNewData.word[x] + "\t" + thisNewData.code[x];
           this.errorInfoData += `[第${parseFloat(x) +
-            1}行]\t${log}\r\n>> Dang 未知操作符号。\r\n${
+            1}行]\t${log}\r\n>> Danger 未知操作符号。\r\n${
             thisNewData.code[x]
           }\r\n\r\n`;
           ErrorAll++;
@@ -813,7 +813,7 @@ textarea:focus + .info {
 .controls-switch {
   position: fixed !important;
   left: 20px;
-  bottom: 110px;
+  bottom: 150px;
   z-index: 5;
 }
 
