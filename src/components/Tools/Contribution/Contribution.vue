@@ -9,7 +9,7 @@
 						<span class="textarea-info" v-html="count.old"></span>
 					</div>
 					<transition name="slide">
-						<textarea v-show="showPlate.old" v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" @keyup.ctrl.86="testing(false)"
+						<textarea spellcheck="false" v-show="showPlate.old" v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" @keyup.ctrl.86="testing(false)"
 							:placeholder="oldAttr"></textarea>
 					</transition>
 					</Col>
@@ -19,7 +19,7 @@
 						<span class="textarea-title">更正数据</span>
 					</div>
 					<transition name="slide">
-						<textarea v-show="showPlate.new" v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" @keyup.ctrl.86="testing(false)"
+						<textarea spellcheck="false" v-show="showPlate.new" v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" @keyup.ctrl.86="testing(false)"
 							:placeholder="newAttr"></textarea>
 					</transition>
 					</Col>
@@ -29,7 +29,7 @@
 						<span class="textarea-title">转换内容</span>
 					</div>
 					<transition name="slide">
-						<textarea v-show="showPlate.out" readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" placeholder="输出转换后内容"></textarea>
+						<textarea spellcheck="false" v-show="showPlate.out" readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" placeholder="输出转换后内容"></textarea>
 					</transition>
 					</Col>
 					<Col :xs="24" :sm="12">
@@ -38,7 +38,7 @@
 						<span class="textarea-title">成功信息</span>
 					</div>
 					<transition name="slide">
-						<textarea v-show="showPlate.suc" readonly v-model="successInfo" placeholder="输出成功信息"></textarea>
+						<textarea spellcheck="false" v-show="showPlate.suc" readonly v-model="successInfo" placeholder="输出成功信息"></textarea>
 					</transition>
 					</Col>
 					<Col :xs="24" :sm="12">
@@ -47,7 +47,7 @@
 						<span class="textarea-title">错误信息</span>
 					</div>
 					<transition name="slide">
-						<textarea v-show="showPlate.err" readonly v-model="errorInfo" placeholder="输出错误信息"></textarea>
+						<textarea spellcheck="false" v-show="showPlate.err" readonly v-model="errorInfo" placeholder="输出错误信息"></textarea>
 					</transition>
 					</Col>
 				</Row>
@@ -58,7 +58,14 @@
 			<transition name="slide">
 				<Card class="controls-btn" style="padding: 0 20%;" v-if="switchControl">
 					<Row type="flex" justify="space-around" align="middle">
-						<Button size="large" @click="testing(true)">开始处理</Button>
+						<Button size="large" @click="testing(true)" v-if="!handleTermsWorker">开始处理</Button>
+            <Button size="large" type="info" @click="closeHandle" v-if="handleTermsWorker">线程开启</Button>
+            <Tooltip placement="top" theme="light">
+              <Icon size="24" type="ios-alert-outline" />
+              <div slot="content" style="text-align: center">
+                <b style="color: red">后台线程运行中无法停止。<br />关闭本页面可以终止该线程。</b>
+              </div>
+            </Tooltip>
 						<Tooltip placement="top">
 							<i-switch size="large" v-model="isLog">
 								<span slot="open">记录</span>
@@ -183,6 +190,7 @@ wffj	-	万付`
       updateAll: false,
       handleTermsWorker: null,
       handleTermsStatus: 0,
+      handleTermsPro: 0,
       updateHistory: [
         {
           ver: "1.0",
@@ -263,23 +271,31 @@ wffj	-	万付`
         {
           ver: "4.0",
           cont: "重码算法优化，加入Web Worker后台线程计算。"
+        },
+        {
+          ver: "4.1",
+          cont:
+            "阻止Chrome浏览器textarea的拼写检查。算法再次优化，允许用户结束处理线程。打印处理进度以1000词分隔，降低处理时的损耗时间。多处指示细节优化。"
         }
       ],
       updateHistoryLength: 0
     };
   },
-  created: function() {
+  created() {
     this.isPhoneFn();
     this.getVersion();
   },
-  mounted: function() {
+  mounted() {
     this.Notice();
   },
+  destroyed() {
+    this.handleTermsWorker = null;
+  },
   methods: {
-    getVersion: function() {
+    getVersion() {
       this.version = this.updateHistory[this.updateHistoryLength].ver;
     },
-    handleOldTerms: function(newsHaveRepeat) {
+    handleOldTerms(newsHaveRepeat) {
       var thisData = {},
         i = 1,
         y = 0,
@@ -292,11 +308,16 @@ wffj	-	万付`
       this.$Loading.start();
       this.$Message.destroy();
       this.$Message.loading({
-        content: `启动转换进程：共有${
+        content: `启动转换进程${this.handleTermsPro}：共有${
           this.oldTermsData.obj.word.length
-        }，已开始处理请稍后…`,
+        }，已开始处理，请稍后…`,
         duration: 0
       });
+      this.handleTermsPro &&
+        this.$Message.loading({
+          content: `已开启多条线程，为了更快速的处理，请关闭该标签页，重新打开。`,
+          duration: 0
+        });
 
       this.handleTermsWorker = null;
       //1 遍历旧词库,转换内容
@@ -314,7 +335,9 @@ wffj	-	万付`
                   : (resultData += `${thisData.old.word[y]}\t${
                       thisData.old.code[y]
                     }#${parseFloat(resultData.match(reg).length) + 1}\r\n`);
-                thisData.isLog && console.log("1：已完成：", parseFloat(y) + 1);
+                thisData.isLog &&
+                  parseFloat(y) % 1000 == 0 &&
+                  console.log(`已完成：${parseFloat(y)}个`);
               }
             } else {
               for (y in thisData.old.word) {
@@ -332,13 +355,17 @@ wffj	-	万付`
           this.newTermsData = res;
           this.$Message.destroy();
           this.handleTerms();
+          this.handleTermsWorker = null;
         })
         .catch(e => {
+          this.$Loading.error();
           this.$Message.error("遇到错误：", e);
           console.log(e);
+          this.timeRecord.getTimeOf = null;
+          this.handleTermsWorker = null;
         });
     },
-    handleTerms: function() {
+    handleTerms() {
       //设置公共属性
       var thisNewData = this.newsTermsData.obj,
         x = 0,
@@ -473,7 +500,7 @@ wffj	-	万付`
 
       //统计最后用时
       this.timeRecord.end = new Date();
-      let thisTimeOf = this.MillisecondToDate(
+      var thisTimeOf = this.MillisecondToDate(
         this.timeRecord.end - this.timeRecord.begin
       );
       this.timeOf.push(thisTimeOf);
@@ -517,7 +544,7 @@ wffj	-	万付`
       //清理数据
       this.successInfoData = this.errorInfoData = this.newTermsData = "";
     },
-    TermsCountSet: function(formName, formData) {
+    TermsCountSet(formName, formData) {
       //转换符号
       this.allToHalf();
 
@@ -562,12 +589,13 @@ wffj	-	万付`
         }
       }
     },
-    testing: function(isHoundle) {
+    testing(isHoundle) {
       this.timeRecord.begin = new Date();
       var newsHaveRepeat = /#\d+/.test(this.newsTerms);
 
       if (0 == this.oldTerms.length) {
-        this.$Message.success(`工作表为空！`);
+        this.$Loading.error();
+        this.$Message.error(`工作表为空！`);
         return;
       }
 
@@ -585,6 +613,7 @@ wffj	-	万付`
       this.count.new = `码: ${mCodeNum} 符: ${mModifyNum} 词: ${mWordNum}`;
 
       if (oWordNum != oCodeNum) {
+        this.$Loading.error();
         this.$Message.error(`请检查词库内容！`);
         this.count.old = `<b style="color: red;">词: ${oWordNum} 码: ${oCodeNum}<b>`;
         return;
@@ -595,6 +624,7 @@ wffj	-	万付`
         mModifyNum != mCodeNum ||
         mWordNum != mCodeNum
       ) {
+        this.$Loading.error();
         this.$Message.error(`请检查更正数据内容！`);
         this.count.new = `<b style="color: red;">码: ${mCodeNum} 符: ${mModifyNum} 词: ${mWordNum}<b>`;
         return;
@@ -607,19 +637,23 @@ wffj	-	万付`
         return;
       }
     },
-    createDemo: function() {
+    closeHandle() {
+      this.$Message.info(`后台线程运行中，无法停止。\n处理完毕后，线程会自动终止。\n关闭本页面可以终止该线程。`);
+    },
+    createDemo() {
       this.oldTerms = this.demoData.old;
       this.newsTerms = this.demoData.new;
       this.testing(false);
     },
-    clearContent: function() {
+    clearContent() {
       this.oldTerms = this.newsTerms = this.outTerms = this.newTermsData = "";
       this.oldTermsData = {};
       this.testing(false);
+      this.$Loading.finish();
       this.$Message.destroy();
       this.$Message.success(`已清空数据`);
     },
-    allToHalf: function() {
+    allToHalf() {
       var regPlus = /＋/g;
       var regMinus = /-/g;
       var regModify = /!m|！m|！M|!M|＊/g;
@@ -627,18 +661,18 @@ wffj	-	万付`
       this.newsTerms = this.newsTerms.replace(regMinus, "-");
       this.newsTerms = this.newsTerms.replace(regModify, "*");
     },
-    clearIdent: function(isclear, data) {
+    clearIdent(isclear, data) {
       var result = data.replace(/#\d+/g, "");
       return isclear ? data : result;
     },
-    clearSpace: function() {
+    clearSpace() {
       this.newTermsData = this.newTermsData.replace(/[\r\n]\s/g, "\r");
     },
-    clickHistory: function() {
+    clickHistory() {
       this.updates = !this.updates;
       this.isHover = !this.isHover;
     },
-    MillisecondToDate: function(msd) {
+    MillisecondToDate(msd) {
       var time = parseFloat(msd) / 1000;
       if (null != time && "" != time) {
         if (time > 60 && time < 60 * 60) {
@@ -673,22 +707,22 @@ wffj	-	万付`
       }
       return time;
     },
-    oldTermsInput: function() {
+    oldTermsInput() {
       this.oldTerms = this.oldTerms += "\t";
     },
-    newsTermsInput: function() {
+    newsTermsInput() {
       this.newsTerms = this.newsTerms += "\t";
     },
-    outTermsInput: function() {
+    outTermsInput() {
       this.outTerms = this.outTerms += "\t";
     },
-    setCookie: function(cname, cvalue, exdays) {
+    setCookie(cname, cvalue, exdays) {
       var d = new Date();
       d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
       var expires = "expires=" + d.toGMTString();
       document.cookie = cname + "=" + cvalue + "; " + expires;
     },
-    getCookie: function(cname) {
+    getCookie(cname) {
       var name = cname + "=";
       var ca = document.cookie.split(";");
       for (var i = 0; i < ca.length; i++) {
@@ -697,7 +731,7 @@ wffj	-	万付`
       }
       return "";
     },
-    Notice: function() {
+    Notice() {
       var isShowUpdate = this.getCookie("showUpdate");
       var newVer = parseFloat(this.updateHistory[this.updateHistoryLength].ver);
 
@@ -717,7 +751,7 @@ wffj	-	万付`
         });
       }
     },
-    isPhoneFn: function() {
+    isPhoneFn() {
       if (document.documentElement.clientWidth <= 750) {
         this.isPhone = true;
       }
