@@ -274,9 +274,6 @@ wffj	-	万付`
   mounted() {
     this.Notice();
   },
-  destroyed() {
-    this.handleTermsWorker = null;
-  },
   methods: {
     getVersion() {
       this.version = this.updateHistory[this.updateHistoryLength].ver;
@@ -292,7 +289,7 @@ wffj	-	万付`
       this.$Loading.start();
       this.$Message.destroy();
       this.$Message.loading({
-        content: `启动转换进程${this.handleTermsPro}：共有${
+        content: `启动转换进程：共有${
           this.oldTermsData.obj.word.length
         }，已开始处理，请稍后…`,
         duration: 0
@@ -324,6 +321,8 @@ wffj	-	万付`
                   idx++;
                 }
               }
+            } else {
+              out = thisData.old;
             }
             return out;
           },
@@ -475,7 +474,7 @@ wffj	-	万付`
       this.clearSpace();
 
       //统计最后用时
-      this.timeRecord.end = new Date();
+      this.timeRecord.end = Date.now();
       var thisTimeOf = this.MillisecondToDate(
         this.timeRecord.end - this.timeRecord.begin
       );
@@ -607,7 +606,7 @@ wffj	-	万付`
 
       //正常则调用处理数据，否则仅计数，判断是否有错误内容
       if (isHoundle) {
-        this.timeRecord.begin = new Date();
+        this.timeRecord.begin = Date.now();
         this.handleOldTerms(newsHaveRepeat);
       } else {
         return;
@@ -693,7 +692,7 @@ wffj	-	万付`
       this.outTerms = this.outTerms += "\t";
     },
     setCookie(cname, cvalue, exdays) {
-      var d = new Date();
+      var d = Date.now();
       d.setTime(d + exdays * 24 * 60 * 60 * 1000);
       var expires = "expires=" + d.toGMTString();
       document.cookie = cname + "=" + cvalue + "; " + expires;
