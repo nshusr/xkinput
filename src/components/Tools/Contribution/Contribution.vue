@@ -467,7 +467,7 @@ wffj	-	万付`
       this.count.success = `共：${num.suc} 加: ${num.add} 改: ${num.mod} 删：${
         num.del
       }`;
-      this.count.error = `共: ${num.errall} 错: ${num.errnum} 没：${
+      this.count.error = `共: ${num.errall} 错: ${num.err} 没：${
         num.no
       } 缺：${num.erratt}`;
       //扫描去除空行
