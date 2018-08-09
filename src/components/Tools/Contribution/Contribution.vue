@@ -274,6 +274,9 @@ wffj	-	万付`
   mounted() {
     this.Notice();
   },
+  destroyed() {
+    this.handleTermsWorker = null;
+  },
   methods: {
     getVersion() {
       this.version = this.updateHistory[this.updateHistoryLength].ver;
@@ -289,11 +292,16 @@ wffj	-	万付`
       this.$Loading.start();
       this.$Message.destroy();
       this.$Message.loading({
-        content: `启动转换进程：共有${
+        content: `启动转换进程${this.handleTermsPro}：共有${
           this.oldTermsData.obj.word.length
-        }，已开始处理请稍后…`,
+        }，已开始处理，请稍后…`,
         duration: 0
       });
+      this.handleTermsPro &&
+        this.$Message.loading({
+          content: `已开启多条线程，为了更快速的处理，请关闭该标签页，重新打开。`,
+          duration: 0
+        });
 
       this.handleTermsWorker = null;
       //1 遍历旧词库,转换内容
@@ -328,8 +336,11 @@ wffj	-	万付`
           this.handleTermsWorker = null;
         })
         .catch(e => {
+          this.$Loading.error();
           this.$Message.error("遇到错误：", e);
           console.log(e);
+          this.timeRecord.getTimeOf = null;
+          this.handleTermsWorker = null;
         });
     },
     handleTerms() {
@@ -466,7 +477,7 @@ wffj	-	万付`
 
       //统计最后用时
       this.timeRecord.end = new Date();
-      let thisTimeOf = this.MillisecondToDate(
+      var thisTimeOf = this.MillisecondToDate(
         this.timeRecord.end - this.timeRecord.begin
       );
       this.timeOf.push(thisTimeOf);
@@ -559,7 +570,8 @@ wffj	-	万付`
       var newsHaveRepeat = /#\d+/.test(this.newsTerms);
 
       if (0 == this.oldTerms.length) {
-        this.$Message.success(`工作表为空！`);
+        this.$Loading.error();
+        this.$Message.error(`工作表为空！`);
         return;
       }
 
@@ -577,6 +589,7 @@ wffj	-	万付`
       this.count.new = `码: ${mCodeNum} 符: ${mModifyNum} 词: ${mWordNum}`;
 
       if (oWordNum != oCodeNum) {
+        this.$Loading.error();
         this.$Message.error(`请检查词库内容！`);
         this.count.old = `<b style="color: red;">词: ${oWordNum} 码: ${oCodeNum}<b>`;
         return;
@@ -587,6 +600,7 @@ wffj	-	万付`
         mModifyNum != mCodeNum ||
         mWordNum != mCodeNum
       ) {
+        this.$Loading.error();
         this.$Message.error(`请检查更正数据内容！`);
         this.count.new = `<b style="color: red;">码: ${mCodeNum} 符: ${mModifyNum} 词: ${mWordNum}<b>`;
         return;
@@ -612,6 +626,7 @@ wffj	-	万付`
       this.oldTerms = this.newsTerms = this.outTerms = this.newTermsData = "";
       this.oldTermsData = {};
       this.testing(false);
+      this.$Loading.finish();
       this.$Message.destroy();
       this.$Message.success(`已清空数据`);
     },
