@@ -692,7 +692,7 @@ wffj	-	万付`
       this.outTerms = this.outTerms += "\t";
     },
     setCookie(cname, cvalue, exdays) {
-      var d = Date.now();
+      var d = new Date();
       d.setTime(d + exdays * 24 * 60 * 60 * 1000);
       var expires = "expires=" + d.toGMTString();
       document.cookie = cname + "=" + cvalue + "; " + expires;
