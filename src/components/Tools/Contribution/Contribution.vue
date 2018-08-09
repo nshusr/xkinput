@@ -9,7 +9,7 @@
 						<span class="textarea-info" v-html="count.old"></span>
 					</div>
 					<transition name="slide">
-						<textarea v-show="showPlate.old" v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" @keyup.ctrl.86="testing(false)"
+						<textarea spellcheck="false" v-show="showPlate.old" v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" @keyup.ctrl.86="testing(false)"
 							:placeholder="oldAttr"></textarea>
 					</transition>
 					</Col>
@@ -19,7 +19,7 @@
 						<span class="textarea-title">更正数据</span>
 					</div>
 					<transition name="slide">
-						<textarea v-show="showPlate.new" v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" @keyup.ctrl.86="testing(false)"
+						<textarea spellcheck="false" v-show="showPlate.new" v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" @keyup.ctrl.86="testing(false)"
 							:placeholder="newAttr"></textarea>
 					</transition>
 					</Col>
@@ -29,7 +29,7 @@
 						<span class="textarea-title">转换内容</span>
 					</div>
 					<transition name="slide">
-						<textarea v-show="showPlate.out" readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" placeholder="输出转换后内容"></textarea>
+						<textarea spellcheck="false" v-show="showPlate.out" readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" placeholder="输出转换后内容"></textarea>
 					</transition>
 					</Col>
 					<Col :xs="24" :sm="12">
@@ -38,7 +38,7 @@
 						<span class="textarea-title">成功信息</span>
 					</div>
 					<transition name="slide">
-						<textarea v-show="showPlate.suc" readonly v-model="successInfo" placeholder="输出成功信息"></textarea>
+						<textarea spellcheck="false" v-show="showPlate.suc" readonly v-model="successInfo" placeholder="输出成功信息"></textarea>
 					</transition>
 					</Col>
 					<Col :xs="24" :sm="12">
@@ -47,7 +47,7 @@
 						<span class="textarea-title">错误信息</span>
 					</div>
 					<transition name="slide">
-						<textarea v-show="showPlate.err" readonly v-model="errorInfo" placeholder="输出错误信息"></textarea>
+						<textarea spellcheck="false" v-show="showPlate.err" readonly v-model="errorInfo" placeholder="输出错误信息"></textarea>
 					</transition>
 					</Col>
 				</Row>
@@ -58,18 +58,9 @@
 			<transition name="slide">
 				<Card class="controls-btn" style="padding: 0 20%;" v-if="switchControl">
 					<Row type="flex" justify="space-around" align="middle">
-						<Button size="large" @click="testing(true)">开始处理</Button>
-						<Tooltip placement="top">
-							<i-switch size="large" v-model="isLog">
-								<span slot="open">记录</span>
-								<span slot="close">记录</span>
-							</i-switch>
-              <div slot="content" style="text-align: center">
-                <p>在处理词条时打印进度到控制台</p>
-                <b>F12查看处理进度，但记录可能会影响性能！</b>
-              </div>
-						</Tooltip>
-						<Tooltip content="在转换内容各编码后缀添加编码重数" placement="top">
+						<Button size="large" @click="testing(true)" v-if="!handleTermsWorker">开始处理</Button>
+						<Button size="large" @click="proStartStatus" type="info" v-if="handleTermsWorker">运行线程</Button>
+						<Tooltip content="转换内容编码后添加编码重数，便于调试" placement="top">
 							<i-switch size="large" v-model="isDev">
 								<span slot="open">重数</span>
 								<span slot="close">重数</span>
@@ -182,7 +173,6 @@ wffj	-	万付`
       timeOf: [],
       updateAll: false,
       handleTermsWorker: null,
-      handleTermsStatus: 0,
       updateHistory: [
         {
           ver: "1.0",
@@ -263,29 +253,36 @@ wffj	-	万付`
         {
           ver: "4.0",
           cont: "重码算法优化，加入Web Worker后台线程计算。"
+        },
+        {
+          ver: "4.1",
+          cont:
+            "阻止Chrome浏览器textarea的拼写检查。算法再次优化，允许用户结束处理线程。打印处理进度以1000词分隔，降低处理时的损耗时间。多处指示细节优化。"
+        },
+        {
+          ver: "4.1.1",
+          cont: "根据先辈指示，改进算法，大大提升处理速度。"
         }
       ],
       updateHistoryLength: 0
     };
   },
-  created: function() {
+  created() {
     this.isPhoneFn();
     this.getVersion();
   },
-  mounted: function() {
+  mounted() {
     this.Notice();
   },
   methods: {
-    getVersion: function() {
+    getVersion() {
       this.version = this.updateHistory[this.updateHistoryLength].ver;
     },
-    handleOldTerms: function(newsHaveRepeat) {
-      var thisData = {},
-        i = 1,
-        y = 0,
-        reg;
+    handleOldTerms(newsHaveRepeat) {
+      var thisData = {};
 
-      thisData.old = this.oldTermsData.obj;
+      thisData.old = this.oldTerms;
+      thisData.oldArr = this.oldTerms.split("\n");
       thisData.new = this.newTermsData;
       thisData.isLog = this.isLog;
 
@@ -302,43 +299,40 @@ wffj	-	万付`
       //1 遍历旧词库,转换内容
       this.handleTermsWorker = this.$worker
         .run(
-          (newsHaveRepeat, thisData, i, y) => {
-            var resultData = thisData.new;
+          (newsHaveRepeat, thisData) => {
+            let out = "";
             if (newsHaveRepeat) {
-              for (y in thisData.old.word) {
-                reg = new RegExp(`.+\\t\\b${thisData.old.code[y]}#*\\d*`, "g");
-                resultData.search(reg) == -1
-                  ? (resultData += `${thisData.old.word[y]}\t${
-                      thisData.old.code[y]
-                    }#${i}\r\n`)
-                  : (resultData += `${thisData.old.word[y]}\t${
-                      thisData.old.code[y]
-                    }#${parseFloat(resultData.match(reg).length) + 1}\r\n`);
-                thisData.isLog && console.log("1：已完成：", parseFloat(y) + 1);
+              let dict = {};
+              for (let it of thisData.oldArr) {
+                it = it.trim();
+                it = it.split(/\s+/);
+                let c = it.pop().trim();
+                dict[c] ? dict[c].push(it[0]) : (dict[c] = it);
               }
-            } else {
-              for (y in thisData.old.word) {
-                reg = new RegExp(`.+\\t\\b${thisData.old.code[y]}\\b`, "g");
-                resultData += `${thisData.old.word[y]}\t${
-                  thisData.old.code[y]
-                }\r\n`;
+              for (let i in dict) {
+                let idx = 1;
+                while (dict[i].length) {
+                  out += `${dict[i].shift()}\t${i}#${idx}\n`;
+                  idx++;
+                }
               }
             }
-            return resultData;
+            return out;
           },
-          [newsHaveRepeat, thisData, i, y]
+          [newsHaveRepeat, thisData]
         )
         .then(res => {
           this.newTermsData = res;
-          this.$Message.destroy();
+          this.TermsCountSet("oldTerms", "oldTermsData");
           this.handleTerms();
+          this.handleTermsWorker = null;
         })
         .catch(e => {
           this.$Message.error("遇到错误：", e);
           console.log(e);
         });
     },
-    handleTerms: function() {
+    handleTerms() {
       //设置公共属性
       var thisNewData = this.newsTermsData.obj,
         x = 0,
@@ -371,16 +365,16 @@ wffj	-	万付`
           out = thisNewData.word[x] + "\t" + thisNewData.code[x];
           if (this.newTermsData.search(reg) == -1) {
             this.newTermsData += out + "\r\n";
-            this.successInfoData += `${out}\t[ + 第${parseFloat(x) + 1}行]\r\n`;
+            this.successInfoData += `${out}\t[ + 第${+x + 1}行]\r\n`;
             num.suc++;
             num.add++;
           } else {
-            this.errorInfoData += `[第${parseFloat(x) +
+            this.errorInfoData += `[第${+x +
               1}行]\t${log}\r\n>> Error 编码已存在：\r\n${this.newTermsData
               .match(reg)
               .join("，")}\r\n\r\n`;
             num.errall++;
-            num.errnum++;
+            num.err++;
           }
           //modify
         } else if (thisNewData.modify[x]) {
@@ -390,11 +384,11 @@ wffj	-	万付`
           out = thisNewData.word[x] + "\t" + thisNewData.code[x];
           if (this.newTermsData.search(reg) != -1) {
             this.newTermsData = this.newTermsData.replace(reg, out);
-            this.successInfoData += `${out}\t[ * 第${parseFloat(x) + 1}行]\r\n`;
+            this.successInfoData += `${out}\t[ * 第${+x + 1}行]\r\n`;
             num.suc++;
             num.mod++;
           } else {
-            this.errorInfoData += `[第${parseFloat(x) +
+            this.errorInfoData += `[第${+x +
               1}行]\t${log}\r\n>> Error 未找到编码：\r\n${
               thisNewData.code[x]
             }\r\n\r\n`;
@@ -422,12 +416,11 @@ wffj	-	万付`
                 eval(TermsCorrectCodeReg),
                 ""
               );
-              this.successInfoData += `${out}\t[ - 第${parseFloat(x) +
-                1}行]\r\n`;
+              this.successInfoData += `${out}\t[ - 第${+x + 1}行]\r\n`;
               num.suc++;
               num.del++;
             } else {
-              this.errorInfoData += `[第${parseFloat(x) +
+              this.errorInfoData += `[第${+x +
                 1}行]\t${log}\r\n>> Warn 词组编码不对应：\r\n${this.newTermsData
                 .match(HaveCodeReg)
                 .join("，")}\r\n\r\n`;
@@ -436,7 +429,7 @@ wffj	-	万付`
             }
           } else {
             log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
-            this.errorInfoData += `[第${parseFloat(x) +
+            this.errorInfoData += `[第${+x +
               1}行]\t${log}\r\n>> Error 编码不存在：\r\n${
               thisNewData.code[x]
             }\r\n\r\n`;
@@ -447,7 +440,7 @@ wffj	-	万付`
         } else {
           ope = "×";
           out = thisNewData.word[x] + "\t" + thisNewData.code[x];
-          this.errorInfoData += `[第${parseFloat(x) +
+          this.errorInfoData += `[第${+x +
             1}行]\t${log}\r\n>> Danger 未知操作符号。\r\n${
             thisNewData.code[x]
           }\r\n\r\n`;
@@ -484,11 +477,11 @@ wffj	-	万付`
       } 个, 添加 ${num.add} 个,\n修改 ${num.mod} 个, 删除 ${num.del} 个。\n\n${
         this.successInfoData
       }`;
-      if (!num.errall && !num.errnum && !num.no && !num.erratt) {
+      if (!num.errall && !num.err && !num.no && !num.erratt) {
         this.errorInfoData = `恭喜，没有错误哦！`;
       } else {
         this.errorInfoData = `失败统计：\n共有 ${num.errall}个, 错误 ${
-          num.errnum
+          num.err
         } 个,\n没找到 ${num.no} 个, 没操作符 ${num.erratt} 个。\n\n${
           this.errorInfoData
         }`;
@@ -500,11 +493,11 @@ wffj	-	万付`
       } else {
         this.outTerms = this.clearIdent(false, this.newTermsData);
       }
-      this.oldTerms = this.oldTerms;
+
+      this.oldTerms = this.clearIdent(false, this.oldTerms);
       this.successInfo = this.successInfoData;
       this.errorInfo = this.errorInfoData;
 
-      this.$Loading.finish();
       //发送成功信息
       this.$Message.destroy();
       this.$Message.success({
@@ -513,15 +506,15 @@ wffj	-	万付`
         }个！`,
         duration: 3
       });
+      this.$Loading.finish();
 
       //清理数据
       this.successInfoData = this.errorInfoData = this.newTermsData = "";
     },
-    TermsCountSet: function(formName, formData) {
+    TermsCountSet(formName, formData) {
       //转换符号
       this.allToHalf();
 
-      this.oldTerms = this.clearIdent(false, this.oldTerms);
       this[formData].test = this[formName].split(/[\t\r\n]/g);
 
       this[formData].add = [];
@@ -562,8 +555,7 @@ wffj	-	万付`
         }
       }
     },
-    testing: function(isHoundle) {
-      this.timeRecord.begin = new Date();
+    testing(isHoundle) {
       var newsHaveRepeat = /#\d+/.test(this.newsTerms);
 
       if (0 == this.oldTerms.length) {
@@ -602,24 +594,28 @@ wffj	-	万付`
 
       //正常则调用处理数据，否则仅计数，判断是否有错误内容
       if (isHoundle) {
+        this.timeRecord.begin = new Date();
         this.handleOldTerms(newsHaveRepeat);
       } else {
         return;
       }
     },
-    createDemo: function() {
+    createDemo() {
       this.oldTerms = this.demoData.old;
       this.newsTerms = this.demoData.new;
       this.testing(false);
     },
-    clearContent: function() {
+    proStartStatus() {
+      this.$Message.error(`处理线程运行中`);
+    },
+    clearContent() {
       this.oldTerms = this.newsTerms = this.outTerms = this.newTermsData = "";
       this.oldTermsData = {};
       this.testing(false);
       this.$Message.destroy();
       this.$Message.success(`已清空数据`);
     },
-    allToHalf: function() {
+    allToHalf() {
       var regPlus = /＋/g;
       var regMinus = /-/g;
       var regModify = /!m|！m|！M|!M|＊/g;
@@ -627,18 +623,18 @@ wffj	-	万付`
       this.newsTerms = this.newsTerms.replace(regMinus, "-");
       this.newsTerms = this.newsTerms.replace(regModify, "*");
     },
-    clearIdent: function(isclear, data) {
+    clearIdent(isclear, data) {
       var result = data.replace(/#\d+/g, "");
       return isclear ? data : result;
     },
-    clearSpace: function() {
+    clearSpace() {
       this.newTermsData = this.newTermsData.replace(/[\r\n]\s/g, "\r");
     },
-    clickHistory: function() {
+    clickHistory() {
       this.updates = !this.updates;
       this.isHover = !this.isHover;
     },
-    MillisecondToDate: function(msd) {
+    MillisecondToDate(msd) {
       var time = parseFloat(msd) / 1000;
       if (null != time && "" != time) {
         if (time > 60 && time < 60 * 60) {
@@ -673,22 +669,22 @@ wffj	-	万付`
       }
       return time;
     },
-    oldTermsInput: function() {
+    oldTermsInput() {
       this.oldTerms = this.oldTerms += "\t";
     },
-    newsTermsInput: function() {
+    newsTermsInput() {
       this.newsTerms = this.newsTerms += "\t";
     },
-    outTermsInput: function() {
+    outTermsInput() {
       this.outTerms = this.outTerms += "\t";
     },
-    setCookie: function(cname, cvalue, exdays) {
+    setCookie(cname, cvalue, exdays) {
       var d = new Date();
-      d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+      d.setTime(d + exdays * 24 * 60 * 60 * 1000);
       var expires = "expires=" + d.toGMTString();
       document.cookie = cname + "=" + cvalue + "; " + expires;
     },
-    getCookie: function(cname) {
+    getCookie(cname) {
       var name = cname + "=";
       var ca = document.cookie.split(";");
       for (var i = 0; i < ca.length; i++) {
@@ -697,7 +693,7 @@ wffj	-	万付`
       }
       return "";
     },
-    Notice: function() {
+    Notice() {
       var isShowUpdate = this.getCookie("showUpdate");
       var newVer = parseFloat(this.updateHistory[this.updateHistoryLength].ver);
 
@@ -717,7 +713,7 @@ wffj	-	万付`
         });
       }
     },
-    isPhoneFn: function() {
+    isPhoneFn() {
       if (document.documentElement.clientWidth <= 750) {
         this.isPhone = true;
       }
