@@ -339,7 +339,6 @@ wffj	-	万付`
           this.$Loading.error();
           this.$Message.error("遇到错误：", e);
           console.log(e);
-          this.timeRecord.getTimeOf = null;
           this.handleTermsWorker = null;
         });
     },
