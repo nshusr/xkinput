@@ -33,8 +33,7 @@ export default {
         var isHome = /.*\/jdweb\/?$/;
         if (!isHome.test(thisHref)) {
           ev.preventDefault();
-          var isGoHome = confirm("刷新将跳转首页，是否前往？");
-          isGoHome ? this.$router.push("/jdweb/") : this.$router.go(1);
+          this.$router.push("/jdweb/");
           return false;
         }
       }

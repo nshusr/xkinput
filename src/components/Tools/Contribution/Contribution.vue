@@ -304,11 +304,11 @@ wffj	-	万付`
       //1 遍历旧词库,转换内容
       this.handleTermsWorker = this.$worker
         .run(
-          (newsHaveRepeat, thisData) => {
+          (newsHaveRepeat, { oldArr, old }) => {
             let out = "";
             if (newsHaveRepeat) {
               let dict = {};
-              for (let it of thisData.oldArr) {
+              for (let it of oldArr) {
                 it = it.trim();
                 it = it.split(/\s+/);
                 let c = it.pop().trim();
@@ -322,7 +322,7 @@ wffj	-	万付`
                 }
               }
             } else {
-              out = thisData.old;
+              out = old;
             }
             return out;
           },
@@ -372,6 +372,7 @@ wffj	-	万付`
           reg = new RegExp(`.+\\t\\b${thisNewData.code[x]}\\b`, "g");
           log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
           out = thisNewData.word[x] + "\t" + thisNewData.code[x];
+
           if (this.newTermsData.search(reg) == -1) {
             this.newTermsData += out + "\r\n";
             this.successInfoData += `${out}\t[ + 第${+x + 1}行]\r\n`;
@@ -391,6 +392,7 @@ wffj	-	万付`
           reg = new RegExp(`.+\\t\\b${thisNewData.code[x]}\\b`, "g");
           log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
           out = thisNewData.word[x] + "\t" + thisNewData.code[x];
+
           if (this.newTermsData.search(reg) != -1) {
             this.newTermsData = this.newTermsData.replace(reg, out);
             this.successInfoData += `${out}\t[ * 第${+x + 1}行]\r\n`;
@@ -419,6 +421,7 @@ wffj	-	万付`
           ope = "-";
           log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
           out = thisNewData.word[x] + "\t" + thisNewData.code[x];
+
           if (this.newTermsData.search(HaveCodeReg) != -1) {
             if (this.newTermsData.search(TermsCorrectCodeReg) != -1) {
               this.newTermsData = this.newTermsData.replace(
@@ -467,9 +470,9 @@ wffj	-	万付`
       this.count.success = `共：${num.suc} 加: ${num.add} 改: ${num.mod} 删：${
         num.del
       }`;
-      this.count.error = `共: ${num.errall} 错: ${num.err} 没：${
-        num.no
-      } 缺：${num.erratt}`;
+      this.count.error = `共: ${num.errall} 错: ${num.err} 没：${num.no} 缺：${
+        num.erratt
+      }`;
       //扫描去除空行
       this.clearSpace();
 
@@ -711,7 +714,6 @@ wffj	-	万付`
       var newVer = parseFloat(this.updateHistory[this.updateHistoryLength].ver);
 
       if (isShowUpdate != newVer) {
-        var _this = this;
         this.$Notice.open({
           title: "版本更新了",
           desc: `
@@ -721,7 +723,7 @@ wffj	-	万付`
 						`,
           duration: 0,
           onClose: () => {
-            _this.setCookie("showUpdate", newVer, 365);
+            this.setCookie("showUpdate", newVer, 365);
           }
         });
       }
