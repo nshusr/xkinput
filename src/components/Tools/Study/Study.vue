@@ -27,7 +27,7 @@
             </Row>
           </Card>
           <Row type="flex" justify="center">
-            <p>version 1.1</p>
+            <p>version 1.2</p>
           </Row>
           <Row type="flex" justify="center" style="margin-top: 15px;">
             <Col :xs="12" :md="6" style="padding: 0 5px;">
@@ -87,6 +87,7 @@ export default {
     isReadFile: function() {
       if (!this.termsData.size) {
         this.notUpFileClass = true;
+        this.$Notice.destroy();
         this.$Notice.error({
           title: `词库文件为空`,
           desc: `未读取词库文件，请点击上传选择词库文件。`
@@ -104,6 +105,7 @@ export default {
       this.nextData.code = this.nextData.code.replace(trim, "");
 
       if (this.code.length >= 1) {
+        this.$Notice.destroy();
         if (this.nextData.code == this.code) {
           this.$Notice.info({
             title: `词组信息：`,
@@ -114,7 +116,6 @@ export default {
           this.next();
         } else {
           this.status = -1;
-
           this.$Notice.error({
             title: `编码有误`,
             desc: `错误请重新输入\t提示：共有${

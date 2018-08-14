@@ -158,7 +158,6 @@ jglk#4	+	静静
 wffj	-	万付`
       },
       updates: false,
-      timeRecord: {},
       isPhone: false,
       isDev: false,
       isLog: false,
@@ -170,7 +169,6 @@ wffj	-	万付`
         suc: false,
         err: false
       },
-      timeOf: [],
       updateAll: false,
       handleTermsWorker: null,
       updateHistory: [
@@ -483,17 +481,18 @@ wffj	-	万付`
       //扫描去除空行
       this.clearSpace();
 
-      //统计最后用时
-      this.timeRecord.end = Date.now();
-      var thisTimeOf = this.MillisecondToDate(
-        this.timeRecord.end - this.timeRecord.begin
-      );
-      this.timeOf.push(thisTimeOf);
+      //填充内容
+      if (this.isDev) {
+        this.outTerms = this.clearIdent(true, this.newTermsData);
+      } else {
+        this.outTerms = this.clearIdent(false, this.newTermsData);
+      }
+      this.oldTerms = this.clearIdent(false, this.oldTerms);
 
       //添加文档底部统计
-      this.successInfoData = `成功统计：\t\t完成共计用时${thisTimeOf}\n共有 ${
-        num.suc
-      } 个, 添加 ${num.add} 个,\n修改 ${num.mod} 个, 删除 ${num.del} 个。\n\n${
+      this.successInfoData = `成功统计：\n共有 ${num.suc} 个, 添加 ${
+        num.add
+      } 个,\n修改 ${num.mod} 个, 删除 ${num.del} 个。\n\n${
         this.successInfoData
       }`;
       if (!num.errall && !num.err && !num.no && !num.erratt) {
@@ -506,14 +505,6 @@ wffj	-	万付`
         }`;
       }
 
-      //填充内容
-      if (this.isDev) {
-        this.outTerms = this.clearIdent(true, this.newTermsData);
-      } else {
-        this.outTerms = this.clearIdent(false, this.newTermsData);
-      }
-
-      this.oldTerms = this.clearIdent(false, this.oldTerms);
       this.successInfo = this.successInfoData;
       this.errorInfo = this.errorInfoData;
 
@@ -596,7 +587,6 @@ wffj	-	万付`
 
       //正常则调用处理数据，否则仅计数，判断是否有错误内容
       if (isHoundle) {
-        this.timeRecord.begin = Date.now();
         this.handleOldTerms(newsHaveRepeat);
       } else {
         return;
@@ -636,41 +626,6 @@ wffj	-	万付`
     clickHistory() {
       this.updates = !this.updates;
       this.isHover = !this.isHover;
-    },
-    MillisecondToDate(msd) {
-      var time = parseFloat(msd) / 1000;
-      if (null != time && "" != time) {
-        if (time > 60 && time < 60 * 60) {
-          time =
-            parseInt(time / 60.0) +
-            "分" +
-            parseInt((parseFloat(time / 60.0) - parseInt(time / 60.0)) * 60) +
-            "秒";
-        } else if (time >= 60 * 60 && time < 60 * 60 * 24) {
-          time =
-            parseInt(time / 3600.0) +
-            "时" +
-            parseInt(
-              (parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60
-            ) +
-            "分" +
-            parseInt(
-              (parseFloat(
-                (parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60
-              ) -
-                parseInt(
-                  (parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60
-                )) *
-                60
-            ) +
-            "秒";
-        } else if (time >= 1000) {
-          time = parseInt(time) + "秒";
-        } else {
-          time = msd + "毫秒";
-        }
-      }
-      return time;
     },
     oldTermsInput() {
       this.oldTerms = this.oldTerms += "\t";
