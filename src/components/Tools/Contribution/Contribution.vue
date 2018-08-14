@@ -125,7 +125,8 @@ export default {
       oldTerms: "",
       newsTerms: "",
       oldAttr: "请输入词库数据\n词条\t编码",
-      newAttr: "请输入更正数据\n编码\t[+/-/*]\t词条",
+      newAttr:
+        "请输入更正数据\n编码\t[ +(添加) -(删除) *(修改) /(忽略) ]\t词条",
       btnInfo: "开始处理",
       outTerms: "",
       successInfo: "",
@@ -153,6 +154,7 @@ export default {
 万付	wffj`,
         new: `blke	+	剥个
 blkeav#2	*	贝壳
+hjlh	/	静静
 jglk#3	-	经历
 jglk#4	+	静静
 wffj	-	万付`
@@ -451,14 +453,14 @@ wffj	-	万付`
             num.errall++;
             num.no++;
           }
-          //未知
+          //忽略
         } else if (thisNewData.opreation[x] == "/") {
           log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
             thisNewData.word[x]
           } ]`;
           out = thisNewData.word[x] + "\t" + thisNewData.code[x];
           this.errorInfoData += `[第${+x +
-            1}行]\t${log}\r\n>> Info 已忽略操作该词。\r\n${
+            1}行]\t${log}\r\n>> Info 已忽略本次操作。\r\n${
             thisNewData.code[x]
           }\r\n\r\n`;
           num.errall++;
@@ -475,7 +477,7 @@ wffj	-	万付`
       this.count.success = `共：${num.suc} 加: ${num.add} 改: ${num.mod} 删：${
         num.del
       }`;
-      this.count.error = `共: ${num.errall} 错: ${num.err} 没：${num.no} 缺：${
+      this.count.error = `共: ${num.errall} 错: ${num.err} 无：${num.no} 缺：${
         num.erratt
       }`;
       //扫描去除空行
@@ -511,9 +513,7 @@ wffj	-	万付`
       //发送成功信息
       this.$Message.destroy();
       this.$Message.success({
-        content: `用时${thisTimeOf}处理完毕！共成功${num.suc}个、失败${
-          num.errall
-        }个！`,
+        content: `处理完毕！共成功${num.suc}个、失败${num.errall}个！`,
         duration: 3
       });
       this.$Loading.finish();
