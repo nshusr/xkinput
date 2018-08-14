@@ -181,7 +181,7 @@ export default {
           this.notUpFileClass = false;
 
           this.next();
-          this.$Notice.error({
+          this.$Notice.success({
             title: `词组载入成功`,
             desc: `词库文件已加载完成，词库为${this.termsData.name}，词库大小${
               this.termsData.mbSize

@@ -262,6 +262,10 @@ wffj	-	万付`
         {
           ver: "4.1.1",
           cont: "根据先辈指示，改进算法，大大提升处理速度。"
+        },
+        {
+          ver: "4.1.2",
+          cont: "优化操作符识别机制，存储识别逻辑清晰，新增忽略操作符 “/”。"
         }
       ],
       updateHistoryLength: 0
@@ -348,7 +352,6 @@ wffj	-	万付`
         reg,
         out,
         log,
-        ope,
         num,
         HaveCodeReg,
         TermsCorrectCodeReg;
@@ -366,11 +369,12 @@ wffj	-	万付`
       //2 遍历新词条
       for (x in thisNewData.word) {
         //add
-        if (thisNewData.add[x]) {
+        if (thisNewData.opreation[x] == "+") {
           //判断编码是否已存在
-          ope = "+";
           reg = new RegExp(`.+\\t\\b${thisNewData.code[x]}\\b`, "g");
-          log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
+          log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
+            thisNewData.word[x]
+          } ]`;
           out = thisNewData.word[x] + "\t" + thisNewData.code[x];
 
           if (this.newTermsData.search(reg) == -1) {
@@ -380,17 +384,18 @@ wffj	-	万付`
             num.add++;
           } else {
             this.errorInfoData += `[第${+x +
-              1}行]\t${log}\r\n>> Error 编码已存在：\r\n${this.newTermsData
+              1}行] \t${log}\r\n>> Error 编码已存在：\r\n${this.newTermsData
               .match(reg)
               .join("，")}\r\n\r\n`;
             num.errall++;
             num.err++;
           }
           //modify
-        } else if (thisNewData.modify[x]) {
-          ope = "*";
+        } else if (thisNewData.opreation[x] == "*") {
           reg = new RegExp(`.+\\t\\b${thisNewData.code[x]}\\b`, "g");
-          log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
+          log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
+            thisNewData.word[x]
+          } ]`;
           out = thisNewData.word[x] + "\t" + thisNewData.code[x];
 
           if (this.newTermsData.search(reg) != -1) {
@@ -407,7 +412,7 @@ wffj	-	万付`
             num.no++;
           }
           //delete
-        } else if (thisNewData.delete[x]) {
+        } else if (thisNewData.opreation[x] == "-") {
           HaveCodeReg = new RegExp(
             `.+\\t\\b${thisNewData.code[x]}#?\\d*\\b[\\r\\n]*`,
             "g"
@@ -418,8 +423,9 @@ wffj	-	万付`
             }#?\\d*\\b[\\r\\n]*`,
             "g"
           );
-          ope = "-";
-          log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
+          log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
+            thisNewData.word[x]
+          } ]`;
           out = thisNewData.word[x] + "\t" + thisNewData.code[x];
 
           if (this.newTermsData.search(HaveCodeReg) != -1) {
@@ -440,7 +446,6 @@ wffj	-	万付`
               num.no++;
             }
           } else {
-            log = `[ ${thisNewData.code[x]}\t${ope}\t${thisNewData.word[x]} ]`;
             this.errorInfoData += `[第${+x +
               1}行]\t${log}\r\n>> Error 编码不存在：\r\n${
               thisNewData.code[x]
@@ -449,11 +454,13 @@ wffj	-	万付`
             num.no++;
           }
           //未知
-        } else {
-          ope = "×";
+        } else if (thisNewData.opreation[x] == "/") {
+          log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
+            thisNewData.word[x]
+          } ]`;
           out = thisNewData.word[x] + "\t" + thisNewData.code[x];
           this.errorInfoData += `[第${+x +
-            1}行]\t${log}\r\n>> Danger 未知操作符号。\r\n${
+            1}行]\t${log}\r\n>> Info 已忽略操作该词。\r\n${
             thisNewData.code[x]
           }\r\n\r\n`;
           num.errall++;
@@ -492,9 +499,9 @@ wffj	-	万付`
       if (!num.errall && !num.err && !num.no && !num.erratt) {
         this.errorInfoData = `恭喜，没有错误哦！`;
       } else {
-        this.errorInfoData = `失败统计：\n共有 ${num.errall}个, 错误 ${
+        this.errorInfoData = `失败统计：\n共有 ${num.errall} 个, 错误 ${
           num.err
-        } 个,\n没找到 ${num.no} 个, 没操作符 ${num.erratt} 个。\n\n${
+        } 个,\n无踪 ${num.no} 个, 忽略 ${num.erratt} 个。\n\n${
           this.errorInfoData
         }`;
       }
@@ -513,7 +520,7 @@ wffj	-	万付`
       //发送成功信息
       this.$Message.destroy();
       this.$Message.success({
-        content: `用时${thisTimeOf}毫秒 处理完毕！共成功${num.suc}个、失败${
+        content: `用时${thisTimeOf}处理完毕！共成功${num.suc}个、失败${
           num.errall
         }个！`,
         duration: 3
@@ -533,33 +540,13 @@ wffj	-	万付`
       this[formData].obj = {};
       this[formData].obj.word = [];
       this[formData].obj.code = [];
-      this[formData].obj.add = [];
-      this[formData].obj.modify = [];
-      this[formData].obj.delete = [];
+      this[formData].obj.opreation = [];
       for (var x in this[formData].test) {
-        var isOpreation = /^[+\-*]$/.test(this[formData].test[x]);
+        var isOpreation = /^[+\-*/]$/.test(this[formData].test[x]);
         var isCode = /^[a-z]+#?\d*$/.test(this[formData].test[x]);
         var isChinese = /[^a-z]|[^+\-*]+/.test(this[formData].test[x]);
         if (isOpreation) {
-          switch (this[formData].test[x]) {
-            case "+":
-              this[formData].obj.add.push(true);
-              this[formData].obj.modify.push(false);
-              this[formData].obj.delete.push(false);
-              break;
-            case "*":
-              this[formData].obj.add.push(false);
-              this[formData].obj.modify.push(true);
-              this[formData].obj.delete.push(false);
-              break;
-            case "-":
-              this[formData].obj.add.push(false);
-              this[formData].obj.modify.push(false);
-              this[formData].obj.delete.push(true);
-              break;
-            default:
-              break;
-          }
+          this[formData].obj.opreation.push(this[formData].test[x]);
         } else if (isCode) {
           this[formData].obj.code.push(this[formData].test[x]);
         } else if (isChinese) {
@@ -583,7 +570,7 @@ wffj	-	万付`
       let oWordNum = this.oldTermsData.obj.word.length,
         oCodeNum = this.oldTermsData.obj.code.length,
         mWordNum = this.newsTermsData.obj.word.length,
-        mModifyNum = this.newsTermsData.obj.modify.length,
+        mModifyNum = this.newsTermsData.obj.opreation.length,
         mCodeNum = this.newsTermsData.obj.code.length;
 
       this.count.old = `词: ${oWordNum} 码: ${oCodeNum}`;
