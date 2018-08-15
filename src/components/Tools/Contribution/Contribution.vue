@@ -9,7 +9,7 @@
 						<span class="textarea-info" v-html="count.old"></span>
 					</div>
 					<transition name="slide">
-						<textarea spellcheck="false" v-show="showPlate.old" v-model="oldTerms" @keydown.tab.prevent="oldTermsInput" @keyup.ctrl.86="testing(false)"
+						<textarea spellcheck="false" v-show="showPlate.old" v-model="oldTerms" @keydown.tab.prevent="insertTab" @keyup.ctrl.86="testing(false)"
 							:placeholder="oldAttr"></textarea>
 					</transition>
 					</Col>
@@ -19,7 +19,7 @@
 						<span class="textarea-title">更正数据</span>
 					</div>
 					<transition name="slide">
-						<textarea spellcheck="false" v-show="showPlate.new" v-model="newsTerms" @keydown.tab.prevent="newsTermsInput" @keyup.ctrl.86="testing(false)"
+						<textarea spellcheck="false" v-show="showPlate.new" v-model="newsTerms" @keydown.tab.prevent="insertTab" @keyup.ctrl.86="testing(false)"
 							:placeholder="newAttr"></textarea>
 					</transition>
 					</Col>
@@ -29,7 +29,7 @@
 						<span class="textarea-title">转换内容</span>
 					</div>
 					<transition name="slide">
-						<textarea spellcheck="false" v-show="showPlate.out" readonly v-model="outTerms" @keydown.tab.prevent="outTermsInput" placeholder="输出转换后内容"></textarea>
+						<textarea spellcheck="false" v-show="showPlate.out" readonly v-model="outTerms" placeholder="输出转换后内容"></textarea>
 					</transition>
 					</Col>
 					<Col :xs="24" :sm="12">
@@ -266,7 +266,11 @@ wffj	-	万付`
         {
           ver: "4.1.2",
           cont: "优化操作符识别机制，存储识别逻辑清晰，新增忽略操作符 “/”。"
-        }
+        },
+        {
+          ver: "4.1.2.1",
+          cont: "纠正错误时提示，纠正各输入框中插入'tab'符的问题。"
+        },
       ],
       updateHistoryLength: 0
     };
@@ -340,7 +344,11 @@ wffj	-	万付`
         })
         .catch(e => {
           this.$Loading.error();
-          this.$Message.error("遇到错误：", e);
+          this.$Message.destroy();
+          this.$Message.error({
+            content: `遇到错误：${e}`,
+            duration: 0
+          });
           console.log(e);
           this.handleTermsWorker = null;
         });
@@ -612,9 +620,11 @@ wffj	-	万付`
       var regPlus = /＋/g;
       var regMinus = /-/g;
       var regModify = /!m|！m|！M|!M|＊/g;
+      var regIgnore = /\/|／/g;
       this.newsTerms = this.newsTerms.replace(regPlus, "+");
       this.newsTerms = this.newsTerms.replace(regMinus, "-");
       this.newsTerms = this.newsTerms.replace(regModify, "*");
+      this.newsTerms = this.newsTerms.replace(regIgnore, "/");
     },
     clearIdent(isclear, data) {
       var result = data.replace(/#\d+/g, "");
@@ -627,14 +637,8 @@ wffj	-	万付`
       this.updates = !this.updates;
       this.isHover = !this.isHover;
     },
-    oldTermsInput() {
-      this.oldTerms = this.oldTerms += "\t";
-    },
-    newsTermsInput() {
-      this.newsTerms = this.newsTerms += "\t";
-    },
-    outTermsInput() {
-      this.outTerms = this.outTerms += "\t";
+    insertTab() {
+      document.execCommand("insertText", false, "	");
     },
     setCookie(cname, cvalue, exdays) {
       var d = new Date();
