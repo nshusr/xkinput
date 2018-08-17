@@ -118,32 +118,32 @@
 
 <script>
 export default {
-  name: "Contribution",
+  name: 'Contribution',
   data() {
     return {
       version: -1,
-      oldTerms: "",
-      newsTerms: "",
-      oldAttr: "请输入词库数据\n词条\t编码",
+      oldTerms: '',
+      newsTerms: '',
+      oldAttr: '请输入词库数据\n词条\t编码',
       newAttr:
-        "请输入更正数据\n编码\t[ +(添加) -(删除) *(修改) /(忽略) ]\t词条",
-      btnInfo: "开始处理",
-      outTerms: "",
-      successInfo: "",
-      errorInfo: "",
+        '请输入更正数据\n编码\t[ +(添加) -(删除) *(修改) /(忽略) ]\t词条',
+      btnInfo: '开始处理',
+      outTerms: '',
+      successInfo: '',
+      errorInfo: '',
       oldTermsData: {},
       newsTermsData: {},
-      newTermsData: "",
+      newTermsData: '',
       newTermsCountData: {},
-      successInfoData: "",
+      successInfoData: '',
       count: {
-        old: "词: 0 码: 0",
-        new: "码: 0 符: 0 词: 0",
-        out: "词: 0 码: 0",
-        success: "共：0 加: 0 改: 0 删：0",
-        error: "共: 0 错: 0 没：0 缺：0"
+        old: '词: 0 码: 0',
+        new: '码: 0 符: 0 词: 0',
+        out: '词: 0 码: 0',
+        success: '共：0 加: 0 改: 0 删：0',
+        error: '共: 0 错: 0 没：0 缺：0',
       },
-      errorInfoData: "",
+      errorInfoData: '',
       demoData: {
         old: `剥壳	blke
 经历	jglk
@@ -157,7 +157,7 @@ blkeav#2	*	贝壳
 hjlh	/	静静
 jglk#3	-	经历
 jglk#4	+	静静
-wffj	-	万付`
+wffj	-	万付`,
       },
       updates: false,
       isPhone: false,
@@ -169,110 +169,111 @@ wffj	-	万付`
         new: true,
         out: false,
         suc: false,
-        err: false
+        err: false,
       },
       updateAll: false,
       handleTermsWorker: null,
       updateHistory: [
         {
-          ver: "1.0",
-          cont: "正常使用，发布版本。"
+          ver: '1.0',
+          cont: '正常使用，发布版本。',
         },
         {
-          ver: "1.1",
-          cont: "自动解决，全角半角问题。"
+          ver: '1.1',
+          cont: '自动解决，全角半角问题。',
         },
         {
-          ver: "1.2",
-          cont: "新增*操作符，等同于!m，自动解决，全角半角问题。"
+          ver: '1.2',
+          cont: '新增*操作符，等同于!m，自动解决，全角半角问题。',
         },
         {
-          ver: "1.3",
-          cont: "使用*操作符作用主修改操作符，兼容!m修改符。"
+          ver: '1.3',
+          cont: '使用*操作符作用主修改操作符，兼容!m修改符。',
         },
         {
-          ver: "1.4",
-          cont: "修复主动修改!m为*的步骤错误问题。"
+          ver: '1.4',
+          cont: '修复主动修改!m为*的步骤错误问题。',
         },
         {
-          ver: "1.5",
-          cont: "升级删除时确定编码词条才删除，改善提示内容。"
+          ver: '1.5',
+          cont: '升级删除时确定编码词条才删除，改善提示内容。',
         },
         {
-          ver: "1.6",
-          cont: "升级添加细节优化处理。"
+          ver: '1.6',
+          cont: '升级添加细节优化处理。',
         },
         {
-          ver: "1.6.1",
-          cont: "改进成功信息提示时间。"
+          ver: '1.6.1',
+          cont: '改进成功信息提示时间。',
         },
         {
-          ver: "1.7",
-          cont: "新增查看编码所在行数，新增提示处理表的操作符 编码 词条的数量。"
-        },
-        {
-          ver: "1.8",
-          cont: "新增头部信息统计，改进自适应布局方式，完善缺失编码检测机制。"
-        },
-        {
-          ver: "2.0",
+          ver: '1.7',
           cont:
-            "新增重码操作机制，以编码后缀方式操作词条序。较耗费性能，可关闭。"
+            '新增查看编码所在行数，新增提示处理表的操作符 编码 词条的数量。',
         },
         {
-          ver: "2.1",
-          cont: "完善重码调试机制，可正常使用、完善移动端界面布局。"
+          ver: '1.8',
+          cont: '新增头部信息统计，改进自适应布局方式，完善缺失编码检测机制。',
         },
         {
-          ver: "2.2",
+          ver: '2.0',
           cont:
-            "新增自动鉴别处理模式，无重码时操作更快，有重码自动转至重码模式。"
+            '新增重码操作机制，以编码后缀方式操作词条序。较耗费性能，可关闭。',
         },
         {
-          ver: "2.3",
-          cont: "纠正删除编码重码时的准确匹配，纠正Bug。"
+          ver: '2.1',
+          cont: '完善重码调试机制，可正常使用、完善移动端界面布局。',
         },
         {
-          ver: "2.4",
+          ver: '2.2',
           cont:
-            "完成支持英文词库处理，前提每个英文词条中必须有至少一个大写字母。"
+            '新增自动鉴别处理模式，无重码时操作更快，有重码自动转至重码模式。',
         },
         {
-          ver: "2.5",
-          cont: "完成检测词库数据中含有数字是否清除判断选项，避免误处理。"
+          ver: '2.3',
+          cont: '纠正删除编码重码时的准确匹配，纠正Bug。',
         },
         {
-          ver: "3.0",
+          ver: '2.4',
           cont:
-            "重码检测模式改进，使用#符号代替纯数字，不与词库中本有数字冲突。"
+            '完成支持英文词库处理，前提每个英文词条中必须有至少一个大写字母。',
         },
         {
-          ver: "4.0 Alpha",
-          cont: "全局主题由Bootstrap迁移至iViewUI，优化重码处理速度。"
+          ver: '2.5',
+          cont: '完成检测词库数据中含有数字是否清除判断选项，避免误处理。',
         },
         {
-          ver: "4.0",
-          cont: "重码算法优化，加入Web Worker后台线程计算。"
-        },
-        {
-          ver: "4.1",
+          ver: '3.0',
           cont:
-            "阻止Chrome浏览器textarea的拼写检查。算法再次优化，允许用户结束处理线程。打印处理进度以1000词分隔，降低处理时的损耗时间。多处指示细节优化。"
+            '重码检测模式改进，使用#符号代替纯数字，不与词库中本有数字冲突。',
         },
         {
-          ver: "4.1.1",
-          cont: "根据先辈指示，改进算法，大大提升处理速度。"
+          ver: '4.0 Alpha',
+          cont: '全局主题由Bootstrap迁移至iViewUI，优化重码处理速度。',
         },
         {
-          ver: "4.1.2",
-          cont: "优化操作符识别机制，存储识别逻辑清晰，新增忽略操作符 “/”。"
+          ver: '4.0',
+          cont: '重码算法优化，加入Web Worker后台线程计算。',
         },
         {
-          ver: "4.1.2.1",
-          cont: "纠正错误时提示，纠正各输入框中插入'tab'符的问题。"
+          ver: '4.1',
+          cont:
+            '阻止Chrome浏览器textarea的拼写检查。算法再次优化，允许用户结束处理线程。打印处理进度以1000词分隔，降低处理时的损耗时间。多处指示细节优化。',
+        },
+        {
+          ver: '4.1.1',
+          cont: '根据先辈指示，改进算法，大大提升处理速度。',
+        },
+        {
+          ver: '4.1.2',
+          cont: '优化操作符识别机制，存储识别逻辑清晰，新增忽略操作符 “/”。',
+        },
+        {
+          ver: '4.1.2.1',
+          cont: '纠正错误时提示，纠正各输入框中插入\'tab\'符的问题。',
         },
       ],
-      updateHistoryLength: 0
+      updateHistoryLength: 0,
     };
   },
   created() {
@@ -290,7 +291,7 @@ wffj	-	万付`
       var thisData = {};
 
       thisData.old = this.oldTerms;
-      thisData.oldArr = this.oldTerms.split("\n");
+      thisData.oldArr = this.oldTerms.split('\n');
       thisData.new = this.newTermsData;
       thisData.isLog = this.isLog;
 
@@ -300,20 +301,20 @@ wffj	-	万付`
         content: `启动转换进程：共有${
           this.oldTermsData.obj.word.length
         }，已开始处理，请稍后…`,
-        duration: 0
+        duration: 0,
       });
       this.handleTermsPro &&
         this.$Message.loading({
-          content: `已开启多条线程，为了更快速的处理，请关闭该标签页，重新打开。`,
-          duration: 0
+          content: '已开启多条线程，为了更快速的处理，请关闭该标签页，重新打开。',
+          duration: 0,
         });
 
       this.handleTermsWorker = null;
       //1 遍历旧词库,转换内容
       this.handleTermsWorker = this.$worker
         .run(
-          (newsHaveRepeat, { oldArr, old }) => {
-            let out = "";
+          (newsHaveRepeat, {oldArr, old}) => {
+            let out = '';
             if (newsHaveRepeat) {
               let dict = {};
               for (let it of oldArr) {
@@ -338,7 +339,7 @@ wffj	-	万付`
         )
         .then(res => {
           this.newTermsData = res;
-          this.TermsCountSet("oldTerms", "oldTermsData");
+          this.TermsCountSet('oldTerms', 'oldTermsData');
           this.handleTerms();
           this.handleTermsWorker = null;
         })
@@ -347,7 +348,7 @@ wffj	-	万付`
           this.$Message.destroy();
           this.$Message.error({
             content: `遇到错误：${e}`,
-            duration: 0
+            duration: 0,
           });
           console.log(e);
           this.handleTermsWorker = null;
@@ -355,38 +356,33 @@ wffj	-	万付`
     },
     handleTerms() {
       //设置公共属性
+      var reg, out, log, HaveCodeReg, TermsCorrectCodeReg;
       var thisNewData = this.newsTermsData.obj,
         x = 0,
-        reg,
-        out,
-        log,
-        num,
-        HaveCodeReg,
-        TermsCorrectCodeReg;
-      num = {
-        suc: 0,
-        errall: 0,
-        add: 0,
-        mod: 0,
-        del: 0,
-        err: 0,
-        no: 0,
-        erratt: 0
-      };
+        num = {
+          suc: 0,
+          errall: 0,
+          add: 0,
+          mod: 0,
+          del: 0,
+          err: 0,
+          no: 0,
+          erratt: 0,
+        };
 
       //2 遍历新词条
       for (x in thisNewData.word) {
         //add
-        if (thisNewData.opreation[x] == "+") {
+        if (thisNewData.opreation[x] == '+') {
           //判断编码是否已存在
-          reg = new RegExp(`.+\\t\\b${thisNewData.code[x]}\\b`, "g");
+          reg = new RegExp(`.+\\t\\b${thisNewData.code[x]}\\b`, 'g');
           log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
             thisNewData.word[x]
           } ]`;
-          out = thisNewData.word[x] + "\t" + thisNewData.code[x];
+          out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 
           if (this.newTermsData.search(reg) == -1) {
-            this.newTermsData += out + "\r\n";
+            this.newTermsData += out + '\r\n';
             this.successInfoData += `${out}\t[ + 第${+x + 1}行]\r\n`;
             num.suc++;
             num.add++;
@@ -394,17 +390,17 @@ wffj	-	万付`
             this.errorInfoData += `[第${+x +
               1}行] \t${log}\r\n>> Error 编码已存在：\r\n${this.newTermsData
               .match(reg)
-              .join("，")}\r\n\r\n`;
+              .join('，')}\r\n\r\n`;
             num.errall++;
             num.err++;
           }
           //modify
-        } else if (thisNewData.opreation[x] == "*") {
-          reg = new RegExp(`.+\\t\\b${thisNewData.code[x]}\\b`, "g");
+        } else if (thisNewData.opreation[x] == '*') {
+          reg = new RegExp(`.+\\t\\b${thisNewData.code[x]}\\b`, 'g');
           log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
             thisNewData.word[x]
           } ]`;
-          out = thisNewData.word[x] + "\t" + thisNewData.code[x];
+          out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 
           if (this.newTermsData.search(reg) != -1) {
             this.newTermsData = this.newTermsData.replace(reg, out);
@@ -420,27 +416,27 @@ wffj	-	万付`
             num.no++;
           }
           //delete
-        } else if (thisNewData.opreation[x] == "-") {
+        } else if (thisNewData.opreation[x] == '-') {
           HaveCodeReg = new RegExp(
             `.+\\t\\b${thisNewData.code[x]}#?\\d*\\b[\\r\\n]*`,
-            "g"
+            'g'
           );
           TermsCorrectCodeReg = new RegExp(
             `${thisNewData.word[x]}\\t\\b${
               thisNewData.code[x]
             }#?\\d*\\b[\\r\\n]*`,
-            "g"
+            'g'
           );
           log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
             thisNewData.word[x]
           } ]`;
-          out = thisNewData.word[x] + "\t" + thisNewData.code[x];
+          out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 
           if (this.newTermsData.search(HaveCodeReg) != -1) {
             if (this.newTermsData.search(TermsCorrectCodeReg) != -1) {
               this.newTermsData = this.newTermsData.replace(
                 eval(TermsCorrectCodeReg),
-                ""
+                ''
               );
               this.successInfoData += `${out}\t[ - 第${+x + 1}行]\r\n`;
               num.suc++;
@@ -449,7 +445,7 @@ wffj	-	万付`
               this.errorInfoData += `[第${+x +
                 1}行]\t${log}\r\n>> Warn 词组编码不对应：\r\n${this.newTermsData
                 .match(HaveCodeReg)
-                .join("，")}\r\n\r\n`;
+                .join('，')}\r\n\r\n`;
               num.errall++;
               num.no++;
             }
@@ -462,11 +458,11 @@ wffj	-	万付`
             num.no++;
           }
           //忽略
-        } else if (thisNewData.opreation[x] == "/") {
+        } else if (thisNewData.opreation[x] == '/') {
           log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
             thisNewData.word[x]
           } ]`;
-          out = thisNewData.word[x] + "\t" + thisNewData.code[x];
+          out = thisNewData.word[x] + '\t' + thisNewData.code[x];
           this.errorInfoData += `[第${+x +
             1}行]\t${log}\r\n>> Info 已忽略本次操作。\r\n${
             thisNewData.code[x]
@@ -476,7 +472,7 @@ wffj	-	万付`
         }
       }
 
-      this.TermsCountSet("newTermsData", "newTermsCountData");
+      this.TermsCountSet('newTermsData', 'newTermsCountData');
 
       let nWordNum = this.newTermsCountData.obj.word.length,
         nCodeNum = this.newTermsCountData.obj.code.length;
@@ -506,7 +502,7 @@ wffj	-	万付`
         this.successInfoData
       }`;
       if (!num.errall && !num.err && !num.no && !num.erratt) {
-        this.errorInfoData = `恭喜，没有错误哦！`;
+        this.errorInfoData = '恭喜，没有错误哦！';
       } else {
         this.errorInfoData = `失败统计：\n共有 ${num.errall} 个, 错误 ${
           num.err
@@ -522,12 +518,12 @@ wffj	-	万付`
       this.$Message.destroy();
       this.$Message.success({
         content: `处理完毕！共成功${num.suc}个、失败${num.errall}个！`,
-        duration: 3
+        duration: 3,
       });
       this.$Loading.finish();
 
       //清理数据
-      this.successInfoData = this.errorInfoData = this.newTermsData = "";
+      this.successInfoData = this.errorInfoData = this.newTermsData = '';
     },
     TermsCountSet(formName, formData) {
       //转换符号
@@ -558,13 +554,13 @@ wffj	-	万付`
 
       if (0 == this.oldTerms.length) {
         this.$Loading.error();
-        this.$Message.error(`工作表为空！`);
+        this.$Message.error('工作表为空！');
         return;
       }
 
       //重置数据
-      this.TermsCountSet("oldTerms", "oldTermsData");
-      this.TermsCountSet("newsTerms", "newsTermsData");
+      this.TermsCountSet('oldTerms', 'oldTermsData');
+      this.TermsCountSet('newsTerms', 'newsTermsData');
 
       let oWordNum = this.oldTermsData.obj.word.length,
         oCodeNum = this.oldTermsData.obj.code.length,
@@ -577,7 +573,7 @@ wffj	-	万付`
 
       if (oWordNum != oCodeNum) {
         this.$Loading.error();
-        this.$Message.error(`请检查词库内容！`);
+        this.$Message.error('请检查词库内容！');
         this.count.old = `<b style="color: red;">词: ${oWordNum} 码: ${oCodeNum}<b>`;
         return;
       }
@@ -588,7 +584,7 @@ wffj	-	万付`
         mWordNum != mCodeNum
       ) {
         this.$Loading.error();
-        this.$Message.error(`请检查更正数据内容！`);
+        this.$Message.error('请检查更正数据内容！');
         this.count.new = `<b style="color: red;">码: ${mCodeNum} 符: ${mModifyNum} 词: ${mWordNum}<b>`;
         return;
       }
@@ -606,62 +602,62 @@ wffj	-	万付`
       this.testing(false);
     },
     proStartStatus() {
-      this.$Message.error(`处理线程运行中`);
+      this.$Message.error('处理线程运行中');
     },
     clearContent() {
-      this.oldTerms = this.newsTerms = this.outTerms = this.newTermsData = "";
+      this.oldTerms = this.newsTerms = this.outTerms = this.newTermsData = '';
       this.oldTermsData = {};
       this.testing(false);
       this.$Loading.finish();
       this.$Message.destroy();
-      this.$Message.success(`已清空数据`);
+      this.$Message.success('已清空数据');
     },
     allToHalf() {
       var regPlus = /＋/g;
       var regMinus = /-/g;
       var regModify = /!m|！m|！M|!M|＊/g;
       var regIgnore = /\/|／/g;
-      this.newsTerms = this.newsTerms.replace(regPlus, "+");
-      this.newsTerms = this.newsTerms.replace(regMinus, "-");
-      this.newsTerms = this.newsTerms.replace(regModify, "*");
-      this.newsTerms = this.newsTerms.replace(regIgnore, "/");
+      this.newsTerms = this.newsTerms.replace(regPlus, '+');
+      this.newsTerms = this.newsTerms.replace(regMinus, '-');
+      this.newsTerms = this.newsTerms.replace(regModify, '*');
+      this.newsTerms = this.newsTerms.replace(regIgnore, '/');
     },
     clearIdent(isclear, data) {
-      var result = data.replace(/#\d+/g, "");
+      var result = data.replace(/#\d+/g, '');
       return isclear ? data : result;
     },
     clearSpace() {
-      this.newTermsData = this.newTermsData.replace(/[\r\n]\s/g, "\r");
+      this.newTermsData = this.newTermsData.replace(/[\r\n]\s/g, '\r');
     },
     clickHistory() {
       this.updates = !this.updates;
       this.isHover = !this.isHover;
     },
     insertTab() {
-      document.execCommand("insertText", false, "	");
+      document.execCommand('insertText', false, '	');
     },
     setCookie(cname, cvalue, exdays) {
       var d = new Date();
       d.setTime(d + exdays * 24 * 60 * 60 * 1000);
-      var expires = "expires=" + d.toGMTString();
-      document.cookie = cname + "=" + cvalue + "; " + expires;
+      var expires = 'expires=' + d.toGMTString();
+      document.cookie = cname + '=' + cvalue + '; ' + expires;
     },
     getCookie(cname) {
-      var name = cname + "=";
-      var ca = document.cookie.split(";");
+      var name = cname + '=';
+      var ca = document.cookie.split(';');
       for (var i = 0; i < ca.length; i++) {
         var c = ca[i].trim();
         if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
       }
-      return "";
+      return '';
     },
     Notice() {
-      var isShowUpdate = this.getCookie("showUpdate");
+      var isShowUpdate = this.getCookie('showUpdate');
       var newVer = parseFloat(this.updateHistory[this.updateHistoryLength].ver);
 
       if (isShowUpdate != newVer) {
         this.$Notice.open({
-          title: "版本更新了",
+          title: '版本更新了',
           desc: `
 							本次版本更新${this.updateHistory[this.updateHistoryLength].cont}
 							版本号为${this.updateHistory[this.updateHistoryLength].ver}，
@@ -669,8 +665,8 @@ wffj	-	万付`
 						`,
           duration: 0,
           onClose: () => {
-            this.setCookie("showUpdate", newVer, 365);
-          }
+            this.setCookie('showUpdate', newVer, 365);
+          },
         });
       }
     },
@@ -684,7 +680,7 @@ wffj	-	万付`
           new: true,
           out: true,
           suc: true,
-          err: true
+          err: true,
         };
       } else {
         this.switchControl = false;
@@ -692,8 +688,8 @@ wffj	-	万付`
       for (let x in this.updateHistory) {
         this.updateHistoryLength = x;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
