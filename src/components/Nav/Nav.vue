@@ -30,7 +30,7 @@
 							<DropdownItem>
 								<Button type="text" to="/jdweb/tools/study">跟打练习</Button>
 							</DropdownItem><DropdownItem>
-								<Button type="text" to="https://gitee.com/nshu/jdweb">本站项目</Button>
+								<Button type="text" to="https://gitee.com/nshu/jdweb" target="_blank">本站项目</Button>
 							</DropdownItem>
 						</DropdownMenu>
 					</Dropdown>
