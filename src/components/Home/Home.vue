@@ -84,7 +84,7 @@ export default {
         {
           logo: require("../../assets/jd.png"),
           name: "键道6",
-          url: "https://gitee.com/nmlixa/Rime_JD",
+          url: "https://gitee.com/nshu/Rime_JD",
           propagandaItem: [
             { item: "200个两键上屏单字" },
             { item: "2000个三键上屏单字" },
