@@ -29,7 +29,8 @@
 							</DropdownItem>
 							<DropdownItem>
 								<Button type="text" to="/jdweb/tools/study">跟打练习</Button>
-							</DropdownItem><DropdownItem>
+							</DropdownItem>
+							<DropdownItem>
 								<Button type="text" to="https://gitee.com/nshu/jdweb" target="_blank">本站项目</Button>
 							</DropdownItem>
 						</DropdownMenu>
@@ -39,7 +40,6 @@
 		</Menu>
 	</Header>
 </template>
-
 <script>
 export default {
   name: "Nav",
