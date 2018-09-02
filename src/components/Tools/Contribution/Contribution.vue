@@ -83,7 +83,7 @@
 				<Card>
 					<Row type="flex" justify="center">
 						<p>转换后词组，顺序错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。
-							<Button to="https://gitee.com/nmlixa/Rime_JD/tree/master/Tools/TermsTools"
+							<Button to="https://gitee.com/nshu/Rime_JD/tree/master/Tools/TermsTools"
 								target="_blank">工具1sortTerms.sh</Button>
 						</p>
 						<p>请注意！本工具不支持
@@ -272,6 +272,10 @@ wffj	-	万付`,
           ver: '4.1.2.1',
           cont: '纠正错误时提示，纠正各输入框中插入\'tab\'符的问题。',
         },
+        {
+          ver: '4.1.2.2',
+          cont: '纠正原词库尾部没有换行时造成的生成词库没有换行问题。',
+        },
       ],
       updateHistoryLength: 0,
     };
@@ -370,6 +374,8 @@ wffj	-	万付`,
           erratt: 0,
         };
 
+      //尾部添加换行避免错误
+      this.newTermsData += '\r\n';
       //2 遍历新词条
       for (x in thisNewData.word) {
         //add
@@ -665,7 +671,7 @@ wffj	-	万付`,
 						`,
           duration: 0,
           onClose: () => {
-            this.setCookie('showUpdate', newVer, 365);
+            this.setCookie('showUpdate', newVer, 3650);
           },
         });
       }
