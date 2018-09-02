@@ -491,7 +491,7 @@ wffj	-	万付`,
         num.erratt
       }`;
       //扫描去除空行
-      this.clearSpace();
+      this.clearSpace('newTermsData');
 
       //填充内容
       if (this.isDev) {
@@ -530,10 +530,12 @@ wffj	-	万付`,
 
       //清理数据
       this.successInfoData = this.errorInfoData = this.newTermsData = '';
+      this.oldTermsData = {};
     },
     TermsCountSet(formName, formData) {
       //转换符号
       this.allToHalf();
+      this.clearSpace(formName);
 
       this[formData].test = this[formName].split(/[\t\r\n]/g);
 
@@ -632,8 +634,8 @@ wffj	-	万付`,
       var result = data.replace(/#\d+/g, '');
       return isclear ? data : result;
     },
-    clearSpace() {
-      this.newTermsData = this.newTermsData.replace(/[\r\n]\s/g, '\r');
+    clearSpace(fromName) {
+      this[fromName] = this[fromName].replace(/[\r\n][\r\n]/g, '\r');
     },
     clickHistory() {
       this.updates = !this.updates;
