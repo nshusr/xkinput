@@ -1,4 +1,10 @@
+const MonocoEditorPlugin = require('monaco-editor-webpack-plugin')
 module.exports = {
   assetsDir: "static",
-  baseUrl: "/jdweb/"
+  baseUrl: "/jdweb/",
+  configureWebpack: {
+    plugins: [
+      new MonocoEditorPlugin()
+    ]
+  }
 };

@@ -8,47 +8,67 @@
 						<span class="textarea-title">词库数据</span>
 						<span class="textarea-info" v-html="count.old"></span>
 					</div>
-					<transition name="slide">
-						<textarea spellcheck="false" v-show="showPlate.old" v-model="oldTerms" @keydown.tab.prevent="insertTab" @keyup.ctrl.86="testing(false)"
-							:placeholder="oldAttr"></textarea>
-					</transition>
+          <monaco-editor
+            class="editor"
+            theme="dark"
+            language="yaml"
+            v-model="oldTerms"
+            v-show="showPlate.old"
+            @keyup.ctrl.86="testing(false)">
+          </monaco-editor>
 					</Col>
 					<Col :xs="24" :sm="8">
 					<div class="info" @click="showPlate.new = !showPlate.new">
 						<span class="textarea-info" v-html="count.new"></span>
 						<span class="textarea-title">更正数据</span>
 					</div>
-					<transition name="slide">
-						<textarea spellcheck="false" v-show="showPlate.new" v-model="newsTerms" @keydown.tab.prevent="insertTab" @keyup.ctrl.86="testing(false)"
-							:placeholder="newAttr"></textarea>
-					</transition>
+          <monaco-editor
+            class="editor"
+            theme="dark"
+            language="yaml"
+            v-model="newsTerms"
+            v-show="showPlate.new"
+            @keyup.ctrl.86="testing(false)">
+          </monaco-editor>
 					</Col>
 					<Col :xs="24" :sm="8">
 					<div class="info" @click="showPlate.out = !showPlate.out">
 						<span class="textarea-info" v-html="count.out"></span>
 						<span class="textarea-title">转换内容</span>
 					</div>
-					<transition name="slide">
-						<textarea spellcheck="false" v-show="showPlate.out" readonly v-model="outTerms" placeholder="输出转换后内容"></textarea>
-					</transition>
+          <monaco-editor
+            class="editor"
+            theme="dark"
+            language="yaml"
+            v-model="outTerms"
+            v-show="showPlate.out">
+          </monaco-editor>
 					</Col>
 					<Col :xs="24" :sm="12">
 					<div class="info" @click="showPlate.suc = !showPlate.suc">
 						<span class="textarea-info" v-html="count.success"></span>
 						<span class="textarea-title">成功信息</span>
 					</div>
-					<transition name="slide">
-						<textarea spellcheck="false" v-show="showPlate.suc" readonly v-model="successInfo" placeholder="输出成功信息"></textarea>
-					</transition>
+          <monaco-editor
+            class="editor"
+            theme="dark"
+            language="yaml"
+            v-model="successInfo"
+            v-show="showPlate.suc">
+          </monaco-editor>
 					</Col>
 					<Col :xs="24" :sm="12">
 					<div class="info" @click="showPlate.err = !showPlate.err">
 						<span class="textarea-info" v-html="count.error"></span>
 						<span class="textarea-title">错误信息</span>
 					</div>
-					<transition name="slide">
-						<textarea spellcheck="false" v-show="showPlate.err" readonly v-model="errorInfo" placeholder="输出错误信息"></textarea>
-					</transition>
+          <monaco-editor
+            class="editor"
+            theme="dark"
+            language="yaml"
+            v-model="errorInfo"
+            v-show="showPlate.err">
+          </monaco-editor>
 					</Col>
 				</Row>
 			</Card>
@@ -117,7 +137,11 @@
 </template>
 
 <script>
+import MonacoEditor from 'vue-monaco'
 export default {
+  components: {
+    MonacoEditor
+  },
   name: 'Contribution',
   data() {
     return {
@@ -720,6 +744,11 @@ wffj	-	万付`,
 .slide-leave-to {
   height: 0;
   opacity: 0;
+}
+
+.editor {
+  width: 100%;
+  height: 200px;
 }
 
 textarea {
