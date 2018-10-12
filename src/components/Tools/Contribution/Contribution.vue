@@ -13,7 +13,6 @@
 					</div>
           <monaco-editor
             class="editor"
-            theme="vs-dark"
             language="yaml"
             v-model="oldTerms"
             v-show="showPlate.old"
@@ -27,7 +26,6 @@
 					</div>
           <monaco-editor
             class="editor"
-            theme="vs-dark"
             language="yaml"
             v-model="newsTerms"
             v-show="showPlate.new"
@@ -41,7 +39,6 @@
 					</div>
           <monaco-editor
             class="editor"
-            theme="vs-dark"
             language="yaml"
             v-model="outTerms"
             v-show="showPlate.out">
@@ -54,7 +51,6 @@
 					</div>
           <monaco-editor
             class="editor"
-            theme="vs-dark"
             language="yaml"
             v-model="successInfo"
             v-show="showPlate.suc">
@@ -67,7 +63,6 @@
 					</div>
           <monaco-editor
             class="editor"
-            theme="vs-dark"
             language="yaml"
             v-model="errorInfo"
             v-show="showPlate.err">
