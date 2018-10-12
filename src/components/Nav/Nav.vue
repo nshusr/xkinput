@@ -40,7 +40,6 @@
 		</Menu>
 	</Header>
 </template>
-
 <script>
 export default {
   name: "Nav",
