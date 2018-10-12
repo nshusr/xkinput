@@ -1,7 +1,7 @@
 <template>
-	<div id="app">
+	<div id='app'>
 		<v-nav></v-nav>
-		<Layout class="main-layout">
+		<Layout class='main-layout'>
 			<router-view></router-view>
 		</Layout>
 		<v-footer></v-footer>
@@ -10,15 +10,15 @@
 </template>
 
 <script>
-import Nav from "./components/Nav/Nav";
-import Footer from "./components/Footer/Footer";
-import Utiltes from "./components/Utilites/Utilites";
+import Nav from './components/Nav/Nav';
+import Footer from './components/Footer/Footer';
+import Utiltes from './components/Utilites/Utilites';
 export default {
-  name: "app",
+  name: 'app',
   components: {
-    "v-nav": Nav,
-    "v-footer": Footer,
-    "v-utiltes": Utiltes
+    'v-nav': Nav,
+    'v-footer': Footer,
+    'v-utiltes': Utiltes
   },
   data() {
     return {
@@ -33,7 +33,7 @@ export default {
         var isHome = /.*\/jdweb\/?$/;
         if (!isHome.test(thisHref)) {
           ev.preventDefault();
-          this.$router.push("/jdweb/");
+          this.$router.push('/jdweb/');
           return false;
         }
       }

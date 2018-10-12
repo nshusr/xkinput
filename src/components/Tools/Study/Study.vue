@@ -1,45 +1,45 @@
 <template>
-	<Row type="flex" justify="center">
-		<Row style="max-width: 1200px; padding: 0 20px;">
+	<Row type='flex' justify='center'>
+		<Row style='max-width: 1200px; padding: 0 20px;'>
       <Card>
-        <Row type="flex" justify="center">
-          <h1 class="main-title">单字词组练习工具<small>Rime词库</small></h1>
+        <Row type='flex' justify='center'>
+          <h1 class='main-title'>单字词组练习工具<small>Rime词库</small></h1>
         </Row>
         <Row>
-          <Card class="study-main-card">
-            <span slot="title" :title="termsData.name">{{termsData.name ? termsData.name : '未读取文件'}}&nbsp;{{termsData.size ? termsData.mbSize : 0}}</span>
-            <div slot="extra">
-              <label class="ivu-btn ivu-btn-default" for="file">上传</label>
-              <input id="file" ref="file" @change="readFile" type="file">
+          <Card class='study-main-card'>
+            <span slot='title' :title='termsData.name'>{{termsData.name ? termsData.name : '未读取文件'}}&nbsp;{{termsData.size ? termsData.mbSize : 0}}</span>
+            <div slot='extra'>
+              <label class='ivu-btn ivu-btn-default' for='file'>上传</label>
+              <input id='file' ref='file' @change='readFile' type='file'>
             </div>
-            <Row type="flex" justify="center">
-              <span id="word" data-clipboard-target="#word">{{word}}</span>
+            <Row type='flex' justify='center'>
+              <span id='word' data-clipboard-target='#word'>{{word}}</span>
               <input
-                class="ivu-input ivu-input-default"
-                maxlength="6"
-                @click="isReadFile"
-                :class="{'': status == 0, 'border-primary': status == 1,'border-success': status == 2, 'border-danger': status == -1}" type="text"
-                @keyup.space="isRight"
+                class='ivu-input ivu-input-default'
+                maxlength='6'
+                @click='isReadFile'
+                :class='{'': status == 0, 'border-primary': status == 1,'border-success': status == 2, 'border-danger': status == -1}' type='text'
+                @keyup.space='isRight'
                 @keydown.space.prevent
-                autocomplete="off"
-                v-model="code"
-                placeholder="请输入词组对应编码"></button>
+                autocomplete='off'
+                v-model='code'
+                placeholder='请输入词组对应编码'></button>
             </Row>
           </Card>
-          <Row type="flex" justify="center">
+          <Row type='flex' justify='center'>
             <p>version 1.2</p>
           </Row>
-          <Row type="flex" justify="center" style="margin-top: 15px;">
-            <Col :xs="12" :md="6" style="padding: 0 5px;">
+          <Row type='flex' justify='center' style='margin-top: 15px;'>
+            <Col :xs='12' :md='6' style='padding: 0 5px;'>
               <p>一、请选择一个Rime词库上传。</p>
             </Col> 
-            <Col :xs="12" :md="6" style="padding: 0 5px;">
+            <Col :xs='12' :md='6' style='padding: 0 5px;'>
               <p>二、切换使用英文输入法。</p>
             </Col> 
-            <Col :xs="12" :md="6" style="padding: 0 5px;">
+            <Col :xs='12' :md='6' style='padding: 0 5px;'>
               <p>三、输入对应词条编码，空格确定。</p>
             </Col> 
-            <Col :xs="12" :md="6" style="padding: 0 5px;">
+            <Col :xs='12' :md='6' style='padding: 0 5px;'>
               <p>四、校验成功自动下一个。</p>
             </Col>
           </Row>
@@ -50,36 +50,36 @@
 </template>
 
 <script>
-import Clipboard from "clipboard";
+import Clipboard from 'clipboard';
 export default {
-  name: "study",
+  name: 'study',
   data() {
     return {
-      word: "字词",
-      code: "",
+      word: '字词',
+      code: '',
       status: 0,
-      jdl: "",
+      jdl: '',
       termsData: {},
       computedData: [],
-      codeClass: "",
+      codeClass: '',
       notUpFileClass: false,
       message: {
         show: false,
-        class: "",
-        cont: ""
+        class: '',
+        cont: ''
       },
       closeTimer: false,
       nextData: {
-        word: "",
-        code: ""
+        word: '',
+        code: ''
       },
       errNum: 2
     };
   },
   mounted() {
-    var clip = new Clipboard("#word"),
+    var clip = new Clipboard('#word'),
       __this = this;
-    clip.on("success", () => {
+    clip.on('success', () => {
       __this.$Message.success(`已复制`);
     });
   },
@@ -101,8 +101,8 @@ export default {
       var reg = new RegExp(`^.{${this.errNum}}`);
       var trim = /[\s+|\r+|\n+]/g;
 
-      this.code = this.code.replace(trim, "");
-      this.nextData.code = this.nextData.code.replace(trim, "");
+      this.code = this.code.replace(trim, '');
+      this.nextData.code = this.nextData.code.replace(trim, '');
 
       if (this.code.length >= 1) {
         this.$Notice.destroy();
@@ -142,7 +142,7 @@ export default {
         __this.nextData.word = __this.word = __this.termsData.content[random];
         __this.nextData.code = __this.code =
           __this.termsData.content[random + 1];
-        __this.code = "";
+        __this.code = '';
       }
     },
     splitTerms: function(data) {
@@ -170,7 +170,7 @@ export default {
             this.$refs.file.files.length - 1
           ];
           this.termsData.mbSize = this.kbToMb(this.termsData.size);
-          this.termsData.result = "";
+          this.termsData.result = '';
 
           reader.onload = function() {
             __this.termsData.result = this.result;
@@ -194,9 +194,9 @@ export default {
     kbToMb: function(data) {
       var computedData = parseFloat(data);
       if (computedData < 1048576) {
-        return eval(computedData / 1024).toFixed(1) + "KB";
+        return eval(computedData / 1024).toFixed(1) + 'KB';
       } else {
-        return eval(computedData / 1048576).toFixed(1) + "MB";
+        return eval(computedData / 1048576).toFixed(1) + 'MB';
       }
     }
   }

@@ -1,23 +1,23 @@
 <template>
 	<div>
-		<Card class="home-top-card" :bordered="false">
-			<Row class="home-top">
-				<Carousel class="main-carousel" :autoplay="true" :loop="true"  :autoplay-speed="10000">
-					<CarouselItem v-for="scheme in schemes" :key="scheme.name">
-						<Row type="flex" justify="center" align="middle">
-							<Card class="main-card">
-								<strong slot="title">{{scheme.name}}</strong>
-								<Button slot="extra" type="primary" :to="scheme.url" target="_blank">获取</Button>
+		<Card class='home-top-card' :bordered='false'>
+			<Row class='home-top'>
+				<Carousel class='main-carousel' :autoplay='true' :loop='true'  :autoplay-speed='10000'>
+					<CarouselItem v-for='scheme in schemes' :key='scheme.name'>
+						<Row type='flex' justify='center' align='middle'>
+							<Card class='main-card'>
+								<strong slot='title'>{{scheme.name}}</strong>
+								<Button slot='extra' type='primary' :to='scheme.url' target='_blank'>获取</Button>
 								<div>
-									<Row type="flex" justify="center">
-										<Col span="6" class="logo">
-											<Row type="flex" justify="center" align="middle">
-												<img width="48" height="48" :src="scheme.logo" :alt="scheme.name">
+									<Row type='flex' justify='center'>
+										<Col span='6' class='logo'>
+											<Row type='flex' justify='center' align='middle'>
+												<img width='48' height='48' :src='scheme.logo' :alt='scheme.name'>
 											</Row>
 										</Col>
-										<Col span="18" class="schemeTags">
-											<Row type="flex" justify="center" align="middle">
-												<Tag type="dot" v-for="items in scheme.propagandaItem" :key="items.item">
+										<Col span='18' class='schemeTags'>
+											<Row type='flex' justify='center' align='middle'>
+												<Tag type='dot' v-for='items in scheme.propagandaItem' :key='items.item'>
 													{{items.item}}
 												</Tag>
 											</Row>
@@ -28,22 +28,22 @@
 						</Row>
 					</CarouselItem>
 				</Carousel>
-				<div class="mask"></div>
-				<img src="./../../assets/starbg.jpg" class="xkbg">
-				<img src="./../../assets/starbg.jpg" class="xkbg" id="xkbgRotate">
+				<div class='mask'></div>
+				<img src='./../../assets/starbg.jpg' class='xkbg'>
+				<img src='./../../assets/starbg.jpg' class='xkbg' id='xkbgRotate'>
 			</Row>
 		</Card>
 		<Layout>
-			<Content class="home-content">
+			<Content class='home-content'>
 				<v-inputs></v-inputs>
-				<Card class="inputs-card">
-					<h4 slot="title">键道6打字效果</h4>
-					<small slot="extra">@别打脸脸</small>
-					<img src="./../../assets/inputs.gif" alt="键道6打字效果">
+				<Card class='inputs-card'>
+					<h4 slot='title'>键道6打字效果</h4>
+					<small slot='extra'>@别打脸脸</small>
+					<img src='./../../assets/inputs.gif' alt='键道6打字效果'>
 				</Card>
 				<Card>
-					<h4 slot="title">我的输入法之梦</h4>
-					<small slot="extra">吅吅大山</small>
+					<h4 slot='title'>我的输入法之梦</h4>
+					<small slot='extra'>吅吅大山</small>
 					<p>此岸是双拼，彼岸是双拼加形</p>
 					<p>键道，将使你成为一个巨人，左脚此岸，右脚彼岸</p>
 					<p>大风越狠，我心越荡</p>
@@ -75,69 +75,69 @@
 </template>
 
 <script>
-import Inputs from "../Inputs/Inputs";
+import Inputs from '../Inputs/Inputs';
 export default {
-  name: "Home",
+  name: 'Home',
   data() {
     return {
       schemes: [
         {
-          logo: require("../../assets/jd.png"),
-          name: "键道6",
-          url: "https://gitee.com/nshu/Rime_JD",
+          logo: require('../../assets/jd.png'),
+          name: '键道6',
+          url: 'https://gitee.com/nshu/Rime_JD',
           propagandaItem: [
-            { item: "200个两键上屏单字" },
-            { item: "2000个三键上屏单字" },
-            { item: "60+％的左右击键率" },
-            { item: "活跃的词库维护平台" },
-            { item: "21键位双拼" },
-            { item: "0.4％的低重音率" },
-            { item: "多平台无缝使用" },
-            { item: "超高频易记简词，大大缩短码长" }
+            { item: '200个两键上屏单字' },
+            { item: '2000个三键上屏单字' },
+            { item: '60+％的左右击键率' },
+            { item: '活跃的词库维护平台' },
+            { item: '21键位双拼' },
+            { item: '0.4％的低重音率' },
+            { item: '多平台无缝使用' },
+            { item: '超高频易记简词，大大缩短码长' }
           ],
-          propagandaIndex: ""
+          propagandaIndex: ''
         },
         {
-          logo: require("../../assets/star.png"),
-          name: "两笔",
-          url: "https://gitee.com/morler/rime_xklb",
+          logo: require('../../assets/star.png'),
+          name: '两笔',
+          url: 'https://gitee.com/morler/rime_xklb',
           propagandaItem: [
-            { item: "提笔忘字学两笔" },
-            { item: "离散高，码长短" }
+            { item: '提笔忘字学两笔' },
+            { item: '离散高，码长短' }
           ],
-          propagandaIndex: ""
+          propagandaIndex: ''
         },
         {
-          logo: require("../../assets/star.png"),
-          name: "一笔",
-          url: "https://gitee.com/dzyht/rime_xkybd",
-          propagandaItem: [{ item: "招募广告词" }],
-          propagandaIndex: ""
+          logo: require('../../assets/star.png'),
+          name: '一笔',
+          url: 'https://gitee.com/dzyht/rime_xkybd',
+          propagandaItem: [{ item: '招募广告词' }],
+          propagandaIndex: ''
         },
         {
-          logo: require("../../assets/star.png"),
-          name: "一道",
-          url: "https://gitee.com/dzyht/rime_xkybd",
-          propagandaItem: [{ item: "招募广告词" }],
-          propagandaIndex: ""
+          logo: require('../../assets/star.png'),
+          name: '一道',
+          url: 'https://gitee.com/dzyht/rime_xkybd',
+          propagandaItem: [{ item: '招募广告词' }],
+          propagandaIndex: ''
         },
         {
-          logo: require("../../assets/star.png"),
-          name: "魔道",
-          url: "https://gitee.com/dzyht/rime_xkybd",
-          propagandaItem: [{ item: "招募广告词" }],
-          propagandaIndex: ""
+          logo: require('../../assets/star.png'),
+          name: '魔道',
+          url: 'https://gitee.com/dzyht/rime_xkybd',
+          propagandaItem: [{ item: '招募广告词' }],
+          propagandaIndex: ''
         }
       ]
     };
   },
   components: {
-    "v-inputs": Inputs
+    'v-inputs': Inputs
   }
 };
 </script>
 
-<style lang="less">
+<style lang='less'>
 .home-top-card {
   border-radius: 0 0 3px 3px;
   margin-bottom: 5px;

@@ -1,6 +1,9 @@
 <template>
 	<Row type="flex" justify="center">
 		<Row style="max-width: 1200px; padding: 0 20px;">
+      <Row type="flex" justify="center">
+        <Alert>已替换编辑器为 Monaco-Editor ，若Ctrl + V无法粘贴内容，请使用Ctrl + Shift + V。</Alert>
+      </Row>
 			<Card>
 				<Row class="main-textarea-box" type="flex" justify="center">
 					<Col :xs="24" :sm="8">
@@ -10,7 +13,7 @@
 					</div>
           <monaco-editor
             class="editor"
-            theme="dark"
+            theme="vs-dark"
             language="yaml"
             v-model="oldTerms"
             v-show="showPlate.old"
@@ -24,7 +27,7 @@
 					</div>
           <monaco-editor
             class="editor"
-            theme="dark"
+            theme="vs-dark"
             language="yaml"
             v-model="newsTerms"
             v-show="showPlate.new"
@@ -38,7 +41,7 @@
 					</div>
           <monaco-editor
             class="editor"
-            theme="dark"
+            theme="vs-dark"
             language="yaml"
             v-model="outTerms"
             v-show="showPlate.out">
@@ -51,7 +54,7 @@
 					</div>
           <monaco-editor
             class="editor"
-            theme="dark"
+            theme="vs-dark"
             language="yaml"
             v-model="successInfo"
             v-show="showPlate.suc">
@@ -64,7 +67,7 @@
 					</div>
           <monaco-editor
             class="editor"
-            theme="dark"
+            theme="vs-dark"
             language="yaml"
             v-model="errorInfo"
             v-show="showPlate.err">
@@ -300,8 +303,13 @@ wffj	-	万付`,
           ver: '4.1.2.2',
           cont: '纠正原词库尾部没有换行时造成的生成词库没有换行问题。',
         },
+        {
+          ver: '4.2',
+          cont: '更新：替换编辑器至 Monaco-Editor 若无法 Ctrl + V 粘贴内容，请使用 Ctrl + Shift + V 粘贴。望知晓',
+        },
       ],
       updateHistoryLength: 0,
+      showWarning: false
     };
   },
   created() {

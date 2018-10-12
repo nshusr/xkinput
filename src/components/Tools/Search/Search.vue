@@ -1,36 +1,36 @@
 <template>
-  <Row style="max-width: 600px; margin: 0 auto;">
-    <Row type="flex" justify="center">
-      <Card style="width: 100%;">
+  <Row style='max-width: 600px; margin: 0 auto;'>
+    <Row type='flex' justify='center'>
+      <Card style='width: 100%;'>
         <h3>星空单字查码工具</h3>
-        <Form status-icon :model="formData" :rules="rules" ref="formData">
-          <FormItem label="词条：" prop="keyword">
-            <Input type="text" v-model="formData.keyword" placeholder="请输入你要查询的字词"></Input>
+        <Form status-icon :model='formData' :rules='rules' ref='formData'>
+          <FormItem label='词条：' prop='keyword'>
+            <Input type='text' v-model='formData.keyword' placeholder='请输入你要查询的字词'></Input>
           </FormItem>
-          <FormItem label="方案：" prop="programName">
-            <Select v-model="formData.programName" placeholder="请选择一个方案文件">
-              <Option label="键道6" value="xkjdl"></Option>
-              <Option label="一笔" value="xkyb"></Option>
-              <Option label="两笔" value="xklb"></Option>
+          <FormItem label='方案：' prop='programName'>
+            <Select v-model='formData.programName' placeholder='请选择一个方案文件'>
+              <Option label='键道6' value='xkjdl'></Option>
+              <Option label='一笔' value='xkyb'></Option>
+              <Option label='两笔' value='xklb'></Option>
             </Select>
           </FormItem>
           <FormItem>
-            <Button @click="search">查询</Button>
-            <Button @click="clear">清除</Button>
-            <Button @click="help = !help">帮助</Button>
+            <Button @click='search'>查询</Button>
+            <Button @click='clear'>清除</Button>
+            <Button @click='help = !help'>帮助</Button>
           </FormItem>
         </Form>
       </Card>
     </Row>
     <Row>
-      <Card v-if="help">
+      <Card v-if='help'>
         <h4>键道6说明</h4>
-        <Table :show-header="false" border :columns="jdlhelpColumns" :data="jdlHelp"></Table>
+        <Table :show-header='false' border :columns='jdlhelpColumns' :data='jdlHelp'></Table>
       </Card>
     </Row>
     <Card>
       <Row>
-        <Table :columns="contentColumns" stripe :data="content" :loading="isSearch">
+        <Table :columns='contentColumns' stripe :data='content' :loading='isSearch'>
         </Table>
       </Row>
     </Card>
@@ -39,104 +39,104 @@
 
 <script>
 export default {
-  name: "Search",
+  name: 'Search',
   data() {
     return {
       formData: {
-        keyword: "",
-        programName: ""
+        keyword: '',
+        programName: ''
       },
       rules: {
         keyword: [
           {
-            type: "string",
+            type: 'string',
             required: true,
-            message: "请输入要查询的内容！",
-            trigger: "blur"
+            message: '请输入要查询的内容！',
+            trigger: 'blur'
           }
         ],
         programName: [
-          { validator: this.getProgram, required: true, trigger: "change" }
+          { validator: this.getProgram, required: true, trigger: 'change' }
         ]
       },
       jdlhelpColumns: [
         {
-          title: "1",
-          key: "1"
+          title: '1',
+          key: '1'
         },
         {
-          title: "2",
-          key: "2"
+          title: '2',
+          key: '2'
         },
         {
-          title: "3",
-          key: "3"
+          title: '3',
+          key: '3'
         },
         {
-          title: "4",
-          key: "4"
+          title: '4',
+          key: '4'
         }
       ],
       contentColumns: [
         {
-          title: "序",
-          type: "index",
+          title: '序',
+          type: 'index',
           width: 60
         },
         {
-          title: "词条",
-          key: "word"
+          title: '词条',
+          key: 'word'
         },
         {
-          title: "读音",
-          key: "pronunciation"
+          title: '读音',
+          key: 'pronunciation'
         },
         {
-          title: "编码",
-          key: "code"
+          title: '编码',
+          key: 'code'
         },
         {
-          title: "拆分",
-          key: "split"
+          title: '拆分',
+          key: 'split'
         }
       ],
-      alertType: "info",
-      alertInfo: "请选择一个方案",
+      alertType: 'info',
+      alertInfo: '请选择一个方案',
       help: false,
       contnum: 0,
       program: [],
-      oldProgram: "",
+      oldProgram: '',
       content: [],
       isSearch: false,
       jdlHelp: [
         {
-          "1": "水/氵<br>a",
-          "2": "人/亻<br>i",
-          "3": "口<br>o",
-          "4": "木<br>v"
+          '1': '水/氵<br>a',
+          '2': '人/亻<br>i',
+          '3': '口<br>o',
+          '4': '木<br>v'
         },
         {
-          "1": "草/艹<br>ii",
-          "2": "贝<br>ao",
-          "3": "土/士<br>vo",
-          "4": "金/钅<br>io"
+          '1': '草/艹<br>ii',
+          '2': '贝<br>ao',
+          '3': '土/士<br>vo',
+          '4': '金/钅<br>io'
         },
         {
-          "1": "日<br>oi",
-          "2": "十<br>uo",
-          "3": "手<br>iu"
+          '1': '日<br>oi',
+          '2': '十<br>uo',
+          '3': '手<br>iu'
         }
       ]
     };
   },
   methods: {
     search() {
-      this.$refs["formData"].validate(valid => {
+      this.$refs['formData'].validate(valid => {
         if (valid) {
           var __this = this;
           this.isSearch = true;
           setTimeout(() => {
-            var keyw = this.formData.keyword.split("");
+            var keyw = this.formData.keyword.split('');
             /* 计数 */
             var result = 1;
             /* 遍历查找关键字 */
@@ -166,16 +166,16 @@ export default {
       }
     },
     getProgram(rule, value, callback) {
-      if (value === "") {
-        callback(new Error("请选择一个方案！"));
+      if (value === '') {
+        callback(new Error('请选择一个方案！'));
       } else {
         this.$Message.loading({
-          content: "正在加载方案文件……"
+          content: '正在加载方案文件……'
         });
-        this.program = require("./" + value + ".json");
+        this.program = require('./' + value + '.json');
 
         var programSelect =
-          { xkjdl: "键道6", xkyb: "一笔", xklb: "两笔" }[value] || "无方案";
+          { xkjdl: '键道6', xkyb: '一笔', xklb: '两笔' }[value] || '无方案';
 
         this.$Message.destroy();
         this.clear();
