@@ -18,7 +18,7 @@
                 class='ivu-input ivu-input-default'
                 maxlength='6'
                 @click='isReadFile'
-                :class='{'': status == 0, 'border-primary': status == 1,'border-success': status == 2, 'border-danger': status == -1}' type='text'
+                :class='{"": status == 0, "border-primary": status == 1,"border-success": status == 2, "border-danger": status == -1}' type='text'
                 @keyup.space='isRight'
                 @keydown.space.prevent
                 autocomplete='off'
@@ -32,13 +32,13 @@
           <Row type='flex' justify='center' style='margin-top: 15px;'>
             <Col :xs='12' :md='6' style='padding: 0 5px;'>
               <p>一、请选择一个Rime词库上传。</p>
-            </Col> 
+            </Col>
             <Col :xs='12' :md='6' style='padding: 0 5px;'>
               <p>二、切换使用英文输入法。</p>
-            </Col> 
+            </Col>
             <Col :xs='12' :md='6' style='padding: 0 5px;'>
               <p>三、输入对应词条编码，空格确定。</p>
-            </Col> 
+            </Col>
             <Col :xs='12' :md='6' style='padding: 0 5px;'>
               <p>四、校验成功自动下一个。</p>
             </Col>

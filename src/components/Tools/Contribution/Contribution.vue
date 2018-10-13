@@ -189,9 +189,9 @@ wffj	-	万付`,
       showPlate: {
         old: true,
         new: true,
-        out: false,
-        suc: false,
-        err: false,
+        out: true,
+        suc: true,
+        err: true,
       },
       updateAll: false,
       handleTermsWorker: null,
@@ -760,30 +760,6 @@ wffj	-	万付`,
 .editor {
   width: 100%;
   height: 200px;
-}
-
-textarea {
-  width: 100%;
-  height: 200px;
-  resize: none !important;
-  padding: 5px 10px !important;
-  border: 1px solid #e0e3da;
-  border-top: 0;
-  background: #fffff3;
-  display: flex;
-}
-
-textarea:read-only {
-  background: #fffff3;
-}
-
-textarea:focus {
-  z-index: 99;
-}
-
-textarea:focus + .info {
-  height: 26px;
-  overflow: initial;
 }
 
 .info {
