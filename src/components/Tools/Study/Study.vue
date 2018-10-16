@@ -80,7 +80,7 @@ export default {
     var clip = new Clipboard('#word'),
       __this = this;
     clip.on('success', () => {
-      __this.$Message.success(`已复制`);
+      __this.$Message.success('已复制');
     });
   },
   methods: {
@@ -89,8 +89,8 @@ export default {
         this.notUpFileClass = true;
         this.$Notice.destroy();
         this.$Notice.error({
-          title: `词库文件为空`,
-          desc: `未读取词库文件，请点击上传选择词库文件。`
+          title: '词库文件为空',
+          desc: '未读取词库文件，请点击上传选择词库文件。'
         });
         return;
       }
@@ -108,7 +108,7 @@ export default {
         this.$Notice.destroy();
         if (this.nextData.code == this.code) {
           this.$Notice.info({
-            title: `词组信息：`,
+            title: '词组信息：',
             desc: `编码：${this.nextData.code}\t词条：${this.nextData.word}\t√`
           });
           this.status = 2;
@@ -117,7 +117,7 @@ export default {
         } else {
           this.status = -1;
           this.$Notice.error({
-            title: `编码有误`,
+            title: '编码有误',
             desc: `错误请重新输入\t提示：共有${
               this.nextData.code.length
             }位，前${this.errNum}位是：${this.nextData.code.match(
@@ -162,7 +162,7 @@ export default {
         var reader = new FileReader();
         if (!/yaml|txt|xls/.test(file.name)) {
           this.$Notice.error({
-            title: `上传文件有误`,
+            title: '上传文件有误',
             desc: `您上传的${file.name}文件格式不受支持。`
           });
         } else {
@@ -183,7 +183,7 @@ export default {
 
           this.next();
           this.$Notice.success({
-            title: `词组载入成功`,
+            title: '词组载入成功',
             desc: `词库文件已加载完成，词库为${this.termsData.name}，词库大小${
               this.termsData.mbSize
             }。`

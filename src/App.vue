@@ -25,7 +25,12 @@ export default {
       isDestroyed: true
     };
   },
-  mounted: function() {
+  created () {
+    Vue.config.keyCodes = {
+      v: 86
+    }
+  },
+  mounted () {
     document.onkeydown = ev => {
       ev = ev || event;
       var thisHref = window.location.href;

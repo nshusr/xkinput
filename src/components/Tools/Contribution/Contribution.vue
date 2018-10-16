@@ -1,137 +1,134 @@
 <template>
-	<Row type="flex" justify="center">
-		<Row style="max-width: 1200px; padding: 0 20px;">
-      <Row type="flex" justify="center">
-        <Alert>已替换编辑器为 Monaco-Editor ，若Ctrl + V无法粘贴内容，请使用Ctrl + Shift + V。</Alert>
-      </Row>
-			<Card>
-				<Row class="main-textarea-box" type="flex" justify="center">
-					<Col :xs="24" :sm="8">
-					<div class="info" @click="showPlate.old = !showPlate.old">
-						<span class="textarea-title">词库数据</span>
-						<span class="textarea-info" v-html="count.old"></span>
-					</div>
-          <monaco-editor
-            class="editor"
-            language="yaml"
-            v-model="oldTerms"
-            v-show="showPlate.old"
-            @keyup.ctrl.86="testing(false)">
-          </monaco-editor>
-					</Col>
-					<Col :xs="24" :sm="8">
-					<div class="info" @click="showPlate.new = !showPlate.new">
-						<span class="textarea-info" v-html="count.new"></span>
-						<span class="textarea-title">更正数据</span>
-					</div>
-          <monaco-editor
-            class="editor"
-            language="yaml"
-            v-model="newsTerms"
-            v-show="showPlate.new"
-            @keyup.ctrl.86="testing(false)">
-          </monaco-editor>
-					</Col>
-					<Col :xs="24" :sm="8">
-					<div class="info" @click="showPlate.out = !showPlate.out">
-						<span class="textarea-info" v-html="count.out"></span>
-						<span class="textarea-title">转换内容</span>
-					</div>
-          <monaco-editor
-            class="editor"
-            language="yaml"
-            v-model="outTerms"
-            v-show="showPlate.out">
-          </monaco-editor>
-					</Col>
-					<Col :xs="24" :sm="12">
-					<div class="info" @click="showPlate.suc = !showPlate.suc">
-						<span class="textarea-info" v-html="count.success"></span>
-						<span class="textarea-title">成功信息</span>
-					</div>
-          <monaco-editor
-            class="editor"
-            language="yaml"
-            v-model="successInfo"
-            v-show="showPlate.suc">
-          </monaco-editor>
-					</Col>
-					<Col :xs="24" :sm="12">
-					<div class="info" @click="showPlate.err = !showPlate.err">
-						<span class="textarea-info" v-html="count.error"></span>
-						<span class="textarea-title">错误信息</span>
-					</div>
-          <monaco-editor
-            class="editor"
-            language="yaml"
-            v-model="errorInfo"
-            v-show="showPlate.err">
-          </monaco-editor>
-					</Col>
-				</Row>
-			</Card>
+  <Row type="flex" justify="center">
+    <Row style="max-width: 1200px; padding: 0 20px;">
+      <Card>
+        <Row class="main-textarea-box" type="flex" justify="center">
+          <Col :xs="24" :sm="8">
+            <div class="info" @click="showPlate.old = !showPlate.old">
+              <span class="textarea-title">词库数据</span>
+              <span class="textarea-info" v-html="count.old"></span>
+            </div>
+            <monaco-editor
+              class="editor"
+              language="yaml"
+              v-model="oldTerms"
+              v-show="showPlate.old"
+              @keyup.ctrl.shift.v="testing(false)">
+            </monaco-editor>
+          </Col>
+          <Col :xs="24" :sm="8">
+            <div class="info" @click="showPlate.new = !showPlate.new">
+              <span class="textarea-info" v-html="count.new"></span>
+              <span class="textarea-title">更正数据</span>
+            </div>
+            <monaco-editor
+              class="editor"
+              language="yaml"
+              v-model="newsTerms"
+              v-show="showPlate.new"
+              @keyup.ctrl.shift.v="testing(false)">
+            </monaco-editor>
+          </Col>
+          <Col :xs="24" :sm="8">
+            <div class="info" @click="showPlate.out = !showPlate.out">
+              <span class="textarea-info" v-html="count.out"></span>
+              <span class="textarea-title">转换内容</span>
+            </div>
+            <monaco-editor
+              class="editor"
+              language="yaml"
+              v-model="outTerms"
+              v-show="showPlate.out">
+            </monaco-editor>
+          </Col>
+          <Col :xs="24" :sm="12">
+            <div class="info" @click="showPlate.suc = !showPlate.suc">
+              <span class="textarea-info" v-html="count.success"></span>
+              <span class="textarea-title">成功信息</span>
+            </div>
+            <monaco-editor
+              class="editor"
+              language="yaml"
+              v-model="successInfo"
+              v-show="showPlate.suc">
+            </monaco-editor>
+          </Col>
+          <Col :xs="24" :sm="12">
+            <div class="info" @click="showPlate.err = !showPlate.err">
+              <span class="textarea-info" v-html="count.error"></span>
+              <span class="textarea-title">错误信息</span>
+            </div>
+            <monaco-editor
+              class="editor"
+              language="yaml"
+              v-model="errorInfo"
+              v-show="showPlate.err">
+            </monaco-editor>
+          </Col>
+        </Row>
+      </Card>
 
-			<i-switch class="controls-switch" v-model="switchControl" @click="switchControl = !switchControl"></i-switch>
+      <i-switch class="controls-switch" v-model="switchControl" @click="switchControl = !switchControl"></i-switch>
 
-			<transition name="slide">
-				<Card class="controls-btn" style="padding: 0 20%;" v-if="switchControl">
-					<Row type="flex" justify="space-around" align="middle">
-						<Button size="large" @click="testing(true)" v-if="!handleTermsWorker">开始处理</Button>
-						<Button size="large" @click="proStartStatus" type="info" v-if="handleTermsWorker">运行线程</Button>
-						<Tooltip content="转换内容编码后添加编码重数，便于调试" placement="top">
-							<i-switch size="large" v-model="isDev">
-								<span slot="open">重数</span>
-								<span slot="close">重数</span>
-							</i-switch>
-						</Tooltip>
-						<Tooltip content="填写测试信息至词库数据与更新数据中" placement="top">
-							<Button size="large" @click="createDemo">测试内容</Button>
-						</Tooltip>
-						<Button size="large" type="error" @click="clearContent">清空内容</Button>
-					</Row>
-				</Card>
-			</transition>
+      <transition name="slide">
+        <Card class="controls-btn" style="padding: 0 20%;" v-if="switchControl">
+          <Row type="flex" justify="space-around" align="middle">
+            <Button size="large" @click="testing(true)" v-if="!handleTermsWorker">开始处理</Button>
+            <Button size="large" @click="proStartStatus" type="info" v-if="handleTermsWorker">运行线程</Button>
+            <Tooltip content="转换内容编码后添加编码重数，便于调试" placement="top">
+              <i-switch size="large" v-model="isDev">
+                <span slot="open">重数</span>
+                <span slot="close">重数</span>
+              </i-switch>
+            </Tooltip>
+            <Tooltip content="填写测试信息至词库数据与更新数据中" placement="top">
+              <Button size="large" @click="createDemo">测试内容</Button>
+            </Tooltip>
+            <Button size="large" type="error" @click="clearContent">清空内容</Button>
+          </Row>
+        </Card>
+      </transition>
 
-			<div class="bottom-info w-100">
-				<Card>
-					<Row type="flex" justify="center">
-						<h3>申请表词库处理工具v{{version}}</h3>
-					</Row>
-				</Card>
-				<Card>
-					<Row type="flex" justify="center">
-						<p>转换后词组，顺序错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。
-							<Button to="https://gitee.com/nshu/Rime_JD/tree/master/Tools/TermsTools"
-								target="_blank">工具1sortTerms.sh</Button>
-						</p>
-						<p>请注意！本工具不支持
-							<b>英文（含英文）</b>词组准确修改功能！工具遇重码操作后计算耗时较长，请耐心等待。</p>
-					</Row>
-				</Card>
-				<Card class="history-card">
-					<h4 slot="title">更新历史</h4>
-					<Button slot="extra" @click="updateAll = !updateAll">展开所有</Button>
-					<Row>
-						<Timeline>
-							<TimelineItem>
-								<Tag color="success">new</Tag>{{updateHistory[updateHistoryLength].ver}}: {{updateHistory[updateHistoryLength].cont}}
-							</TimelineItem>
-							<TimelineItem>
-								<Tag>new</Tag>{{updateHistory[updateHistoryLength-1].ver}}: {{updateHistory[updateHistoryLength-1].cont}}
-							</TimelineItem>
-						</Timeline>
-					</Row>
-					<Row v-if="updateAll">
-						<Timeline>
-							<TimelineItem v-for="item in updateHistory" :key="item.cont">
-								{{item.ver}}: {{item.cont}}
-							</TimelineItem>
-						</Timeline>
-					</Row>
-				</Card>
-			</div>
-		</Row>
-	</Row>
+      <div class="bottom-info w-100">
+        <Card>
+          <Row type="flex" justify="center">
+            <h3>申请表词库处理工具v{{version}}</h3>
+          </Row>
+        </Card>
+        <Card>
+          <Row type="flex" justify="center">
+            <p>转换后词组，顺序错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。
+              <Button to="https://gitee.com/nshu/Rime_JD/tree/master/Tools/TermsTools"
+                target="_blank">工具1sortTerms.sh</Button>
+            </p>
+            <p>请注意！本工具不支持
+              <b>英文（含英文）</b>词组准确修改功能！工具遇重码操作后计算耗时较长，请耐心等待。</p>
+          </Row>
+        </Card>
+        <Card class="history-card">
+          <h4 slot="title">更新历史</h4>
+          <Button slot="extra" @click="updateAll = !updateAll">展开所有</Button>
+          <Row>
+            <Timeline>
+              <TimelineItem>
+                <Tag color="success">new</Tag>{{updateHistory[updateHistoryLength].ver}}: {{updateHistory[updateHistoryLength].cont}}
+              </TimelineItem>
+              <TimelineItem>
+                <Tag>new</Tag>{{updateHistory[updateHistoryLength-1].ver}}: {{updateHistory[updateHistoryLength-1].cont}}
+              </TimelineItem>
+            </Timeline>
+          </Row>
+          <Row v-if="updateAll">
+            <Timeline>
+              <TimelineItem v-for="item in updateHistory" :key="item.cont">
+                {{item.ver}}: {{item.cont}}
+              </TimelineItem>
+            </Timeline>
+          </Row>
+        </Card>
+      </div>
+    </Row>
+  </Row>
 </template>
 
 <script>
@@ -313,6 +310,13 @@ wffj	-	万付`,
   },
   mounted() {
     this.Notice();
+    this.createDemo();
+    setTimeout(() => {
+      this.testing(true);
+    }, 1000);
+    setTimeout(() => {
+      this.msgCSV();
+    }, 5000)
   },
   methods: {
     getVersion() {
@@ -639,6 +643,9 @@ wffj	-	万付`,
     proStartStatus() {
       this.$Message.error('处理线程运行中');
     },
+    msgCSV() {
+      this.$Message.success('请使用 Ctrl + Shift + V 粘贴内容');
+    },
     clearContent() {
       this.oldTerms = this.newsTerms = this.outTerms = this.newTermsData = '';
       this.oldTermsData = {};
@@ -694,10 +701,10 @@ wffj	-	万付`,
         this.$Notice.open({
           title: '版本更新了',
           desc: `
-							本次版本更新${this.updateHistory[this.updateHistoryLength].cont}
-							版本号为${this.updateHistory[this.updateHistoryLength].ver}，
-							详情请查阅底部说明。
-						`,
+              本次版本更新${this.updateHistory[this.updateHistoryLength].cont}
+              版本号为${this.updateHistory[this.updateHistoryLength].ver}，
+              详情请查阅底部说明。
+            `,
           duration: 0,
           onClose: () => {
             this.setCookie('showUpdate', newVer, 3650);
