@@ -1,10 +1,5 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './components/Home/Home';
-import Doc from './components/Doc/Doc';
-import Search from './components/Tools/Search/Search';
-import Contribution from './components/Tools/Contribution/Contribution';
-import Study from './components/Tools/Study/Study';
 
 Vue.use(Router);
 
@@ -14,27 +9,27 @@ export default new Router({
     {
       path: '/jdweb',
       name: 'Home',
-      component: Home
+      component: resolve => require(['./components/Home/Home'], resolve)
     },
     {
       path: '/jdweb/doc',
       name: 'Doc',
-      component: Doc
+      component: resolve => require(['./components/Doc/Doc'], resolve)
     },
     {
       path: '/jdweb/tools/search',
       name: 'Search',
-      component: Search
+      component: resolve => require(['./components/Tools/Search/Search'], resolve)
     },
     {
       path: '/jdweb/tools/contribution',
       name: 'Contribution',
-      component: Contribution
+      component: resolve => require(['./components/Tools/Contribution/Contribution'], resolve)
     },
     {
       path: '/jdweb/tools/study',
       name: 'Study',
-      component: Study
+      component: resolve => require(['./components/Tools/Study/Study'], resolve)
     }
   ]
 });
