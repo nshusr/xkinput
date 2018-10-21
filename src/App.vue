@@ -20,7 +20,7 @@ export default {
     'v-footer': Footer,
     'v-utiltes': Utiltes
   },
-  data() {
+  data () {
     return {
       isDestroyed: true
     };

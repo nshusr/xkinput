@@ -2,12 +2,12 @@
 	<div>
 		<Card class='home-top-card' :bordered='false'>
 			<Row class='home-top'>
-				<Carousel class='main-carousel' :autoplay='true' :loop='true'  :autoplay-speed='10000'>
+				<Carousel class='main-carousel' :autoplay='true'  :autoplay-speed='10000'>
 					<CarouselItem v-for='scheme in schemes' :key='scheme.name'>
 						<Row type='flex' justify='center' align='middle'>
 							<Card class='main-card'>
 								<strong slot='title'>{{scheme.name}}</strong>
-								<Button slot='extra' type='primary' :to='scheme.url' target='_blank'>获取</Button>
+								<Button slot='extra' type='primary' @click="downModalToggle(scheme)" target='_blank'>获取</Button>
 								<div>
 									<Row type='flex' justify='center'>
 										<Col span='6' class='logo'>
@@ -33,6 +33,17 @@
 				<img src='./../../assets/starbg.jpg' class='xkbg' id='xkbgRotate'>
 			</Row>
 		</Card>
+     <Modal v-model="downModal.isShow"
+            :title="downModal.name"
+            @on-ok="downModal.isShow=false">
+        <Row type="flex" justify='center' align='middle'>
+          <Card class="down-modal" v-for="item in downModal.data" :key="item.name"
+                :style="{minWidth: '150px'}">
+            <p slot="title">{{item.name}}</p>
+            <Button type='primary' :to="item.url" target="_blank">获取</Button>
+          </Card>
+        </Row>
+    </Modal>
 		<Layout>
 			<Content class='home-content'>
 				<v-inputs></v-inputs>
@@ -80,11 +91,25 @@ export default {
   name: 'Home',
   data() {
     return {
+      downModal: {
+        isShow: false,
+        name: '',
+        data: []
+      },
       schemes: [
         {
           logo: require('../../assets/jd.png'),
           name: '键道6',
-          url: 'https://gitee.com/nshu/Rime_JD',
+          item: [
+            {
+              name: 'Rime',
+              url: 'https://gitee.com/nshu/Rime_JD'
+            },
+            {
+              name: '小小',
+              url: 'https://gitee.com/thxnder/xxjd'
+            }
+          ],
           propagandaItem: [
             { item: '200个两键上屏单字' },
             { item: '2000个三键上屏单字' },
@@ -100,36 +125,72 @@ export default {
         {
           logo: require('../../assets/star.png'),
           name: '两笔',
-          url: 'https://gitee.com/morler/rime_xklb',
+          item: [
+            {
+              name: 'Rime',
+              url: 'https://gitee.com/morler/rime_xklb'
+            }
+          ],
           propagandaItem: [
-            { item: '提笔忘字学两笔' },
-            { item: '离散高，码长短' }
+            { item: '离散强，重码少' },
+            { item: '打词打单两相宜' }
           ],
           propagandaIndex: ''
         },
         {
           logo: require('../../assets/star.png'),
           name: '一笔',
-          url: 'https://gitee.com/dzyht/rime_xkybd',
-          propagandaItem: [{ item: '招募广告词' }],
+          item: [
+            {
+              name: 'Rime',
+              url: 'https://gitee.com/dzyht/rime_xkybd'
+            }
+          ],
+          propagandaItem: [
+            { item: '易上手，双拼方案结构简单' },
+            { item: '无字根' },
+            { item: '进可双拼加形，退可纯双拼' },
+          ],
           propagandaIndex: ''
         },
         {
           logo: require('../../assets/star.png'),
           name: '一道',
-          url: 'https://gitee.com/dzyht/rime_xkybd',
-          propagandaItem: [{ item: '招募广告词' }],
+          item: [
+            {
+              name: 'Rime',
+              url: 'https://gitee.com/dzyht/rime_xkybd'
+            }
+          ],
+          propagandaItem: [
+            { item: '优化手感：飞键增加' },
+            { item: '结合一笔（双拼）和键道（笔形码），具有双方优点' },
+          ],
           propagandaIndex: ''
         },
-        {
-          logo: require('../../assets/star.png'),
-          name: '魔道',
-          url: 'https://gitee.com/dzyht/rime_xkybd',
-          propagandaItem: [{ item: '招募广告词' }],
-          propagandaIndex: ''
-        }
+        // {
+        //   logo: require('../../assets/star.png'),
+        //   name: '魔道',
+        //   item: [
+        //     {
+        //       name: 'Rime',
+        //       url: 'https://gitee.com/dzyht/rime_xkybd'
+        //     }
+        //   ],
+        //   propagandaItem: [
+        //     { item: '一笔（双拼）结合 键道（笔形）的一个民间产物' }
+        //   ],
+        //   propagandaIndex: ''
+        // }
       ]
     };
+  },
+  methods: {
+    downModalToggle (scheme) {
+      this.downModal.name = scheme.name;
+      this.downModal.data = scheme.item;
+      this.downModal.isShow = true;
+    }
   },
   components: {
     'v-inputs': Inputs
@@ -138,6 +199,10 @@ export default {
 </script>
 
 <style lang='less'>
+.down-modal .ivu-card-body {
+  display: flex;
+  justify-content: center;
+}
 .home-top-card {
   border-radius: 0 0 3px 3px;
   margin-bottom: 5px;
