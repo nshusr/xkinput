@@ -28,7 +28,7 @@
       last = last.replace('/','/?p=/');
       l.replace(
         l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-        l.pathname.split('/').slice(0, 1 + segmentCount).join('/') + '/' + '?p=/' + last +
+        l.pathname.split('/').slice(0, 1 + segmentCount).join('/') + '/' + last +
         (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
         l.hash
       );
