@@ -13,6 +13,7 @@
 import Nav from './components/Nav/Nav';
 import Footer from './components/Footer/Footer';
 import Utiltes from './components/Utilites/Utilites';
+import Vue from 'vue';
 export default {
   name: 'app',
   components: {
@@ -29,20 +30,6 @@ export default {
     Vue.config.keyCodes = {
       v: 86
     }
-  },
-  mounted () {
-    document.onkeydown = ev => {
-      ev = ev || event;
-      var thisHref = window.location.href;
-      if (ev.keyCode == 116) {
-        var isHome = /.*\/jdweb\/?$/;
-        if (!isHome.test(thisHref)) {
-          ev.preventDefault();
-          this.$router.push('/jdweb/');
-          return false;
-        }
-      }
-    };
   }
 };
 </script>
