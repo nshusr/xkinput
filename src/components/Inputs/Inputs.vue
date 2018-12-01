@@ -140,7 +140,7 @@ export default {
 
 <style lang='less'>
 .inputs-talbe-row {
-  overflow-x: scroll;
+  overflow-x: auto;
   .inputs-talbe {
     min-width: 1100px;
   }

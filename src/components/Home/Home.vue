@@ -109,6 +109,10 @@ export default {
             {
               name: '小小',
               url: 'https://gitee.com/thxnder/xxjd'
+            },
+            {
+              name: '多多',
+              url: 'http://daniushuangpin.ys168.com'
             }
           ],
           propagandaItem: [
@@ -130,6 +134,10 @@ export default {
             {
               name: 'Rime',
               url: 'https://gitee.com/morler/rime_xklb'
+            },
+            {
+              name: '多多',
+              url: 'http://daniushuangpin.ys168.com'
             }
           ],
           propagandaItem: [
@@ -145,6 +153,10 @@ export default {
             {
               name: 'Rime',
               url: 'https://gitee.com/dzyht/rime_xkybd'
+            },
+            {
+              name: '多多',
+              url: 'http://daniushuangpin.ys168.com'
             }
           ],
           propagandaItem: [
