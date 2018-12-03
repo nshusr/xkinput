@@ -145,4 +145,100 @@ export default {
     min-width: 1100px;
   }
 }
+.inputs-talbe {
+  min-width: 1100px;
+  tr:nth-child(odd) {
+    td {
+      .ivu-tag:first-of-type {
+        background: #09f;
+        span {
+          color: white
+        }
+      }
+      .ivu-tag:nth-child(2){
+        background: #f90;
+        span {
+          color: white
+        }
+      }
+    }
+  }
+  tr:nth-child(1) {
+    td:nth-child(7),
+    td:nth-child(8),
+    td:nth-child(9) {
+      .ivu-tag:nth-child(2) {
+        background: #19be6b;
+        span {
+          color: white
+        }
+      }
+    }
+  }
+  tr:nth-child(2) {
+    td:nth-child(7),
+    td:nth-child(8),
+    td:nth-child(9) {
+      .ivu-tag {
+        background: #e4e7ec;
+        border-color: #c9d6de;
+        span {
+          color: #6d819c
+        }
+      }
+    }
+  }
+  tr:nth-child(3) {
+    td:nth-child(1) {
+      .ivu-tag:nth-child(2) {
+        background: #19be6b;
+        span {
+          color: white
+        }
+      }
+    }
+  }
+  tr:nth-child(4) {
+    td:nth-child(1) {
+      .ivu-tag {
+        background: #e4e7ec;
+        border-color: #c9d6de;
+        span {
+          color: #6d819c
+        }
+      }
+    }
+  }
+  tr:nth-child(5) {
+    td:nth-child(4) {
+      .ivu-tag:nth-child(2) {
+        background: #19be6b;
+        span {
+          color: white
+        }
+      }
+    }
+  }
+  tr:nth-child(5) {
+    td:nth-child(2) {
+      .ivu-tag:nth-child(2) {
+        background: #dddfe6;
+        span {
+          color: #6d819c
+        }
+      }
+    }
+  }
+  tr:nth-child(6) {
+    td:nth-child(4) {
+      .ivu-tag {
+        background: #e4e7ec;
+        border-color: #c9d6de;
+        span {
+          color: #6d819c
+        }
+      }
+    }
+  }
+}
 </style>
