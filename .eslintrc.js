@@ -10,9 +10,8 @@ module.exports = {
     'indent': [1, 2],
     'semi': [0],
     'quotes': [1, 'single'],
-    'vue/no-parsing-error': [2, { 'x-invalid-end-tag': false }],
-    "vue/valid-v-on": [2, {
-      modifiers: ['spause']
+    'vue/no-parsing-error': [2, {
+      'x-invalid-end-tag': false
     }],
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
@@ -20,5 +19,9 @@ module.exports = {
   },
   parserOptions: {
     parser: 'babel-eslint'
-  }
+  },
+  plugins: [
+    'vue',
+    'html'
+  ]
 }

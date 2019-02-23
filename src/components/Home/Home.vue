@@ -113,6 +113,10 @@ export default {
             {
               name: '多多',
               url: 'http://daniushuangpin.ys168.com'
+            },
+            {
+              name: 'Fcitx-rime(Linux)',
+              url: `https://${process.env.BASE_URL}public/installJDL.sh`
             }
           ],
           propagandaItem: [
