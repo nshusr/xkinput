@@ -116,7 +116,7 @@ export default {
             },
             {
               name: 'Fcitx-rime(Linux)',
-              url: `https://${process.env.BASE_URL}public/installJDL.sh`
+              url: require('../../assets/installJDL.sh')
             }
           ],
           propagandaItem: [

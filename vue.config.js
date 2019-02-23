@@ -1,5 +1,6 @@
 const MonocoEditorPlugin = require('monaco-editor-webpack-plugin')
 const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
   assetsDir: 'static',
@@ -12,5 +13,16 @@ module.exports = {
         __dirname
       )
     ]
+  },
+  chainWebpack: config => {
+    config.module
+      .rule('shell')
+      .test(/\.(sh|bat|cmd)(\?.*)?$/)
+      .use('file')
+      .loader('file-loader')
+      .options({
+        name: '[name].[ext]',
+        outputPath: 'public/'
+      })
   }
 };
