@@ -38,4 +38,20 @@ export default {
 .main-layout {
   padding: 70px 0 10px;
 }
+.inputs-talbe-row::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.inputs-talbe-row::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  background: #999;
+}
+.inputs-talbe-row::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  border-radius: 10px;
+  background: #EDEDED;
+}
 </style>

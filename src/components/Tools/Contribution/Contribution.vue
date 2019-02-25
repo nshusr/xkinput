@@ -133,6 +133,7 @@
 
 <script>
 import MonacoEditor from 'vue-monaco'
+import { log } from 'util';
 export default {
   components: {
     MonacoEditor
@@ -176,6 +177,7 @@ blkeav#2	*	贝壳
 hjlh	/	静静
 jglk#3	-	经历
 jglk#4	+	静静
+jglk#2	*	静静
 wffj	-	万付`,
       },
       updates: false,
@@ -299,6 +301,10 @@ wffj	-	万付`,
           ver: '4.2',
           cont: '更新：替换编辑器至 Monaco-Editor 若无法 Ctrl + V 粘贴内容，请使用 Ctrl + Shift + V 粘贴。望知晓',
         },
+        {
+          ver: '4.2.1',
+          cont: '更新：请使用 Ctrl + Shift + V 粘贴。纠正：输出后自动排序、修改时的Bug、改进输出提示。',
+        },
       ],
       updateHistoryLength: 0,
       showWarning: false
@@ -391,7 +397,7 @@ wffj	-	万付`,
     },
     handleTerms() {
       //设置公共属性
-      var reg, out, log, HaveCodeReg, TermsCorrectCodeReg;
+      var reg, out, log, searchStr, HaveCodeReg, TermsCorrectCodeReg;
       var thisNewData = this.newsTermsData.obj,
         x = 0,
         num = {
@@ -419,8 +425,8 @@ wffj	-	万付`,
           out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 
           if (this.newTermsData.search(reg) == -1) {
-            this.newTermsData += out + '\r\n';
-            this.successInfoData += `${out}\t[ + 第${+x + 1}行]\r\n`;
+            this.newTermsData += '\r\n' + out;
+            this.successInfoData += `Add: ${out}\t[ + 第${+x + 1}行]\r\n`;
             num.suc++;
             num.add++;
           } else {
@@ -433,15 +439,16 @@ wffj	-	万付`,
           }
           //modify
         } else if (thisNewData.opreation[x] == '*') {
-          reg = new RegExp(`.+\\t\\b${thisNewData.code[x]}\\b`, 'g');
+          reg = new RegExp(`.+\\t\\b${thisNewData.code[x]}\\b`);
           log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
             thisNewData.word[x]
           } ]`;
+          searchStr = this.newTermsData.match(reg);
           out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 
           if (this.newTermsData.search(reg) != -1) {
             this.newTermsData = this.newTermsData.replace(reg, out);
-            this.successInfoData += `${out}\t[ * 第${+x + 1}行]\r\n`;
+            this.successInfoData += `Modify: { ${searchStr} } => ${out}\t[ * 第${+x + 1}行]\r\n`;
             num.suc++;
             num.mod++;
           } else {
@@ -461,12 +468,12 @@ wffj	-	万付`,
           TermsCorrectCodeReg = new RegExp(
             `${thisNewData.word[x]}\\t\\b${
               thisNewData.code[x]
-            }#?\\d*\\b[\\r\\n]*`,
-            'g'
+            }#?\\d*\\b[\\r\\n]*`
           );
           log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
             thisNewData.word[x]
           } ]`;
+          searchStr = this.newTermsData.match(TermsCorrectCodeReg);
           out = thisNewData.word[x] + '\t' + thisNewData.code[x];
 
           if (this.newTermsData.search(HaveCodeReg) != -1) {
@@ -475,7 +482,7 @@ wffj	-	万付`,
                 eval(TermsCorrectCodeReg),
                 ''
               );
-              this.successInfoData += `${out}\t[ - 第${+x + 1}行]\r\n`;
+              this.successInfoData += `Del: { ${searchStr} } => ${out}\t[ 第${+x + 1}行]\r\n`;
               num.suc++;
               num.del++;
             } else {
@@ -548,6 +555,10 @@ wffj	-	万付`,
         }`;
       }
 
+      //排序输出内容
+      this.sortExportsCont();
+
+      //填写输出信息
       this.successInfo = this.successInfoData;
       this.errorInfo = this.errorInfoData;
 
@@ -634,6 +645,11 @@ wffj	-	万付`,
       } else {
         return;
       }
+    },
+    sortExportsCont() {
+      var outCont = this.outTerms.split('\n');
+      outCont = outCont.sort((a, b) => a.localeCompare(b));
+      this.outTerms = outCont.join('\r\n');
     },
     createDemo() {
       this.oldTerms = this.demoData.old;
