@@ -172,13 +172,9 @@ export default {
 万夫6	wffj
 折子戏	fzxi
 万付	wffj`,
-        new: `blke	+	剥个
-blkeav#2	*	贝壳
-hjlh	/	静静
-jglk	-	经历
-jglk#4	+	静静
-jglk#2	*	静静
-wffj	-	万付`,
+        new: `cfoi	+	喰
+swo	+	喰
+qkoio	+	喰`,
       },
       updates: false,
       isPhone: false,
@@ -328,7 +324,7 @@ wffj	-	万付`,
     getVersion() {
       this.version = this.updateHistory[this.updateHistoryLength].ver;
     },
-    handleOldTerms(newsHaveRepeat) {
+    handleOldTerms() {
       var thisData = {};
 
       thisData.old = this.oldTerms;
@@ -354,29 +350,25 @@ wffj	-	万付`,
       //1 遍历旧词库,转换内容
       this.handleTermsWorker = this.$worker
         .run(
-          (newsHaveRepeat, {oldArr, old}) => {
+          ({oldArr, old}) => {
             let out = '';
-            if (newsHaveRepeat) {
-              let dict = {};
-              for (let it of oldArr) {
-                it = it.trim();
-                it = it.split(/\s+/);
-                let c = it.pop().trim();
-                dict[c] ? dict[c].push(it[0]) : (dict[c] = it);
+            let dict = {};
+            for (let it of oldArr) {
+              it = it.trim();
+              it = it.split(/\s+/);
+              let c = it.pop().trim();
+              dict[c] ? dict[c].push(it[0]) : (dict[c] = it);
+            }
+            for (let i in dict) {
+              let idx = 1;
+              while (dict[i].length) {
+                out += `${i}#${idx}\t${dict[i].shift()}\n`;
+                idx++;
               }
-              for (let i in dict) {
-                let idx = 1;
-                while (dict[i].length) {
-                  out += `${i}#${idx}\t${dict[i].shift()}\n`;
-                  idx++;
-                }
-              }
-            } else {
-              out = old;
             }
             return out;
           },
-          [newsHaveRepeat, thisData]
+          [thisData]
         )
         .then(res => {
           this.newTermsData = res;
@@ -598,8 +590,6 @@ wffj	-	万付`,
       }
     },
     testing(isHoundle) {
-      var newsHaveRepeat = /#\d+/.test(this.newsTerms);
-
       if (0 == this.oldTerms.length) {
         this.$Loading.error();
         this.$Message.error('工作表为空！');
@@ -639,7 +629,7 @@ wffj	-	万付`,
 
       //正常则调用处理数据，否则仅计数，判断是否有错误内容
       if (isHoundle) {
-        this.handleOldTerms(newsHaveRepeat);
+        this.handleOldTerms();
       } else {
         return;
       }
@@ -660,7 +650,7 @@ wffj	-	万付`,
       outCont = outCont.map(val => {
         let str = val.split('\t');
         return `${str[1]}\t${str[0].trim()}`;
-      })      
+      })
       this.outTerms = outCont.join('\r');
     },
     createDemo() {
