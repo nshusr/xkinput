@@ -328,7 +328,7 @@ qkoio	+	喰`,
       var thisData = {};
 
       thisData.old = this.oldTerms;
-      thisData.oldArr = this.oldTerms.split('\n');
+      thisData.oldArr = this.oldTerms.trim().split('\n');
       thisData.new = this.newTermsData;
       thisData.isLog = this.isLog;
 
@@ -527,7 +527,7 @@ qkoio	+	喰`,
       this.oldTerms = this.clearIdent(false, this.oldTerms);
 
       //扫描去除空行
-      this.clearSpace('newTermsData');
+      this.clearSpace('newTermsData');      
 
       //添加文档底部统计
       this.successInfoData = `成功统计：\n共有 ${num.suc} 个, 添加 ${
@@ -651,7 +651,7 @@ qkoio	+	喰`,
         let str = val.split('\t');
         return `${str[1]}\t${str[0].trim()}`;
       })
-      this.outTerms = outCont.join('\r');
+      this.outTerms = outCont.join('\r').replace('undefined\t', '');
     },
     createDemo() {
       this.oldTerms = this.demoData.old;
