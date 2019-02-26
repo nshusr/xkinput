@@ -175,7 +175,7 @@ export default {
         new: `blke	+	剥个
 blkeav#2	*	贝壳
 hjlh	/	静静
-jglk#3	-	经历
+jglk	-	经历
 jglk#4	+	静静
 jglk#2	*	静静
 wffj	-	万付`,
@@ -367,7 +367,7 @@ wffj	-	万付`,
               for (let i in dict) {
                 let idx = 1;
                 while (dict[i].length) {
-                  out += `${dict[i].shift()}\t${i}#${idx}\n`;
+                  out += `${i}#${idx}\t${dict[i].shift()}\n`;
                   idx++;
                 }
               }
@@ -418,15 +418,15 @@ wffj	-	万付`,
         //add
         if (thisNewData.opreation[x] == '+') {
           //判断编码是否已存在
-          reg = new RegExp(`.+\\t\\b${thisNewData.code[x]}\\b`, 'g');
+          reg = new RegExp(`\\b${thisNewData.code[x]}\\b\\t.+`, 'g');
           log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
             thisNewData.word[x]
           } ]`;
-          out = thisNewData.word[x] + '\t' + thisNewData.code[x];
+          out = `${thisNewData.code[x]}\t${thisNewData.word[x]}`;
 
           if (this.newTermsData.search(reg) == -1) {
-            this.newTermsData += '\r\n' + out;
-            this.successInfoData += `Add: ${out}\t[ + 第${+x + 1}行]\r\n`;
+            this.newTermsData += `${out}\r\n`;
+            this.successInfoData += `Add: ${out}\t[第${+x + 1}行]\r\n`;
             num.suc++;
             num.add++;
           } else {
@@ -439,21 +439,20 @@ wffj	-	万付`,
           }
           //modify
         } else if (thisNewData.opreation[x] == '*') {
-          reg = new RegExp(`.+\\t\\b${thisNewData.code[x]}\\b`);
+          reg = new RegExp(`\\b${thisNewData.code[x]}\\b\\t.+`);
           log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
             thisNewData.word[x]
           } ]`;
           searchStr = this.newTermsData.match(reg);
-          out = thisNewData.word[x] + '\t' + thisNewData.code[x];
+          out = `${thisNewData.code[x]}\t${thisNewData.word[x]}`;
 
           if (this.newTermsData.search(reg) != -1) {
-            this.newTermsData = this.newTermsData.replace(reg, out);
-            this.successInfoData += `Modify: { ${searchStr} } => ${out}\t[ * 第${+x + 1}行]\r\n`;
+            this.newTermsData = this.newTermsData.replace(reg, `${out}`);
+            this.successInfoData += `Modify: { ${searchStr} } => ${out}\t[第${+x + 1}行]\r\n`;
             num.suc++;
             num.mod++;
           } else {
-            this.errorInfoData += `[第${+x +
-              1}行]\t${log}\r\n>> Error 未找到编码：\r\n${
+            this.errorInfoData += `[第${+x + 1}行]\t${log}\r\n>> Error 未找到编码：\r\n${
               thisNewData.code[x]
             }\r\n\r\n`;
             num.errall++;
@@ -462,19 +461,17 @@ wffj	-	万付`,
           //delete
         } else if (thisNewData.opreation[x] == '-') {
           HaveCodeReg = new RegExp(
-            `.+\\t\\b${thisNewData.code[x]}#?\\d*\\b[\\r\\n]*`,
+            `${thisNewData.code[x]}#?\\d*\\t.+[\\r\\n]*`,
             'g'
           );
           TermsCorrectCodeReg = new RegExp(
-            `${thisNewData.word[x]}\\t\\b${
-              thisNewData.code[x]
-            }#?\\d*\\b[\\r\\n]*`
+            `${thisNewData.code[x]}#?\\d*\\t${thisNewData.word[x]}[\\r\\n]*`
           );
           log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
             thisNewData.word[x]
           } ]`;
           searchStr = this.newTermsData.match(TermsCorrectCodeReg);
-          out = thisNewData.word[x] + '\t' + thisNewData.code[x];
+          out = `${thisNewData.code[x]}\t${thisNewData.word[x]}`;
 
           if (this.newTermsData.search(HaveCodeReg) != -1) {
             if (this.newTermsData.search(TermsCorrectCodeReg) != -1) {
@@ -482,7 +479,7 @@ wffj	-	万付`,
                 eval(TermsCorrectCodeReg),
                 ''
               );
-              this.successInfoData += `Del: { ${searchStr} } => ${out}\t[ 第${+x + 1}行]\r\n`;
+              this.successInfoData += `Del: { ${searchStr} } => ${out}\t[第${+x + 1}行]\r\n`;
               num.suc++;
               num.del++;
             } else {
@@ -506,7 +503,7 @@ wffj	-	万付`,
           log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
             thisNewData.word[x]
           } ]`;
-          out = thisNewData.word[x] + '\t' + thisNewData.code[x];
+          out = `${thisNewData.code[x]}\t${thisNewData.word[x]}`;
           this.errorInfoData += `[第${+x +
             1}行]\t${log}\r\n>> Info 已忽略本次操作。\r\n${
             thisNewData.code[x]
@@ -528,8 +525,6 @@ wffj	-	万付`,
       this.count.error = `共: ${num.errall} 错: ${num.err} 无：${num.no} 缺：${
         num.erratt
       }`;
-      //扫描去除空行
-      this.clearSpace('newTermsData');
 
       //填充内容
       if (this.isDev) {
@@ -538,6 +533,9 @@ wffj	-	万付`,
         this.outTerms = this.clearIdent(false, this.newTermsData);
       }
       this.oldTerms = this.clearIdent(false, this.oldTerms);
+
+      //扫描去除空行
+      this.clearSpace('newTermsData');
 
       //添加文档底部统计
       this.successInfoData = `成功统计：\n共有 ${num.suc} 个, 添加 ${
@@ -647,9 +645,23 @@ wffj	-	万付`,
       }
     },
     sortExportsCont() {
+      //排序
       var outCont = this.outTerms.split('\n');
       outCont = outCont.sort((a, b) => a.localeCompare(b));
-      this.outTerms = outCont.join('\r\n');
+      outCont = outCont.filter(val => {
+        return val && val.trim();
+      });
+      
+      this.outTerms = outCont.join('\r');
+      this.clearSpace('outTerms');
+
+      //逆向
+      outCont = this.outTerms.split('\r');
+      outCont = outCont.map(val => {
+        let str = val.split('\t');
+        return `${str[1]}\t${str[0].trim()}`;
+      })      
+      this.outTerms = outCont.join('\r');
     },
     createDemo() {
       this.oldTerms = this.demoData.old;
@@ -685,7 +697,7 @@ wffj	-	万付`,
       return isclear ? data : result;
     },
     clearSpace(fromName) {
-      this[fromName] = this[fromName].replace(/[\r\n][\r\n]/g, '\r');
+      this[fromName] = this[fromName].replace(/[\r\n]{2}/g, '\r\n');
     },
     clickHistory() {
       this.updates = !this.updates;
