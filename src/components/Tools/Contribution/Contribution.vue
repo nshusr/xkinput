@@ -97,12 +97,7 @@
         </Card>
         <Card>
           <Row type="flex" justify="center">
-            <p>转换后词组，顺序错乱，可以使用BashShell中sort工具进行排序，也可以使用编写好的sh工具进行排序。
-              <Button to="https://gitee.com/nshu/Rime_JD/tree/master/Tools/TermsTools"
-                target="_blank">工具1sortTerms.sh</Button>
-            </p>
-            <p>请注意！本工具不支持
-              <b>英文（含英文）</b>词组准确修改功能！工具遇重码操作后计算耗时较长，请耐心等待。</p>
+            <p>无法粘贴内容时，请使用<Badge class-name="key-dot" text="Ctrl"></Badge>+<Badge class-name="key-dot" text="Shift"></Badge>+<Badge class-name="key-dot" text="V"></Badge> 粘贴内容</p>
           </Row>
         </Card>
         <Card class="history-card">
@@ -174,6 +169,8 @@ export default {
 万付	wffj`,
         new: `cfoi	+	喰
 swo	+	喰
+jglk	*	尽了
+blke	-	博客6
 qkoio	+	喰`,
       },
       updates: false,
@@ -301,6 +298,10 @@ qkoio	+	喰`,
           ver: '4.2.1',
           cont: '更新：请使用 Ctrl + Shift + V 粘贴。纠正：输出后自动排序、修改时的Bug、改进输出提示。',
         },
+        {
+          ver: '4.2.2',
+          cont: '纠正：处理工具无白编号时默认#1，修改底部提示信息。',
+        },
       ],
       updateHistoryLength: 0,
       showWarning: false
@@ -410,7 +411,7 @@ qkoio	+	喰`,
         //add
         if (thisNewData.opreation[x] == '+') {
           //判断编码是否已存在
-          reg = new RegExp(`\\b${thisNewData.code[x]}\\b\\t.+`, 'g');
+          reg = new RegExp(`\\b${thisNewData.code[x]}#?\\d*\\b\\t.+`, 'g');
           log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
             thisNewData.word[x]
           } ]`;
@@ -431,7 +432,7 @@ qkoio	+	喰`,
           }
           //modify
         } else if (thisNewData.opreation[x] == '*') {
-          reg = new RegExp(`\\b${thisNewData.code[x]}\\b\\t.+`);
+          reg = new RegExp(`\\b${thisNewData.code[x]}#?\\d*\\b\\t.+`);
           log = `[ ${thisNewData.code[x]}\t${thisNewData.opreation[x]}\t${
             thisNewData.word[x]
           } ]`;
@@ -440,7 +441,7 @@ qkoio	+	喰`,
 
           if (this.newTermsData.search(reg) != -1) {
             this.newTermsData = this.newTermsData.replace(reg, `${out}`);
-            this.successInfoData += `Modify: { ${searchStr} } => ${out}\t[第${+x + 1}行]\r\n`;
+            this.successInfoData += `Mod: ${searchStr}\r\n  => ${out}\t[第${+x + 1}行]\r\n`;
             num.suc++;
             num.mod++;
           } else {
@@ -796,6 +797,16 @@ qkoio	+	喰`,
   padding-left: 5px;
   transition: all 0.3s;
   animation: info-animate 1s ease-in-out forwards;
+}
+
+.key-dot {
+  margin: 0 3px;
+  border-radius: 3px;
+  background: #141414;
+  background: -webkit-gradient(linear, left top, left bottom, from(#656565), to(#141414) );
+  background: -moz-gradient(linear, left top, left bottom, from(#656565), to(#141414) );
+  background: -o-gradient(linear, left top, left bottom, from(#656565), to(#141414) );
+  filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#656565', EndColorStr='#141414');
 }
 
 @keyframes info-animate {
