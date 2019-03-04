@@ -104,7 +104,7 @@ export default {
           item: [
             {
               name: 'Rime',
-              url: 'https://gitee.com/nshu/Rime_JD'
+              url: 'https://gitee.com/xkinput/Rime_JD'
             },
             {
               name: '小小',
