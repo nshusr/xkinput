@@ -7,27 +7,27 @@ export default new Router({
   mode: 'history',
   routes: [
     {
-      path: '/jdweb',
+      path: '/xkinput',
       name: 'Home',
       component: resolve => require(['./components/Home/Home'], resolve)
     },
     {
-      path: '/jdweb/doc',
+      path: '/xkinput/doc',
       name: 'Doc',
       component: resolve => require(['./components/Doc/Doc'], resolve)
     },
     {
-      path: '/jdweb/tools/search',
+      path: '/xkinput/tools/search',
       name: 'Search',
       component: resolve => require(['./components/Tools/Search/Search'], resolve)
     },
     {
-      path: '/jdweb/tools/contribution',
+      path: '/xkinput/tools/contribution',
       name: 'Contribution',
       component: resolve => require(['./components/Tools/Contribution/Contribution'], resolve)
     },
     {
-      path: '/jdweb/tools/study',
+      path: '/xkinput/tools/study',
       name: 'Study',
       component: resolve => require(['./components/Tools/Study/Study'], resolve)
     }

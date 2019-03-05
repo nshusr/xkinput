@@ -4,7 +4,7 @@ const path = require('path');
 
 module.exports = {
   assetsDir: 'static',
-  baseUrl: '/jdweb/',
+  baseUrl: '/xkinput/',
   configureWebpack: {
     node: {
       process: true,
