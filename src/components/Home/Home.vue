@@ -41,7 +41,7 @@
           <Card class="down-modal" v-for="item in downModal.data" :key="item.name"
                 :style="{minWidth: '150px'}">
             <p slot="title">{{item.name}}</p>
-            <Button type='primary' :to="item.url" target="_blank">获取</Button>
+            <Button type='primary' :to="item.url && item.url" @click="item.command && showSchemeHelp(item.command)" target="_blank">获取</Button>
           </Card>
         </Row>
     </Modal>
@@ -88,6 +88,7 @@
 
 <script>
 import Inputs from '../Inputs/Inputs';
+import Clipboard from 'clipboard';
 export default {
   name: 'Home',
   data() {
@@ -115,8 +116,8 @@ export default {
               url: 'http://daniushuangpin.ys168.com'
             },
             {
-              name: 'Fcitx-rime(Linux)',
-              url: require('../../assets/installJDL.sh')
+              name: 'Linux(Fcitx-rime)',
+              command: 'wget -O installJDL.sh https://gitee.com/xkinput/xkinput/raw/master/public/installJDL.sh && sudo chmod +x installJDL.sh && ./installJDL.sh'
             }
           ],
           propagandaItem: [
@@ -207,6 +208,36 @@ export default {
       this.downModal.name = scheme.name;
       this.downModal.data = scheme.item;
       this.downModal.isShow = true;
+    },
+    showSchemeHelp (command) {
+      this.$Modal.info({
+        title: '安装命令',
+        render: (h) => {
+          return h('Input', {
+            props: {
+              'element-id': 'iv-install-url',
+              value: command,
+            },
+            on: {
+              '~on-focus': ($event) => {
+                var clipboard = new Clipboard('#iv-install-url', {
+                  text: function() {
+                    return command;
+                  }
+                })
+                clipboard.on('success', e => {
+                  this.$Message.success('复制成功!');
+                  clipboard.destroy()
+                })
+                clipboard.on('error', e => {
+                  this.$Message.success('该浏览器不支持自动复制!');
+                  clipboard.destroy()
+                })
+              }
+            }
+          })
+        }
+      })
     }
   },
   components: {

@@ -77,10 +77,9 @@ export default {
     };
   },
   mounted() {
-    var clip = new Clipboard('#word'),
-      __this = this;
+    var clip = new Clipboard('#word');
     clip.on('success', () => {
-      __this.$Message.success('已复制');
+      this.$Message.success('已复制');
     });
   },
   methods: {
