@@ -5,6 +5,7 @@ const path = require('path');
 module.exports = {
   assetsDir: 'static',
   baseUrl: '/',
+  outputDir: 'docs',
   configureWebpack: {
     node: {
       process: true,
